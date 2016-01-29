@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>io.wnu</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/sbin/wnu</string>
+		<string>-V</string>
+		<string>-s ~/.io.wnusleep</string>
+		<string>-w ~/.io.wnuup</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com).</string>
+</dict>
+</plist>
