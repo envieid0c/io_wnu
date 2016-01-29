@@ -1,7 +1,9 @@
 #!/bin/sh
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
+MACADDRESS="542aa239636d"
+
 osascript -e 'quit app "Wireless Network Utility"'
-echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl
+echo "1" > /Applications/Wireless\ Network\ Utility.app/$MACADDRESSrfoff.rtl
 open -a "Wireless Network Utility"
 pkill -f ~/.io.wnuup
