@@ -43,28 +43,28 @@ Display piped data with a sound
 $ echo 'Piped Message Data!' | alerter -sound default
 ```
 
-![Alt text](/img1.png?raw=true "")
+![Alt text](/source/alerter/img1.png?raw=true "")
 
 Multiple actions and custom dropdown list
 ```
 ./alerter -message "Deploy now on UAT ?" -actions Now,"Later today","Tomorrow" -dropdownLabel "When ?"
 ```
 
-![Alt text](/img2.png?raw=true "")
+![Alt text](/source/alerter/img2.png?raw=true "")
 
 Yes or No ?
 ```
 ./alerter -title ProjectX -subtitle "new tag detected" -message "Deploy now on UAT ?" -closeLabel No -actions Yes -appIcon http://vjeantet.fr/images/logo.png
 ```
 
-![Alt text](/img3.png?raw=true "")
+![Alt text](/source/alerter/img3.png?raw=true "")
 
 What is the name of this release ?
 ```
 ./alerter -reply -message "What is the name of this release ?" -title "Deploy in progress..."
 ```
 
-![Alt text](/img4.png?raw=true "")
+![Alt text](/source/alerter/img4.png?raw=true "")
 
 ## Options
 
