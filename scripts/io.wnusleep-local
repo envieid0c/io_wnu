@@ -6,6 +6,6 @@ DEVICE=`cat /Applications/Wireless\ Network\ Utility.app/DEVICE`
 
 
 osascript -e 'quit app "Wireless Network Utility"'
-echo "1" > $DEVICE
+echo "1" > "$DEVICE"
 open -a "Wireless Network Utility"
 pkill -f ~/.io.wnuup
