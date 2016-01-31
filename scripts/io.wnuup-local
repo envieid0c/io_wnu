@@ -1,5 +1,7 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
+ACTIVATED=`grep -rl "0" /Applications/Wireless\ Network\ Utility.app/*rfoff.rtl > /Applications/Wireless\ Network\ Utility.app/DEVICE`
+DEVICE=`cat /Applications/Wireless\ Network\ Utility.app/DEVICE`
 
 result=connected
 while [ true ]; do
@@ -12,9 +14,9 @@ while [ true ]; do
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "DISABLE Wi-FI") `sleep 3 && osascript -e 'quit app "Wireless Network Utility"' && echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && pkill -f ~/.io.wnuup` ;;
-        "DISABLE") `osascript -e 'quit app "Wireless Network Utility"' && echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && osascript -e 'open app "Wireless Network Utility"'` ;;
-        "ENABLE") `osascript -e 'quit app "Wireless Network Utility"' && echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && echo "0" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && osascript -e 'open app "Wireless Network Utility"'` ;;
+        "DISABLE Wi-FI") sleep 3 && osascript -e 'quit app "Wireless Network Utility"' && echo "1" > "$DEVICE" && pkill -f ~/.io.wnuup ;;
+        "DISABLE") osascript -e 'quit app "Wireless Network Utility"' && echo "1" > "$DEVICE" && osascript -e 'open app "Wireless Network Utility"' ;;
+        "ENABLE") osascript -e 'quit app "Wireless Network Utility"' && echo "1" > "$DEVICE" && echo "0" > "$DEVICE" && osascript -e 'open app "Wireless Network Utility"' ;;
         **) echo "? --> $WNU_POPUP" ;;
       esac
   fi
@@ -26,9 +28,9 @@ while [ true ]; do
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "DISABLE Wi-FI") `osascript -e 'quit app "Wireless Network Utility"' && echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && pkill -f ~/.io.wnuup` ;;
-        "DISABLE") `osascript -e 'quit app "Wireless Network Utility"' && echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && osascript -e 'open app "Wireless Network Utility"'` ;;
-        "ENABLE") `osascript -e 'quit app "Wireless Network Utility"' && echo "1" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && echo "0" > /Applications/Wireless\ Network\ Utility.app/542aa239636drfoff.rtl && osascript -e 'open app "Wireless Network Utility"'` ;;
+        "DISABLE Wi-FI") osascript -e 'quit app "Wireless Network Utility"' && echo "1" > "$DEVICE" && pkill -f ~/.io.wnuup ;;
+        "DISABLE") osascript -e 'quit app "Wireless Network Utility"' && echo "1" > "$DEVICE" && osascript -e 'open app "Wireless Network Utility"' ;;
+        "ENABLE") osascript -e 'quit app "Wireless Network Utility"' && echo "1" > "$DEVICE" && echo "0" > "$DEVICE" && osascript -e 'open app "Wireless Network Utility"' ;;
         **) echo "? --> $WNU_POPUP" ;;
       esac
   fi
