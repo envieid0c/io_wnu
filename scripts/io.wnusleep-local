@@ -1,11 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
-ACTIVATED=`grep -rl "0" /Applications/Wireless\ Network\ Utility.app/*rfoff.rtl > /Applications/Wireless\ Network\ Utility.app/DEVICE`
-DEVICE=`cat /Applications/Wireless\ Network\ Utility.app/DEVICE`
+APP=`osascript -e 'tell application to POSIX path of (path to app "WNU" as alias)' | sed -e 's/ /\\ /g'`
 
+grep -rl "0" "$APP"*rfoff.rtl > "$APP"MAC && sed -e 's/ /\\ /g' "$APP"MAC > "$APP"DEVICE && rm "$APP"MAC
 
-osascript -e 'quit app "Wireless Network Utility"'
-echo "1" > "$DEVICE"
-open -a "Wireless Network Utility"
+exec 6<&0 
+exec < "$APP"DEVICE
+read a1
+echo "1" > "$a1"
+
+osascript -e 'quit app "WNU"'
+osascript -e 'open app "WNU"'
 pkill -f ~/.io.wnuup
+
+exit 0
