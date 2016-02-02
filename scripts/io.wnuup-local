@@ -18,7 +18,7 @@ while [ true ]; do
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
         "DISABLE Wi-FI") osascript -e 'quit app "WNU"' && echo "1" > $a1 && pkill -f ~/.io.wnuup && exit 0 ;;
         "DISABLE") osascript -e 'quit app "WNU"' && echo "1" > $a1 && osascript -e 'open app "WNU"' && exit 0 ;;
-        "ENABLE") osascript -e 'quit app "WNU"' && echo "1" > $a1 && echo "0" > $a1 && sleep 2 && osascript -e 'open app "WNU"' && exit 0 ;;
+        "ENABLE") osascript -e 'quit app "WNU"' && echo "1" > $a1 && echo "0" > $a1 && osascript -e 'open app "WNU"' && exit 0 ;;
         **) echo "? --> $WNU_POPUP" ;;
       esac
   fi
@@ -32,7 +32,7 @@ while [ true ]; do
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
         "DISABLE Wi-FI") osascript -e 'quit app "WNU"' && echo "1" > $a1 && pkill -f ~/.io.wnuup && exit 0 ;;
         "DISABLE") osascript -e 'quit app "WNU"' && echo "1" > $a1 && osascript -e 'open app "WNU"' && exit 0 ;;
-        "ENABLE") osascript -e 'quit app "WNU"' && echo "1" > $a1 && echo "0" > $a1 && sleep 2 && osascript -e 'open app "WNU"' && exit 0 ;;
+        "ENABLE") osascript -e 'quit app "WNU"' && echo "1" > $a1 && echo "0" > $a1 && osascript -e 'open app "WNU"' && exit 0 ;;
         **) echo "? --> $WNU_POPUP" ;;
       esac
   fi

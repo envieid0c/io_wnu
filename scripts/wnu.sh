@@ -28,6 +28,7 @@ sudo mkdir -p /usr/local/sbin
 
 function copy_new_settions_and_clean_tmp_files {
 sudo cp wnu wnu_popup /usr/local/sbin
+sudo chmod +x /usr/local/sbin/wnu*
 sudo cp io.wnu.plist io.wnu_popup.plist /Library/LaunchDaemons/
 sudo cp io.wnu-localuser.plist ~/Library/LaunchAgents/io.wnu.plist
 
