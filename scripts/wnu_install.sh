@@ -40,8 +40,13 @@ function io_kext_load {
 function io_new_app {
 	osascript -e 'quit app "StatusBarApp"'
 	rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
-	unzip ../bin/StatusBarApp_mod_AirPort.zip -d /Library/Application\ Support/WLAN/
+	unzip ../bin/wnu_popup.zip  -d ~/Library/Services/
 	osascript -e 'open app "StatusBarApp"'
+}
+
+function io_workflow {
+	unzip ../bin/wnu_settings.zip -d ../bin/
+	rm -rf ~/Library/Services/__MACOSX/
 }
 
 function io_copy_new_settions_and_clean_tmp_files {
@@ -65,4 +70,5 @@ io_delete_old_settings
 io_drivers
 io_kext_load
 io_new_app
+io_workflow
 io_copy_new_settions_and_clean_tmp_files
