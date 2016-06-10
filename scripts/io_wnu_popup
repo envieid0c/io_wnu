@@ -1,12 +1,13 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
+INTERFACE=`networksetup -listallnetworkservices | grep USB`
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Service","Disable Service","Enable Utility","Disable Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Service","Disable Service","Enable TOR","Disable TOR","Enable Utility","Disable Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io.wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -17,6 +18,8 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
         "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
+        "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & ;;
+        "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ;;
         "Enable Service") bash ~/.io.wnuup & ;;
         "Disable Service") pkill -f ~/.io.wnuup ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;

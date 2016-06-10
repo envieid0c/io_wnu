@@ -43,6 +43,10 @@ function io_new_app {
 	unzip ../bin/StatusBarApp_mod_AirPort.zip  -d /Library/Application\ Support/WLAN/
 	osascript -e 'open app "StatusBarApp"'
 }
+function io_tor {
+	cp ../bin/tor /usr/local/sbin
+	chmod +x /usr/local/sbin/tor
+}
 
 function io_workflow {
 	rm -rf ~/Library/Services/WNU\ Switch.workflow/
@@ -71,5 +75,6 @@ io_delete_old_settings
 io_drivers
 io_kext_load
 io_new_app
+io_tor
 io_workflow
 io_copy_new_settions_and_clean_tmp_files
