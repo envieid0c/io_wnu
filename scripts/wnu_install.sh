@@ -32,7 +32,7 @@ sudo chmod +x /usr/local/sbin/wnu*
 sudo cp io.wnu.plist io.wnu_popup.plist /Library/LaunchDaemons/
 sudo cp io.wnu-localuser.plist ~/Library/LaunchAgents/io.wnu.plist
 
-#cp io.wnusleep-local ~/.io.wnusleep
+cp io.wnusleep-local ~/.io.wnusleep
 cp io.wnuup-local ~/.io.wnuup
 sudo chmod +x ~/.io.wnu*
 

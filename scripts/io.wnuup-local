@@ -1,8 +1,6 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
-#APP=`osascript -e 'tell application to POSIX path of (path to app "StatusBarApp" as alias)' | sed -e 's/ /\\ /g'`
-
 result=connected
 while [ true ]; do
   errorscount="$(ping -c 3 google.com 2<&1| grep -icE 'unknown|expired|unreachable|time out')"
@@ -11,31 +9,31 @@ while [ true ]; do
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Disabled' -message 'Actions?' -actions 'ENABLE',"DISABLE","DISABLE Wi-FI" -timeout 30)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Disabled' -message 'Actions?' -actions 'Enable',"Disable","Disable Utility" -timeout 30)"
   #-sound default)
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io.wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "DISABLE Wi-FI") osascript -e 'quit app "StatusBarApp"' && echo "1" > $a1 && pkill -f ~/.io.wnuup && exit 0 ;;
-        "DISABLE") osascript -e 'quit app "StatusBarApp"' && echo "1" > $a1 && osascript -e 'open app "StatusBarApp"' && exit 0 ;;
-        "ENABLE") osascript -e 'quit app "StatusBarApp"' && echo "1" > $a1 && echo "0" > $a1 && osascript -e 'open app "StatusBarApp"' && exit 0 ;;
+        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; pkill -f ~/.io.wnuup ; exit 0 ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
+        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
   fi
   if [ "$result" = disconnected -a "$errorscount" = 0 ]; then
   result=connected
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi ENABLED' -message 'All is well?' -actions "DISABLE","DISABLE Wi-FI" -timeout 15)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Disable","Disable Utility" -timeout 15)"
   #-sound default)
       case $StatusBarApp_POPUP in
         "@TIMEOUT") echo "OK" ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "DISABLE Wi-FI") osascript -e 'quit app "StatusBarApp"' && echo "1" > $a1 && pkill -f ~/.io.wnuup && exit 0 ;;
-        "DISABLE") osascript -e 'quit app "StatusBarApp"' && echo "1" > $a1 && osascript -e 'open app "StatusBarApp"' && exit 0 ;;
-        "ENABLE") osascript -e 'quit app "StatusBarApp"' && echo "1" > $a1 && echo "0" > $a1 && osascript -e 'open app "StatusBarApp"' && exit 0 ;;
+        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; pkill -f ~/.io.wnuup ; exit 0 ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
+        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; echo "0" > $a1 ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
   fi
