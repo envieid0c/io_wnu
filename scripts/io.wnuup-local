@@ -1,6 +1,8 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
+CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
+
 result=connected
 while [ true ]; do
   errorscount="$(ping -c 3 google.com 2<&1| grep -icE 'unknown|expired|unreachable|time out')"
@@ -16,24 +18,24 @@ while [ true ]; do
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; pkill -f ~/.io.wnuup ; exit 0 ;;
-        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
-        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
+        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; pkill -f ~/.io.wnuup ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; osascript -e 'open app "StatusBarApp"' ;;
+        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; osascript -e 'open app "StatusBarApp"' ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
   fi
   if [ "$result" = disconnected -a "$errorscount" = 0 ]; then
   result=connected
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Disable","Disable Utility" -timeout 15)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Fix Device","Disable","Disable Utility" -timeout 15)"
   #-sound default)
       case $StatusBarApp_POPUP in
         "@TIMEOUT") echo "OK" ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; pkill -f ~/.io.wnuup ; exit 0 ;;
-        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
-        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; echo "0" > $a1 ; osascript -e 'open app "StatusBarApp"' ; exit 0 ;;
+        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; pkill -f ~/.io.wnuup ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; osascript -e 'open app "StatusBarApp"' ;;
+        "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
   fi
