@@ -32,6 +32,11 @@ function io_drivers {
 	rm -rf ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/
 }
 
+function io_kext_load {
+	sudo kextload /System/Library/Extensions/RtWlanU.kext
+	sudo kextload /System/Library/Extensions/RtWlanU1827.kext/
+}
+
 function io_new_app {
 	osascript -e 'quit app "StatusBarApp"'
 	rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
@@ -58,5 +63,6 @@ function io_copy_new_settions_and_clean_tmp_files {
 io_startup
 io_delete_old_settings
 io_drivers
+io_kext_load
 io_new_app
 io_copy_new_settions_and_clean_tmp_files
