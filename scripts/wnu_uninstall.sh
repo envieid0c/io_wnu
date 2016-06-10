@@ -15,6 +15,7 @@ sudo rm -rf /usr/local/sbin/wnu
 sudo rm -rf /usr/local/sbin/wnu_popup
 sudo rm -rf ~/.io.wnusleep
 sudo rm -rf ~/.io.wnuup
+sudo installpkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Uninstall.pkg
 }
 
 delete_old_settings

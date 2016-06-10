@@ -4,14 +4,14 @@
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 cd $ROOT_PATH;
 
-function startup {
+function io_startup {
 # acquire sudo at the beginning
 sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.osx` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
-function delete_old_settings {
+function io_delete_old_settings {
 	sudo launchctl unload /Library/LaunchDaemons/io.wnu.plist 2>/dev/null
 	sudo launchctl unload ~/Library/LaunchAgents/io.wnu.plist 2>/dev/null
 	sudo launchctl unload /Library/LaunchDaemons/io.wnu_popup.plist 2>/dev/null
@@ -24,14 +24,20 @@ function delete_old_settings {
 	sudo rm -rf ~/.io.wnuup
 	sudo mkdir -p /usr/local/sbin
 }
-function new_app {
+
+function io_drivers {
+	unzip ../bin/BearExtender-Turbo-b8.zip  -d ../bin/
+	sudo installpkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Installer.pkg
+}
+
+function io_new_app {
 	osascript -e 'quit app "StatusBarApp"'
 	rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
 	unzip ../bin/StatusBarApp_mod_AirPort.zip -d /Library/Application\ Support/WLAN/
 	osascript -e 'open app "StatusBarApp"'
 }
 
-function copy_new_settions_and_clean_tmp_files {
+function io_copy_new_settions_and_clean_tmp_files {
 	sudo cp wnu wnu_popup /usr/local/sbin
 	sudo chmod +x /usr/local/sbin/wnu*
 	sudo cp io.wnu.plist io.wnu_popup.plist /Library/LaunchDaemons/
@@ -47,7 +53,8 @@ function copy_new_settions_and_clean_tmp_files {
 	sudo chown root /etc/io.wnusleep /etc/io.wnuup
 }
 
-startup
-delete_old_settings
-new_app
-copy_new_settions_and_clean_tmp_files
+io_startup
+io_delete_old_settings
+io_drivers
+io_new_app
+io_copy_new_settions_and_clean_tmp_files
