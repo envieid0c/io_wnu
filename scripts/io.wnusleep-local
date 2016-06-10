@@ -14,7 +14,7 @@ read a1
 echo "1" > "$a1"
 
 osascript -e 'quit app "StatusBarApp"'
-osascript -e 'open app "StatusBarApp"'
+open -a /Library/Application\ Support/WLAN/StatusBarApp.app
 pkill -f ~/.io.wnuup
 
 exit 0

@@ -19,8 +19,8 @@ while [ true ]; do
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
         "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; pkill -f ~/.io.wnuup ;;
-        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; osascript -e 'open app "StatusBarApp"' ;;
-        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; osascript -e 'open app "StatusBarApp"' ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
   fi
@@ -34,7 +34,7 @@ while [ true ]; do
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
         "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; pkill -f ~/.io.wnuup ;;
-        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; osascript -e 'open app "StatusBarApp"' ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
