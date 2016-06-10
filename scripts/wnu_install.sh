@@ -23,11 +23,13 @@ function io_delete_old_settings {
 	sudo rm -rf ~/.io.wnusleep
 	sudo rm -rf ~/.io.wnuup
 	sudo mkdir -p /usr/local/sbin
+	osascript -e 'quit app "StatusBarApp"'
 }
 
 function io_drivers {
 	unzip ../bin/BearExtender-Turbo-b8.zip  -d ../bin/
-	sudo installpkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Installer.pkg
+	sudo ./installpkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Installer.pkg
+	rm -rf ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/
 }
 
 function io_new_app {
