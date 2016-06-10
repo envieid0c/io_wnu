@@ -12,38 +12,42 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
 function delete_old_settings {
-sudo launchctl unload /Library/LaunchDaemons/io.wnu.plist 2>/dev/null
-sudo launchctl unload ~/Library/LaunchAgents/io.wnu.plist 2>/dev/null
-sudo launchctl unload /Library/LaunchDaemons/io.wnu_popup.plist 2>/dev/null
-sudo rm -rf /Library/LaunchDaemons/io.wnu.plist
-sudo rm -rf ~/Library/LaunchAgents/io.wnu.plist
-sudo rm -rf /Library/LaunchDaemons/io.wnu_popup.plist
-sudo rm -rf /usr/local/sbin/wnu
-sudo rm -rf /usr/local/sbin/wnu_popup
-sudo rm -rf ~/.io.wnusleep
-sudo rm -rf ~/.io.wnuup
-
-sudo mkdir -p /usr/local/sbin
+	sudo launchctl unload /Library/LaunchDaemons/io.wnu.plist 2>/dev/null
+	sudo launchctl unload ~/Library/LaunchAgents/io.wnu.plist 2>/dev/null
+	sudo launchctl unload /Library/LaunchDaemons/io.wnu_popup.plist 2>/dev/null
+	sudo rm -rf /Library/LaunchDaemons/io.wnu.plist
+	sudo rm -rf ~/Library/LaunchAgents/io.wnu.plist
+	sudo rm -rf /Library/LaunchDaemons/io.wnu_popup.plist
+	sudo rm -rf /usr/local/sbin/wnu
+	sudo rm -rf /usr/local/sbin/wnu_popup
+	sudo rm -rf ~/.io.wnusleep
+	sudo rm -rf ~/.io.wnuup
+	sudo mkdir -p /usr/local/sbin
+}
+function new_app {
+	osascript -e 'quit app "StatusBarApp"'
+	rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
+	unzip ../bin/StatusBarApp_mod_AirPort.zip -d /Library/Application\ Support/WLAN/
+	osascript -e 'open app "StatusBarApp"'
 }
 
 function copy_new_settions_and_clean_tmp_files {
-sudo cp wnu wnu_popup /usr/local/sbin
-sudo chmod +x /usr/local/sbin/wnu*
-sudo cp io.wnu.plist io.wnu_popup.plist /Library/LaunchDaemons/
-sudo cp io.wnu-localuser.plist ~/Library/LaunchAgents/io.wnu.plist
-
-cp io.wnusleep-local ~/.io.wnusleep
-cp io.wnuup-local ~/.io.wnuup
-sudo chmod +x ~/.io.wnu*
-
+	sudo cp wnu wnu_popup /usr/local/sbin
+	sudo chmod +x /usr/local/sbin/wnu*
+	sudo cp io.wnu.plist io.wnu_popup.plist /Library/LaunchDaemons/
+	sudo cp io.wnu-localuser.plist ~/Library/LaunchAgents/io.wnu.plist
+	cp io.wnusleep-local ~/.io.wnusleep
+	cp io.wnuup-local ~/.io.wnuup
+	sudo chmod +x ~/.io.wnu*
 # load launch agent
-sudo launchctl load -w -F /Library/LaunchDaemons/io.wnu.plist
-sudo launchctl load -w -F /Library/LaunchDaemons/io.wnu_popup.plist
-sudo cp io.wnuup io.wnusleep /etc/
-sudo chmod +x /etc/io.wnusleep /etc/io.wnuup
-sudo chown root /etc/io.wnusleep /etc/io.wnuup
+	sudo launchctl load -w -F /Library/LaunchDaemons/io.wnu.plist
+	sudo launchctl load -w -F /Library/LaunchDaemons/io.wnu_popup.plist
+	sudo cp io.wnuup io.wnusleep /etc/
+	sudo chmod +x /etc/io.wnusleep /etc/io.wnuup
+	sudo chown root /etc/io.wnusleep /etc/io.wnuup
 }
 
 startup
 delete_old_settings
+new_app
 copy_new_settions_and_clean_tmp_files
