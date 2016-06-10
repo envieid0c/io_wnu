@@ -6,16 +6,18 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Utility","Disable Utility" -timeout 30 -sound default )"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Service","Disable Service","Enable Utility","Disable Utility" -timeout 30 -sound default )"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io.wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
         "Enable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
-        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
         "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
+        "Enable Service") bash ~/.io.wnuup & ;;
+        "Disable Service") pkill -f ~/.io.wnuup ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
