@@ -3,17 +3,13 @@
 
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 
-function io_sleep{
-	grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC
-	cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
-	cat "$CONF"MAC  
-	exec 6<&0 
-	exec < "$CONF"MAC
-	read a1
-	echo "1" > "$a1"
-	osascript -e 'quit app "StatusBarApp"'
-	pkill -f ~/.io.wnuup
-	exit 0
-}
-
-io_sleep
+grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC
+cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
+cat "$CONF"MAC  
+exec 6<&0 
+exec < "$CONF"MAC
+read a1
+echo "1" > "$a1"
+osascript -e 'quit app "StatusBarApp"'
+pkill -f ~/.io.wnuup
+exit 0
