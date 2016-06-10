@@ -40,12 +40,13 @@ function io_kext_load {
 function io_new_app {
 	osascript -e 'quit app "StatusBarApp"'
 	rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
-	unzip ../bin/wnu_popup.zip  -d ~/Library/Services/
+	unzip ../bin/StatusBarApp_mod_AirPort.zip  -d /Library/Application\ Support/WLAN/
 	osascript -e 'open app "StatusBarApp"'
 }
 
 function io_workflow {
-	unzip ../bin/wnu_settings.zip -d ../bin/
+	rm -rf ~/Library/Services/WNU\ Switch.workflow/
+	unzip ../bin/WNU_Switch.zip -d ~/Library/Services/
 	rm -rf ~/Library/Services/__MACOSX/
 }
 
