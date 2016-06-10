@@ -1,17 +1,19 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
-APP=`osascript -e 'tell application to POSIX path of (path to app "WNU" as alias)' | sed -e 's/ /\\ /g'`
+cd /Library/Application\ Support/WLAN/com.realtek.utility.wifi/
+grep -rl "0" *rfoff.rtl > MAC
 
-grep -rl "0" "$APP"*rfoff.rtl > "$APP"MAC && sed -e 's/ /\\ /g' "$APP"MAC > "$APP"DEVICE && rm "$APP"MAC
+cat MAC | cut -c 1-12 > DEVICE
 
+cat MAC  
 exec 6<&0 
-exec < "$APP"DEVICE
+exec < MAC
 read a1
 echo "1" > "$a1"
 
-osascript -e 'quit app "WNU"'
-osascript -e 'open app "WNU"'
-pkill -f ~/.io.wnuup
+osascript -e 'quit app "StatusBarApp"'
+osascript -e 'open app "StatusBarApp"'
+#pkill -f ~/.io.wnuup
 
 exit 0
