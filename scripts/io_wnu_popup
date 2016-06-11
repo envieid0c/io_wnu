@@ -7,7 +7,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Service","Disable Service","Enable TOR","Disable TOR","Enable Utility","Disable Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Service","Disable Service","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable Utility","Disable Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io.wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -18,8 +18,10 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
         "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
-        "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org;;
+        "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ;;
         "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ;;
+        "Enable DNSCrypt") sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ;;
+        "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty ;;
         "Enable Service") bash ~/.io.wnuup & ;;
         "Disable Service") pkill -f ~/.io.wnuup ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
