@@ -11,7 +11,7 @@ while [ true ]; do
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Disabled' -message 'Actions?' -actions 'Enable Wi-Fi',"Show Utility","Hide Utility" -timeout 30 -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Disabled' -message 'Actions?' -actions 'Enable Wi-Fi',"Show Utility","Hide Utility" -timeout 30 -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
   #-sound default)
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
@@ -26,7 +26,7 @@ while [ true ]; do
   fi
   if [ "$result" = disconnected -a "$errorscount" = 0 ]; then
   result=connected
-  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Fix Device","Disable Wi-Fi","Show Utility","Hide Utility" -timeout 15 -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Fix Device","Disable Wi-Fi","Show Utility","Hide Utility" -timeout 15 -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
   #-sound default)
       case $StatusBarApp_POPUP in
         "@TIMEOUT") echo "OK" ;;

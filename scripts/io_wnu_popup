@@ -7,7 +7,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions 'Enable Wi-Fi',"Disable Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable Service","Disable Service","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'I/O Wireless Network Utility' -message 'Actions?' -actions 'Enable Wi-Fi',"Disable Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable Service","Disable Service","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
