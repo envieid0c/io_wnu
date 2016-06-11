@@ -53,6 +53,7 @@ $ ./scripts/wnu_uninstall.sh
 This project is based on a fork of:
 - https://github.com/vjeantet/alerter/releases
 - http://www.bernhard-baehr.de
+- https://dnscrypt.org (config - https://dns.d0wn.biz "Russia")
 
 ## License
 
