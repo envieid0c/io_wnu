@@ -57,6 +57,15 @@ function io_dnscrypt {
 	chmod +x /usr/local/sbin/dnscrypt-proxy
 }
 
+function io_openvpn {
+	rm -rf /usr/lib//liblzo2*
+	rm -rf /usr/local/sbin/openvpn
+	cp ../bin/openvpn /usr/local/sbin
+	chmod +x /usr/local/sbin/openvpn
+	cp ../lib/liblzo2* /usr/lib
+	cp ../config.ovpn ~/
+}
+
 function io_workflow {
 	rm -rf ~/Library/Services/WNU\ Switch.workflow/
 	unzip ../bin/WNU_Switch.zip -d ~/Library/Services/
@@ -86,5 +95,6 @@ io_kext_load
 io_new_app
 io_tor
 io_dnscrypt
+io_openvpn
 io_workflow
 io_copy_new_settions_and_clean_tmp_files

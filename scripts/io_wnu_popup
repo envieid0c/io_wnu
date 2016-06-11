@@ -7,7 +7,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'I/O Wireless Network Utility' -message 'Actions?' -actions 'Enable Wi-Fi',"Disable Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable Service","Disable Service","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'I/O Wireless Network Utility' -message 'Actions?' -actions 'Enable Wi-Fi',"Disable Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Enable Service","Disable Service","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -22,6 +22,8 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
         "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty ;;
         "Enable Service") bash ~/.io_wnuup & ;;
         "Disable Service") pkill -f ~/.io_wnuup ;;
+        "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn & ;;
+        "Disable OpenVPN") sudo killall -9 openvpn ;;
         "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;

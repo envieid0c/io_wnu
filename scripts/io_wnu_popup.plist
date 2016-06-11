@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>KeepAlive</key>
+	<true/>
 	<key>Label</key>
 	<string>io_wnu_popup</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com).</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>/usr/local/sbin/io_wnu_popup</string>
@@ -11,9 +15,5 @@
 	</array>
 	<key>RunAtLoad</key>
 	<false/>
-	<key>KeepAlive</key>
-	<true/>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com).</string>
 </dict>
 </plist>
