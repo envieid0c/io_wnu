@@ -22,7 +22,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
         "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty ;;
         "Enable Service") bash ~/.io.wnuup & ;;
         "Disable Service") pkill -f ~/.io.wnuup ;;
-		    "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac
