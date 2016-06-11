@@ -7,16 +7,14 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
   exec 6<&0
   exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
   read a1
-  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions "Fix Device",'Enable',"Disable","Enable Service","Disable Service","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable Utility","Disable Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/wnu_popup -title 'Wi-Fi Settings' -message 'Actions?' -actions 'Enable Wi-Fi',"Disable Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable Service","Disable Service","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/BarSignal_5.icns)"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io.wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "Enable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
-        "Disable Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
-        "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
-        "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Enable Wi-Fi") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Disable Wi-Fi") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
         "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ;;
         "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ;;
@@ -24,5 +22,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
         "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty ;;
         "Enable Service") bash ~/.io.wnuup & ;;
         "Disable Service") pkill -f ~/.io.wnuup ;;
+		    "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
+        "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
       esac

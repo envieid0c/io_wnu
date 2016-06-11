@@ -15,6 +15,7 @@ Wireless Network Utility
 * Enable/Disable Service (check internet "8.8.8.8") - Default does not start
 * Enable/Disable TOR (SOCK proxy)
 * Enable/Disable DNSCrypt
+* Show/Hide Utility
 
 ## Download
 
