@@ -29,6 +29,18 @@ $ cd ~/wnu/ ; git stash ; git pull ; scripts/wnu_install.sh
 With the service now saved we can navigate to the Keyboards Shortcuts tab within the System Preferences panel and locate the Service under ‘General’. All that is required now is for you to active the service using the checkbox and define a unique shortcut which will be used to call it. Similar to the Automator example following these instructions should result in a similar output to the screenshot below.
 ![Alt text](/img/img5.png?raw=true "")
 
+## Bypass Tor using Network Proxies Preferences
+
+If you know you never want to use Tor for specific domains or websites, you can enter them in a comma-separated list back where you set up the SOCKS proxy. For instance, if you never want to use Tor to get to Wikipedia, enter , *.wikipedia.org into the “Bypass proxy settings for these Hosts & Domains:” text box, as shown below:
+![Alt text](/img/img6.png?raw=true "")
+
+You can also use this method to bypass Tor for multi-media sites like YouTube or Pandora Internet Radio, which are often frustratingly slow when proxied. Just be aware that any time you bypass Tor, the server you’re connecting to gets additional information about you from your IP address, and so on, so use this sparingly.
+
+Anyway, this configuration will always bypass Tor for accessing any Wikipedia.org domain name regardless of what application initiated the connection. For instance, I monitor my Wikipedia watchlist using RSS feeds in Mail.app, but I read and edit Wikipedia in my Web browser
+
+Since there’s no issue reading Wikipedia over Tor, only editing, using this configuration isn’t as private as it could be. I’m leaking information to Wikipedia about my whereabouts even when I’m just reading their articles. That’s why I don’t use this configuration, opting instead for a Web browser proxy manager that lets me bypass Tor only when I’m making an edit.
+
+
 ## Screenshots
 
 ![Alt text](/img/img1.png?raw=true "") ![Alt text](/img/img2.png?raw=true "")
@@ -59,7 +71,7 @@ This project is based on a fork of:
 
 All the works are available under the MIT license.
 
-Copyright (c) 2016 envieidoc
+Copyright (C) 2016 Fedor Mankov(envieid0c) <envieidoc@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
