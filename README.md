@@ -7,6 +7,15 @@ Wireless Network Utility
 * Added StatusBarApp_mod_AirPort (interface AirPort)
 * Added Create Network for Utils
 
+##Functions
+
+* Shortcuts for Settings Menu
+* Sleepwatcher
+* Fix Device (displays the MAC address for the correct stop/start utility)
+* Enable/Disable Service (check internet "8.8.8.8") - Default does not start
+* Enable/Disable TOR (SOCK proxy)
+* Enable/Disable DNSCrypt
+
 ## Download
 
 Prebuilt binaries are available from the
@@ -46,15 +55,6 @@ Since there’s no issue reading Wikipedia over Tor, only editing, using this co
 ![Alt text](/img/img1.png?raw=true "") ![Alt text](/img/img2.png?raw=true "")
 
 ![Alt text](/img/img3.png?raw=true "") ![Alt text](/img/img4.png?raw=true "")
-
-##Functions
-
-- Shortcuts for Settings Menu
-- Sleepwatcher
-- Enable/Disable Service (check internet "8.8.8.8") - Default does not start
-- Fix Device (displays the MAC address for the correct stop/start utility)
-- Enable/Disable TOR (SOCK proxy) for interface
-- Enable/Disable DNSProxy
 
 ##  Uninstall
 ```
