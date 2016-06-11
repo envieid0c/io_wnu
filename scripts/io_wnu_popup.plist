@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>io.wnu_popup</string>
+	<string>io_wnu_popup</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/local/sbin/wnu_popup</string>
+		<string>/usr/local/sbin/io_wnu_popup</string>
 		<string>-V</string>
 	</array>
 	<key>RunAtLoad</key>

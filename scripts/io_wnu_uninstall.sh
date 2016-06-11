@@ -5,16 +5,16 @@ ROOT_PATH=$(cd $(dirname $0) && pwd);
 cd $ROOT_PATH;
 
 function delete_old_settings {
-sudo launchctl unload /Library/LaunchDaemons/io.wnu.plist 2>/dev/null
-sudo launchctl unload ~/Library/LaunchAgents/io.wnu.plist 2>/dev/null
-sudo launchctl unload /Library/LaunchDaemons/io.wnu_popup.plist 2>/dev/null
-sudo rm -rf /Library/LaunchDaemons/io.wnu.plist
-sudo rm -rf ~/Library/LaunchAgents/io.wnu.plist
-sudo rm -rf /Library/LaunchDaemons/io.wnu_popup.plist
+sudo launchctl unload /Library/LaunchDaemons/io_wnu.plist 2>/dev/null
+sudo launchctl unload ~/Library/LaunchAgents/io_wnu.plist 2>/dev/null
+sudo launchctl unload /Library/LaunchDaemons/io_wnu_popup.plist 2>/dev/null
+sudo rm -rf /Library/LaunchDaemons/io_wnu.plist
+sudo rm -rf ~/Library/LaunchAgents/io_wnu.plist
+sudo rm -rf /Library/LaunchDaemons/io_wnu_popup.plist
 sudo rm -rf /usr/local/sbin/wnu
 sudo rm -rf /usr/local/sbin/wnu_popup
-sudo rm -rf ~/.io.wnusleep
-sudo rm -rf ~/.io.wnuup
+sudo rm -rf ~/.io_wnusleep
+sudo rm -rf ~/.io_wnuup
 sudo rm -rf /usr/local/sbin/tor
 sudo rm -rf /usr/local/sbin/dnscrypt-proxy
 sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/ 

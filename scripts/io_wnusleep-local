@@ -11,5 +11,5 @@ exec < "$CONF"MAC
 read a1
 echo "1" > "$a1"
 osascript -e 'quit app "StatusBarApp"'
-pkill -f ~/.io.wnuup
+pkill -f ~/.io_wnuup
 exit 0
