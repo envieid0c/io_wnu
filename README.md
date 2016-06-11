@@ -54,6 +54,7 @@ Since there’s no issue reading Wikipedia over Tor, only editing, using this co
 - Enable/Disable Service (check internet "8.8.8.8") - Default does not start
 - Fix Device (displays the MAC address for the correct stop/start utility)
 - Enable/Disable TOR (SOCK proxy) for interface
+- Enable/Disable DNSProxy
 
 ##  Uninstall
 ```
