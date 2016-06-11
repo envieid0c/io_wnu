@@ -16,6 +16,14 @@ Prebuilt binaries are available from the
 ```
 $ ./scripts/wnu_install.sh
 ```
+## Alternative 
+```
+$ cd ~ git clone https://github.com/envieid0c/wnu.git ; bash wnu/scripts/wnu_install.sh
+```
+## Update
+```
+$ cd ~/wnu/ ; git stash ; git pull ; scripts/wnu_install.sh
+```
 ## Binding to a Keyboard Shortcut
 
 With the service now saved we can navigate to the Keyboards Shortcuts tab within the System Preferences panel and locate the Service under ‘General’. All that is required now is for you to active the service using the checkbox and define a unique shortcut which will be used to call it. Similar to the Automator example following these instructions should result in a similar output to the screenshot below.
