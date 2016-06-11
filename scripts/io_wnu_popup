@@ -18,7 +18,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
         "Enable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Disable") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
-        "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & ;;
+        "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org;;
         "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ;;
         "Enable Service") bash ~/.io.wnuup & ;;
         "Disable Service") pkill -f ~/.io.wnuup ;;
