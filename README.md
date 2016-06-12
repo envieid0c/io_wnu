@@ -58,10 +58,7 @@ Since there’s no issue reading Wikipedia over Tor, only editing, using this co
 
 
 ## Screenshots
-
-![Alt text](/img/img1.png?raw=true "") ![Alt text](/img/img2.png?raw=true "")
-
-![Alt text](/img/img3.png?raw=true "") ![Alt text](/img/img4.png?raw=true "")
+![Alt text](/img/info.png?raw=true "")
 
 ##  Uninstall
 ```
