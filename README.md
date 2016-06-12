@@ -21,19 +21,19 @@ Input/Output Wireless Network Utility
 ## Download
 
 Prebuilt binaries are available from the
-[releases section](https://github.com/envieid0c/wnu/releases).
+[releases section](https://github.com/envieid0c/io_wnu/releases).
 
 ##  Install
 ```
-$ ./scripts/wnu_install.sh
+$ ./scripts/io_wnu_install.sh
 ```
 ## Alternative 
 ```
-$ cd ~ git clone https://github.com/envieid0c/wnu.git ; bash wnu/scripts/wnu_install.sh
+$ cd ~ git clone https://github.com/envieid0c/io_wnu.git ; bash io_wnu/scripts/io_wnu_install.sh
 ```
 ## Update
 ```
-$ cd ~/wnu/ ; git stash ; git pull ; scripts/wnu_install.sh
+$ cd ~/io_wnu/ ; git stash ; git pull ; scripts/io_wnu_install.sh
 ```
 ## Openvpn config
 - download config http://vpngate.net
@@ -65,7 +65,7 @@ Since there’s no issue reading Wikipedia over Tor, only editing, using this co
 
 ##  Uninstall
 ```
-$ ./scripts/wnu_uninstall.sh
+$ ./scripts/io_wnu_uninstall.sh
 ```
 
 ##Source code
