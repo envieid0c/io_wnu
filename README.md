@@ -16,6 +16,7 @@ Input/Output Wireless Network Utility
 * Enable/Disable TOR (SOCK proxy)
 * Enable/Disable DNSCrypt
 * Enable/Disable OpenVPN
+* Switch Dark/Light mode for macOS
 * Show/Hide Utility
 
 ## Download
