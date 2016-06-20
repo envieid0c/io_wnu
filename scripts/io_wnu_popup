@@ -1,32 +1,30 @@
-#!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 INTERFACE=`networksetup -listallnetworkservices | grep USB`
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
-SET_MODE="$APP"/Contents/
-CHECK=`ls -al | sed -n '9p' | awk '{print $11}'`
-POPUP=/usr/local/sbin/io_wnu_popup
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app
+SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
+POPUP=/usr/local/sbin/io_wnu_popup
 
 function switch_mode {
-  if [ "$CHECK" != "Dark" ]; then
+  CHECK=`ls -al | sed -n '9p' | awk '{print $11}'`
+if [ "$CHECK" != "Dark" ]; then
   rm -rf Resources
   ln -s Dark Resources
   osascript -e 'quit app "StatusBarApp"'
-  open -a ""$APP""
-  "$POPUP" -title 'Dark' -message ''
+  open -a "$APP"
+  "$POPUP" -title 'Dark Mode' -message ''  -timeout 3
 else
   rm -rf Resources
   ln -s Light Resources
   osascript -e 'quit app "StatusBarApp"'
-  open -a ""$APP""
-  "$POPUP" -title 'Light' -message ''
+  open -a "$APP"
+  "$POPUP" -title 'Light Mode' -message '' -timeout 3
 fi
 }
 
 function test_dns {
-  if [ "nslookup -type=txt debug.opendns.com | grep 127.0.0.1 | awk '{print "127.0.0.1"}' | tail -n1" = '127.0.0.1' ]
-then
+  if [ "nslookup -type=txt debug.opendns.com | grep 127.0.0.1 | awk '{print "127.0.0.1"}' | tail -n1" = '127.0.0.1' ]; then
   "$POPUP" -title 'DNSCrypt not enabled' -message '' -timeout 3
 else
   "$POPUP" -title 'DNSCrypt enabled' -message '' -timeout 3
@@ -53,7 +51,7 @@ fi
         "Disable Service") pkill -f ~/.io_wnuup & "$POPUP" -title 'Service disabled' -message '' -timeout 3;;
         "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN ensabled' -message '' -timeout 3;;
         "Disable OpenVPN") sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3;;
-        "Dark/Light mode") switch_mode ;;
+        "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
         "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a "$APP" ;;
         "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
         **) echo "? --> $StatusBarApp_POPUP" ;;
