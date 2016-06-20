@@ -58,11 +58,11 @@ function io_dnscrypt {
 }
 
 function io_openvpn {
-	rm -rf /usr/lib//liblzo2*
+	rm -rf /usr/local/lib/liblzo2*
 	rm -rf /usr/local/sbin/openvpn
 	cp ../bin/openvpn /usr/local/sbin
 	chmod +x /usr/local/sbin/openvpn
-	cp ../lib/liblzo2* /usr/lib
+	cp ../lib/liblzo2* /usr/local/lib
 	cp ../config.ovpn ~/
 }
 
@@ -73,14 +73,13 @@ function io_workflow {
 }
 
 function io_copy_new_settions_and_clean_tmp_files {
-	sudo cp ../bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
-	sudo chmod +x /usr/local/sbin/io_wnu*
+	cp ../bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
+	chmod +x /usr/local/sbin/io_wnu*
 	sudo cp io_wnu.plist io_wnu_popup.plist /Library/LaunchDaemons/
 	sudo cp io_wnu-localuser.plist ~/Library/LaunchAgents/io_wnu.plist
 	cp io_wnusleep-local ~/.io_wnusleep
 	cp io_wnuup-local ~/.io_wnuup
-	sudo chmod +x ~/.io_wnu*
-# load launch agent
+	chmod +x ~/.io_wnu*
 	sudo launchctl load -w -F /Library/LaunchDaemons/io_wnu.plist
 	sudo launchctl load -w -F /Library/LaunchDaemons/io_wnu_popup.plist
 	sudo cp io_wnuup io_wnusleep /etc/
