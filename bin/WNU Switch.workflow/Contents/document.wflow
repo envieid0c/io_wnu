@@ -68,9 +68,9 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 function test_dns {
   if [ "nslookup -type=txt debug.opendns.com | grep 127.0.0.1 | awk '{print "127.0.0.1"}' | tail -n1" = '127.0.0.1' ]
 then
-  /usr/local/sbin/io_wnu_popup -title 'DNSCrypt disabled' -message ''
+  /usr/local/sbin/io_wnu_popup -title 'DNSCrypt not enabled' -message '' -timeout 3
 else
-  /usr/local/sbin/io_wnu_popup -title 'DNSCrypt enabled' -message ''
+  /usr/local/sbin/io_wnu_popup -title 'DNSCrypt enabled' -message '' -timeout 3
 fi
 }
 
@@ -89,16 +89,15 @@ fi
         "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor &amp; sleep 3 ; open https://check.torproject.org ;;
         "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ;;
         "Enable DNSCrypt") sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 &amp; networksetup -setdnsservers "$INTERFACE" 127.0.0.1 &amp;&amp; test_dns;;
-        "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty &amp;&amp; /usr/local/sbin/io_wnu_popup -title 'DNSCrypt disabled' -message '' ;;
-        "Enable Service") bash ~/.io_wnuup &amp; ;;
-        "Disable Service") pkill -f ~/.io_wnuup ;;
-        "Enable OpenVPN") /usr/local/sbin/openvpn --config ~/config.ovpn &amp; ;;
-        "Disable OpenVPN") killall -9 openvpn ;;
+        "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty &amp;&amp; /usr/local/sbin/io_wnu_popup -title 'DNSCrypt disabled' -message '' -timeout 3 ;;
+        "Enable Service") bash ~/.io_wnuup &amp; /usr/local/sbin/io_wnu_popup -title 'Service enabled' -message '' -timeout 3 ;;
+        "Disable Service") pkill -f ~/.io_wnuup &amp; /usr/local/sbin/io_wnu_popup -title 'Service disabled' -message '' -timeout 3;;
+        "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn &amp; /usr/local/sbin/io_wnu_popup -title 'OpenVPN ensabled' -message '' -timeout 3;;
+        "Disable OpenVPN") sudo killall -9 openvpn &amp; /usr/local/sbin/io_wnu_popup -title 'OpenVPN disabled' -message '' -timeout 3;;
         "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" &gt; "$a1" ; echo "0" &gt; "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" &gt; "$a1" ;;
         **) echo "? --&gt; $StatusBarApp_POPUP" ;;
-      esac
-</string>
+      esac</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -211,7 +210,7 @@ fi
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>575.500000:646.000000</string>
+				<string>575.500000:596.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
