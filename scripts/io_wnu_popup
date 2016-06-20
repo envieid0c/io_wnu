@@ -7,7 +7,7 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 function test_dns {
   if [ "nslookup -type=txt debug.opendns.com | grep 127.0.0.1 | awk '{print "127.0.0.1"}' | tail -n1" = '127.0.0.1' ]
 then
-  /usr/local/sbin/io_wnu_popup -title 'DNSCrypt disabled' -message ''
+  /usr/local/sbin/io_wnu_popup -title 'DNSCrypt not enabled' -message ''
 else
   /usr/local/sbin/io_wnu_popup -title 'DNSCrypt enabled' -message ''
 fi
