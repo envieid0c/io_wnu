@@ -17,6 +17,7 @@ sudo rm -rf ~/.io_wnusleep
 sudo rm -rf ~/.io_wnuup
 sudo rm -rf /usr/local/sbin/tor
 sudo rm -rf /usr/local/sbin/dnscrypt-proxy
+rm -rf /usr/local/lib/liblzo2*
 sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/ 
 unzip ../bin/BearExtender-Turbo-b8.zip  -d ../bin/
 sudo ./installpkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Uninstall.pkg

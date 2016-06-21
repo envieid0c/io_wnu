@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+# Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 for user in `echo 'show State:/Users/ConsoleUser' | scutil | awk '/kCGSSessionUserNameKey/ { print $3 }'`; do
 	home=`eval echo ~$user`

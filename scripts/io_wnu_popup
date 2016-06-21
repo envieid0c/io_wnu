@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 INTERFACE=`networksetup -listallnetworkservices | grep USB`

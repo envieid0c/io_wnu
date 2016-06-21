@@ -1,9 +1,10 @@
 /*
- *	sleepwatcher
+ *	io_wnu
  *
  *	Copyright (c) 2002-2011 Bernhard Baehr
+ *	Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
  *
- *	sleepwatcher.c - sleep mode watchdog program
+ *	io_wnu.c - sleep mode watchdog program
  *
  *	This program is free software: you can redistribute it and/or modify
  *	it under the terms of the GNU General Public License as published by
@@ -159,7 +160,7 @@ void writePidFile (char *pidfile)
 
 static void usage (void)
 {
-        printf ("Usage: %s [-n] [-v] [-V] [-d] [-g] [-f configfile] [-p pidfile]\n"
+        printf ("Usage: io_wnu [-n] [-v] [-V] [-d] [-g] [-f configfile] [-p pidfile]\n"
 		"		[-a[allowsleepcommand]] [-c cantsleepcommand]\n"
 		"		[-s sleepcommand] [-w wakeupcommand]\n"
 		"		[-D displaydimcommand] [-E displayundimcommand]\n"
@@ -173,11 +174,11 @@ static void usage (void)
 		"-v or --version\n"
 		"       display version and copyright information and exit\n"
 		"-V or --verbose\n"
-		"       log any action sleepwatcher performs\n"
+		"       log any action io_wnu performs\n"
 		"-d or --daemon\n"
 		"       run as a background daemon (don't use -d in conjunction with launchd)\n"
 		"-g or --getidletime\n"
-		"       print the time of no keyboard or mouse activity (in %g seconds)\n"
+		"       print the time of no keyboard or mouse activity (in %s seconds)\n"
 		"       and exit, ignoring other options\n"
 		"-f or --config\n"
 		"       read additional configuration parameters from configfile\n"
@@ -225,7 +226,8 @@ static void usage (void)
 		"       execute plugcommand when a Mac notebook is connected to power supply\n"
 		"-U or --unplug\n"
 		"       execute unplugcommand when a Mac notebook is disconnected from\n"
-		"       power supply\n",
+		"       power supply\n"
+		"	Copyright (c) 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)\n",
 		args.progname, TIMER_RESOLUTION, TIMER_RESOLUTION, TIMER_RESOLUTION);
 	exit (2);
 }
@@ -233,8 +235,9 @@ static void usage (void)
 
 static void copyright (void)
 {
-	printf ("sleepwatcher 2.2\n"
+	printf ("io_wnu \n"
 		"Copyright (c) 2002-2011 Bernhard Baehr (bernhard.baehr@gmx.de)\n"
+		"Copyright (c) 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)\n"
 		"This is free software that comes with ABSOLUTELY NO WARRANTY.\n"
 		"See the GNU General Public License for details.\n");
 	exit (2);
@@ -431,7 +434,7 @@ static void readConfig (const char *configfile)
 {
 	char		buf[1024], *p, *q;
 	struct option   const *op;
-	int		l;
+	int		l = 0;
 	
 	FILE *fp = fopen(configfile, "r");
 	if (! fp) {
@@ -451,13 +454,13 @@ static void readConfig (const char *configfile)
 			*q++ = *p++;				/* '=' */
 		while (*p && isblank(*p))			/* remove blanks before argument */
 			p++;
-		while (*q++ = *p++)				/* unmodified argument string */
+		while (*q++ == *p++)				/* unmodified argument string */
 			;
 		for (op = longopts; op->name; op++) {
 			l = strlen(op->name);
 			if (! strncmp(op->name, buf, l)) {
-				if (op->has_arg == no_argument && buf[l] ||
-					op->has_arg != no_argument && buf[l] != '=')
+				if (op->has_arg == no_argument || buf[l] ||
+				    op->has_arg != no_argument || buf[l] != '=')
 					message (LOG_ERR, "malformed parameter '%s' in config file %s\n", buf, configfile);
 				setOption (op->val, buf + l + 1);
 				break;

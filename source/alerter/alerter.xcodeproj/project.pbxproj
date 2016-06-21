@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -90,15 +90,17 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0720;
-				ORGANIZATIONNAME = "JEANTET Valere";
+				ORGANIZATIONNAME = envieid0c;
 				TargetAttributes = {
 					FFD0105B1C24B20B00D55A9D = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = VC4E4J7MH6;
+						DevelopmentTeamName = "Федор Маньков (Personal Team)";
 					};
 				};
 			};
 			buildConfigurationList = FFD010571C24B20B00D55A9D /* Build configuration list for PBXProject "alerter" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -163,10 +165,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -194,15 +198,19 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-8";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
@@ -211,15 +219,19 @@
 			buildSettings = {
 				GCC_PREFIX_HEADER = alerter/Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/alerter/Info.plist";
-				OTHER_CODE_SIGN_FLAGS = "-i fr.sodadi.${PRODUCT_NAME:rfc1034identifier}";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				NEW_SETTING = "";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = (
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
 					"${INFOPLIST_FILE}",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.sodadi.alerter;
+				PRODUCT_BUNDLE_IDENTIFIER = envieid0c;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -228,15 +240,19 @@
 			buildSettings = {
 				GCC_PREFIX_HEADER = alerter/Prefix.pch;
 				INFOPLIST_FILE = "$(SRCROOT)/alerter/Info.plist";
-				OTHER_CODE_SIGN_FLAGS = "-i fr.sodadi.${PRODUCT_NAME:rfc1034identifier}";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				NEW_SETTING = "";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = (
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
 					"${INFOPLIST_FILE}",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.sodadi.alerter;
+				PRODUCT_BUNDLE_IDENTIFIER = envieid0c;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
@@ -259,6 +275,7 @@
 				FFD010651C24B20B00D55A9D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

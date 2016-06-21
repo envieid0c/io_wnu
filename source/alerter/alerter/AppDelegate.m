@@ -138,7 +138,7 @@ isMavericks()
            "Note that in some circumstances the first character of a message has to be escaped in order to be recognized.\n" \
            "An example of this is when using an open bracket, which has to be escaped like so: ‘\\[’.\n" \
            "\n" \
-           "For more information see https://github.com/alloy/terminal-notifier.\n",
+           "Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)\n",
            appName, appVersion, appName);
 }
 
