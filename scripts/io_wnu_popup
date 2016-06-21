@@ -6,6 +6,28 @@ CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
+#CHECK=`"$CONF"MAC`
+
+#ACTIVE_DEVICE=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/ACTIVE_DEVICE
+
+# read status device (enable/disable)
+exec 6<&0
+exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
+read a1
+
+function switch_wifi {
+  if [ "$CHECK" != "1" ]; then
+    osascript -e 'quit app "StatusBarApp"'
+    echo "0" > "$CHECK"
+    echo "disadle"
+    open -a "$APP"
+  else
+    osascript -e 'quit app "StatusBarApp"'
+    echo "1" > "$CHECK"
+    echo "enable"
+    open -a "$APP"
+  fi
+}
 
 function switch_mode {
   CHECK=`ls -al | sed -n '9p' | awk '{print $11}'`
@@ -32,18 +54,14 @@ else
 fi
 }
 
-  exec 6<&0
-  exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
-  read a1
-  StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'Actions?' -actions 'Enable Wi-Fi',"Disable Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Enable Service","Disable Service","Dark/Light mode","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'Actions?' -actions "Switch Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Enable Service","Disable Service","Dark/Light mode","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $StatusBarApp_POPUP in
         "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "Enable Wi-Fi") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a "$APP" ; sleep 5 ; "$POPUP" -title ' Wi-Fi enabled' -message '' -timeout 3;;
-        "Disable Wi-Fi") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; open -a "$APP" ; "$POPUP" -title ' Wi-Fi disabled' -message '' -timeout 3;;
-        "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
+        "Switch Wi-Fi") switch_wifi ;;
+        "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-80 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
         "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 ;;
         "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3 ;;
         "Enable DNSCrypt") sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns;;
