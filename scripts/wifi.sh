@@ -1,5 +1,6 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
+
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 POPUP=/usr/local/sbin/io_wnu_popup
