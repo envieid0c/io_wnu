@@ -96,10 +96,11 @@ function switch_service {
   if [ "$a1" != "bash" ]; then
       bash ~/.io_wnuup &amp;
       "$POPUP" -title ' Service enabled' -message '' -timeout 3
-      rm -rf /tmp/io_service
+	  echo "bash" &gt; /tmp/io_service  
   else
       pkill -f ~/.io_wnuup &amp;
       "$POPUP" -title ' Service disabled' -message '' -timeout 3
+	  rm -rf /tmp/io_service
   fi
 }
 
@@ -261,7 +262,7 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'A
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>575.500000:575.000000</string>
+				<string>575.500000:617.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
