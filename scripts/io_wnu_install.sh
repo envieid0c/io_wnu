@@ -76,7 +76,7 @@ function io_copy_new_settions_and_clean_tmp_files {
 	cp ../bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	chmod +x /usr/local/sbin/io_wnu*
 	sudo cp io_wnu.plist io_wnu_popup.plist /Library/LaunchDaemons/
-	sudo cp io_wnu-localuser.plist ~/Library/LaunchAgents/io_wnu.plist
+	sudo cp io_wnu-localuser.plist /Library/LaunchAgents/io_wnu.plist
 	cp io_wnusleep-local ~/.io_wnusleep
 	cp io_wnuup-local ~/.io_wnuup
 	chmod +x ~/.io_wnu*
