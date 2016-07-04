@@ -1,7 +1,0 @@
-#!/bin/bash
-# Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
-
-ROOT_PATH=$(cd $(dirname $0) && pwd);
-cd $ROOT_PATH;
-
-./shc -v -r -T -f "*.sh"
