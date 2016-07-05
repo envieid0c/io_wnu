@@ -36,6 +36,38 @@ function switch_wifi {
   fi
 }
 
+function switch_tor {
+  tor=$(cat /tmp/tor)
+
+  if [ "$tor" != "Enabled" ]; then
+     echo Enabled > /tmp/tor
+     networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3
+  else
+    echo Disabled > /tmp/tor
+    killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3
+  fi
+}
+
+function test_dns {
+  if [ "nslookup -type=txt debug.opendns.com | grep 127.0.0.1 | awk '{print "127.0.0.1"}' | tail -n1" != '127.0.0.1' ]; then
+    "$POPUP" -title 'DNSCrypt enabled' -message '' -timeout 3
+  else
+    "$POPUP" -title 'DNSCrypt not enabled' -message '' -timeout 3
+  fi
+}
+
+function switch_dnscrypt {
+  tor=$(cat /tmp/dnscrypt)
+
+  if [ "$tor" != "Enabled" ]; then
+     echo Enabled > /tmp/dnscrypt
+     sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns
+  else
+    echo Disabled > /tmp/dnscrypt
+    sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty && "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3
+  fi
+}
+
 function switch_service {
   launchctl list | grep wnu | awk '{print $2}' > /tmp/io_service
 
@@ -70,25 +102,15 @@ function switch_mode {
   fi
 }
 
-function test_dns {
-  if [ "nslookup -type=txt debug.opendns.com | grep 127.0.0.1 | awk '{print "127.0.0.1"}' | tail -n1" != '127.0.0.1' ]; then
-    "$POPUP" -title 'DNSCrypt enabled' -message '' -timeout 3
-  else
-    "$POPUP" -title 'DNSCrypt not enabled' -message '' -timeout 3
-  fi
-}
-
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
     "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
     "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
 		"Switch Wi-Fi") switch_wifi ;;
-    "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 ;;
-    "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3 ;;
-    "Enable DNSCrypt") sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns;;
-    "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty && "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 ;;
+    "Switch TOR") switch_tor ;;
+    "Switch DNSCrypt") switch_dnscrypt ;;
     "Switch Service") switch_service ;;
     "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN ensabled' -message '' -timeout 3;;
     "Disable OpenVPN") sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3;;

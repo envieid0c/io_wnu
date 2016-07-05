@@ -23,19 +23,27 @@ function io_stop {
 	sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/
 	sudo rm -rf /usr/local/sbin/dnscrypt-proxy
 	sudo rm -rf /usr/local/lib/liblzo2*
+	sudo rm -rf /usr/local/opt/libevent/
+	sudo rm -rf /usr/local/opt/libsodium/
 	sudo rm -rf /usr/local/sbin/openvpn
 	sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
 }
 
 function io_config {
 	sudo mkdir -p /usr/local/sbin
+	mkdir -p /usr/local/opt/libevent/lib/
+	mkdir -p /usr/local/opt/libsodium/lib/
 	sudo cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
 	cp ../bin/tor /usr/local/sbin
 	cp ../bin/openvpn /usr/local/sbin
 	cp ../lib/liblzo2* /usr/local/lib
+	cp ../lib/libevent* /usr/local/opt/libevent/lib/
+	cp ../lib/libsodium* /usr/local/opt/libsodium/lib/
 	cp ../config.ovpn ~/
 	cp ../bin/dnscrypt-proxy /usr/local/sbin
+	echo Disabled > /tmp/tor
+	echo Disabled > /tmp/dnscrypt
 }
 
 function io_workflow {
