@@ -7,14 +7,16 @@ APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
+SERVICE=`launchctl list | grep wnu | awk '{print $2}'`
 
-#autofix disabled wifi (testen on 1 device
-#osascript -e 'quit app "StatusBarApp"'
-#rm -rf "$CONF"*.rtl
-#osascript -e 'open app "StatusBarApp"'
-#sleep 1
-#grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
-#osascript -e 'quit app "StatusBarApp"'
+# check service status
+if [ "$SERVICE" != "0" ]; then
+  echo "Service disabled" > /tmp/check_service
+else
+  echo "Service enabled" > /tmp/check_service
+fi
+
+CHECK_SERVICE=$(cat /tmp/check_service)
 
 exec 6<&0
 exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
@@ -35,18 +37,18 @@ function switch_wifi {
 }
 
 function switch_service {
-  ps aux | grep io_wnuup | grep bash | awk '{print $11}' > /tmp/io_service
+  launchctl list | grep wnu | awk '{print $2}' > /tmp/io_service
 
   exec 6<&0
   exec < /tmp/io_service
   read a1
 
-  if [ "$a1" != "bash" ]; then
-      bash ~/.io_wnuup &
+  if [ "$a1" != "0" ]; then
+      launchctl load /Library/LaunchAgents/io_wnu.plist 
       "$POPUP" -title ' Service enabled' -message '' -timeout 3
       rm -rf /tmp/io_service
   else
-      pkill -f ~/.io_wnuup &
+      launchctl unload /Library/LaunchAgents/io_wnu.plist
       "$POPUP" -title ' Service disabled' -message '' -timeout 3
   fi
 }
@@ -58,13 +60,13 @@ function switch_mode {
      ln -s Dark Resources
      osascript -e 'quit app "StatusBarApp"'
      open -a "$APP"
-     "$POPUP" -title 'Dark Mode' -message ''  -timeout 3
+     "$POPUP" -title 'Dark Mode' -message ''  -timeout 2
   else
     rm -rf Resources
     ln -s Light Resources
     osascript -e 'quit app "StatusBarApp"'
     open -a "$APP"
-    "$POPUP" -title 'Light Mode' -message '' -timeout 3
+    "$POPUP" -title 'Light Mode' -message '' -timeout 2
   fi
 }
 
@@ -76,7 +78,7 @@ function test_dns {
   fi
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'Actions?' -actions "Switch Wi-Fi","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
