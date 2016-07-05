@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>424</string>
+	<string>419</string>
 	<key>AMApplicationVersion</key>
 	<string>2.6</string>
 	<key>AMDocumentVersion</key>
@@ -67,6 +67,16 @@ APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
+SERVICE=`launchctl list | grep wnu | awk '{print $2}'`
+
+# check service status
+if [ "$SERVICE" != "0" ]; then
+  echo "Service disabled" &gt; /tmp/check_service
+else
+  echo "Service enabled" &gt; /tmp/check_service
+fi
+
+CHECK_SERVICE=$(cat /tmp/check_service)
 
 exec 6&lt;&amp;0
 exec &lt; /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
@@ -87,20 +97,19 @@ function switch_wifi {
 }
 
 function switch_service {
-  ps aux | grep io_wnuup | grep bash | awk '{print $11}' &gt; /tmp/io_service
+  launchctl list | grep wnu | awk '{print $2}' &gt; /tmp/io_service
 
   exec 6&lt;&amp;0
   exec &lt; /tmp/io_service
   read a1
 
-  if [ "$a1" != "bash" ]; then
-      bash ~/.io_wnuup &amp;
+  if [ "$a1" != "0" ]; then
+      launchctl load /Library/LaunchAgents/io_wnu.plist 
       "$POPUP" -title ' Service enabled' -message '' -timeout 3
-	  echo "bash" &gt; /tmp/io_service  
+      rm -rf /tmp/io_service
   else
-      pkill -f ~/.io_wnuup &amp;
+      launchctl unload /Library/LaunchAgents/io_wnu.plist
       "$POPUP" -title ' Service disabled' -message '' -timeout 3
-	  rm -rf /tmp/io_service
   fi
 }
 
@@ -111,13 +120,13 @@ function switch_mode {
      ln -s Dark Resources
      osascript -e 'quit app "StatusBarApp"'
      open -a "$APP"
-     "$POPUP" -title 'Dark Mode' -message ''  -timeout 3
+     "$POPUP" -title 'Dark Mode' -message ''  -timeout 2
   else
     rm -rf Resources
     ln -s Light Resources
     osascript -e 'quit app "StatusBarApp"'
     open -a "$APP"
-    "$POPUP" -title 'Light Mode' -message '' -timeout 3
+    "$POPUP" -title 'Light Mode' -message '' -timeout 2
   fi
 }
 
@@ -129,22 +138,22 @@ function test_dns {
   fi
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'Actions?' -actions "Switch Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
     "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
     "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
 		"Switch Wi-Fi") switch_wifi ;;
-    "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl &gt; "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 &gt; "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
     "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor &amp; sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 ;;
     "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3 ;;
     "Enable DNSCrypt") sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 &amp; networksetup -setdnsservers "$INTERFACE" 127.0.0.1 &amp;&amp; test_dns;;
     "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty &amp;&amp; "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 ;;
-	"Switch Service") switch_service ;;
+    "Switch Service") switch_service ;;
     "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn &amp; "$POPUP" -title 'OpenVPN ensabled' -message '' -timeout 3;;
     "Disable OpenVPN") sudo killall -9 openvpn &amp; "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3;;
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
+    "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl &gt; "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 &gt; "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
     "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" &gt; "$a1" ; echo "0" &gt; "$a1" ; open -a "$APP" ;;
     "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" &gt; "$a1" ;;
     **) echo "? --&gt; $StatusBarApp_POPUP" ;;
@@ -262,7 +271,7 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'A
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>575.500000:617.000000</string>
+				<string>309.000000:619.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
