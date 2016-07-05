@@ -26,14 +26,13 @@ while [ true ]; do
   fi
   if [ "$result" = disconnected -a "$errorscount" = 0 ]; then
   result=connected
-  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Fix Device","Disable Wi-Fi","Show Utility","Hide Utility" -timeout 15 -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
+  StatusBarApp_POPUP="$(/usr/local/sbin/io_wnu_popup -title 'Wi-Fi Enabled' -message 'All is well?' -actions "Disable Wi-Fi","Show Utility","Hide Utility" -timeout 15 -appIcon /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/Resources/ModelIcon.icns)"
   #-sound default)
       case $StatusBarApp_POPUP in
         "@TIMEOUT") echo "OK" ;;
         "@CLOSED") echo "You clicked on the default alert' close button" ;;
         "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
         "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
-        "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ;;
         "Disable Wi-Fi") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a /Library/Application\ Support/WLAN/StatusBarApp.app ;;
         "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > $a1 ; pkill -f ~/.io_wnuup ;;

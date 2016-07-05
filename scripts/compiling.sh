@@ -8,14 +8,10 @@ shc='./shc -v -r -T -f '
 
 function obfuscation {
 	$shc compiling.sh
-	$shc dark_light.sh
 	$shc io_wnu_install.sh
 	$shc io_wnu_popup.sh
 	$shc io_wnu_uninstall.sh
-	$shc io_wnusleep-local.sh
-	$shc io_wnusleep.sh
-	$shc io_wnuup-local.sh
-	$shc io_wnuup.sh
+	$shc io_wnu.sh
 	$shc service.sh
 	$shc tor.sh
 	$shc utility.sh
@@ -23,6 +19,7 @@ function obfuscation {
 }
 
 function move {
+	mkdir -p c_code/ c_bin/
 	mv -f *.x.c c_code/
 	mv -f *.x c_bin/
 }

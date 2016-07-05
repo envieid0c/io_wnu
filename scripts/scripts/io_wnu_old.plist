@@ -4,8 +4,13 @@
 <dict>
 	<key>Label</key>
 	<string>io_wnu</string>
-	<key>Program</key>
-	<string>/usr/local/sbin/io_wnu</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/sbin/wnu</string>
+		<string>-V</string>
+		<string>-s /etc/io_wnusleep</string>
+		<string>-w /etc/io_wnuup</string>
+	</array>
 	<key>RunAtLoad</key>
 	<true/>
 	<key>KeepAlive</key>

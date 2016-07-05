@@ -8,6 +8,14 @@ SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 
+#autofix disabled wifi (testen on 1 device
+#osascript -e 'quit app "StatusBarApp"'
+#rm -rf "$CONF"*.rtl
+#osascript -e 'open app "StatusBarApp"'
+#sleep 1
+#grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
+#osascript -e 'quit app "StatusBarApp"'
+
 exec 6<&0
 exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
 read a1
@@ -68,22 +76,22 @@ function test_dns {
   fi
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'Actions?' -actions "Switch Wi-Fi","Fix Device","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -message 'Actions?' -actions "Switch Wi-Fi","Enable TOR","Disable TOR","Enable DNSCrypt","Disable DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
     "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
     "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
 		"Switch Wi-Fi") switch_wifi ;;
-    "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
     "Enable TOR")  networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 ;;
     "Disable TOR") killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3 ;;
     "Enable DNSCrypt") sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns;;
     "Disable DNSCrypt") sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty && "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 ;;
-	"Switch Service") switch_service ;;
+    "Switch Service") switch_service ;;
     "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN ensabled' -message '' -timeout 3;;
     "Disable OpenVPN") sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3;;
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
+    "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
     "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a "$APP" ;;
     "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
