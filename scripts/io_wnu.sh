@@ -16,7 +16,7 @@ else
   echo "1" > "$CONF"service_status
 fi
 
-CHECK_SERVICE=$(cat /tmp/check_service)
+CHECK_SERVICE=$(cat "$CONF"check_service)
 
 function switch_service {
   launchctl list | grep wnu | awk '{print $2}' > "$CONF"service_status
