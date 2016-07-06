@@ -9,8 +9,11 @@ POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 SERVICE=`launchctl list | grep wnu | awk '{print $2}'`
 
+#fix mac:
+networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
+
 # Status
-status_macaddress=`networksetup -getmacaddress 'Wireless N Nano USB Adapter' | awk '{print $3}'`
+status_macaddress=$(cat "$CONF"MAC-FIX)
 status_public_ip=`wget http://ipinfo.io/ip -qO -`
 status_dnscrypt=$(cat /tmp/dnscrypt)
 status_tor=$(cat /tmp/tor)
@@ -135,7 +138,6 @@ function switch_mode {
     "$POPUP" -title 'Light Mode' -message '' -timeout 2
   fi
 }
-
 
 StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Status","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
