@@ -10,14 +10,16 @@ Input/Output Wireless Network Utility
 ##Functions
 
 * Shortcuts for Settings Menu
-* Sleepwatcher
+* Agent status network
 * Fix Device (displays the MAC address for the correct stop/start utility)
-* Enable/Disable Service (check internet "8.8.8.8") - Default does not start
+* Enable/Disable Service (check internet "8.8.8.8")
 * Enable/Disable TOR (SOCK proxy)
-* Enable/Disable DNSCrypt
+* Enable/Disable DNSCrypt (Randomize config DNSCrypt & Auto update base DNSCrypt)
 * Enable/Disable OpenVPN
 * Switch Dark/Light mode for macOS
 * Show/Hide Utility
+* Auto fix MAC address
+* Button Status (Info (MAC, Public IP) All services status)
 
 ## Download
 
