@@ -9,11 +9,21 @@ POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 SERVICE=`launchctl list | grep wnu | awk '{print $2}'`
 
+# Status
+status_macaddress=`networksetup -getmacaddress 'Wireless N Nano USB Adapter' | awk '{print $3}'`
+status_public_ip=`wget http://ipinfo.io/ip -qO -`
+status_dnscrypt=$(cat /tmp/dnscrypt)
+status_tor=$(cat /tmp/tor)
+status_openvpn=$(cat /tmp/openvpn)
+status_service=$(cat /tmp/service)
+
 # check service status
 if [ "$SERVICE" != "0" ]; then
-  echo "Service disabled" > /tmp/check_service
+  echo "Service Disabled" > /tmp/check_service
+  echo "Disabled" > /tmp/service
 else
-  echo "Service enabled" > /tmp/check_service
+  echo "Service Enabled" > /tmp/check_service
+  echo "Enabled" > /tmp/service
 fi
 
 CHECK_SERVICE=$(cat /tmp/check_service)
@@ -126,7 +136,8 @@ function switch_mode {
   fi
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Status","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -140,5 +151,6 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
     "Show/Hide Utility") switch_utility ;;
+    "Status") "$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
