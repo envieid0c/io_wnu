@@ -16,6 +16,7 @@ networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
 status_macaddress=$(cat "$CONF"MAC-FIX)
 status_public_ip=`wget http://ipinfo.io/ip -qO -`
 status_dnscrypt=$(cat "$CONF"dnscrypt)
+status_dnscrypt_update_base=$(cat "$CONF"dnscrypt_update)
 status_tor=$(cat "$CONF"tor)
 status_openvpn=$(cat "$CONF"openvpn)
 status_service=$(cat "$CONF"service)
@@ -80,6 +81,7 @@ function update_dnscrypt {
   curl -L --max-redirs 5 -4 -m 30 --connect-timeout 30 -s "${RESOLVERS_UPDATES_BASE_URL}/dnscrypt-resolvers.csv.minisig" > "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.minisig"
   minisign -Vm ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp -x "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.minisig" -P "$RESOLVERS_LIST_PUBLIC_KEY" -q
   mv -f ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv
+  echo `date "+%y/%m/%d %H:%M:%S"` > "$CONF"dnscrypt_update
 }
 
 function switch_dnscrypt {
@@ -173,6 +175,6 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
     "Show/Hide Utility") switch_utility ;;
-    "Status") "$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 ;;
+    "Status") "$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
