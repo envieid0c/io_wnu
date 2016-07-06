@@ -35,7 +35,6 @@ function io_config {
 	mkdir -p /usr/local/opt/libsodium/lib/
 	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
-	sudo cp dnscrypt-proxy.plist /Library/LaunchAgents/
 	cp ../bin/tor /usr/local/sbin
 	cp ../bin/openvpn /usr/local/sbin
 	cp ../lib/liblzo2* /usr/local/lib
@@ -82,7 +81,6 @@ function io_start {
 	sudo kextload /System/Library/Extensions/RtWlanU.kext
 	sudo kextload /System/Library/Extensions/RtWlanU1827.kext/
 	launchctl load -w -F /Library/LaunchAgents/io_wnu.plist
-	launchctl load -w -F /Library/LaunchAgents/dnscrypt-proxy.plist
 }
 
 io_startup
