@@ -37,11 +37,11 @@ function switch_wifi {
 }
 
 function switch_tor {
-  tor=$(cat /tmp/tor)
+  unit=$(cat /tmp/tor)
 
-  if [ "$tor" != "Enabled" ]; then
-     echo Enabled > /tmp/tor
-     networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3
+  if [ "$unit" != "Enabled" ]; then
+    echo Enabled > /tmp/tor
+    networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3
   else
     echo Disabled > /tmp/tor
     killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3
@@ -57,14 +57,38 @@ function test_dns {
 }
 
 function switch_dnscrypt {
-  tor=$(cat /tmp/dnscrypt)
+  unit=$(cat /tmp/dnscrypt)
 
   if [ "$tor" != "Enabled" ]; then
-     echo Enabled > /tmp/dnscrypt
-     sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns
+    echo Enabled > /tmp/dnscrypt
+    sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns
   else
     echo Disabled > /tmp/dnscrypt
     sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty && "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3
+  fi
+}
+
+function switch_openvpn {
+  unit=$(cat /tmp/openvpn)
+
+  if [ "$unit" != "Enabled" ]; then
+    echo Enabled > /tmp/openvpn
+    sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN enabled' -message '' -timeout 3
+  else
+    echo Disabled > /tmp/openvpn
+    sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3
+  fi
+}
+
+function switch_utility {
+  unit=$(cat /tmp/utility)
+
+  if [ "$unit" != "Enabled" ]; then
+    echo Enabled > /tmp/utility
+    osascript -e 'open app "StatusBarApp"' & "$POPUP" -title 'Shown Utility' -message '' -timeout 3
+  else
+    echo Disabled > /tmp/utility
+    osascript -e 'quit app "StatusBarApp"' & "$POPUP" -title 'Hidden Utility' -message '' -timeout 3
   fi
 }
 
@@ -102,7 +126,7 @@ function switch_mode {
   fi
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Enable OpenVPN","Disable OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show Utility","Hide Utility" -timeout 30 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -112,11 +136,9 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch TOR") switch_tor ;;
     "Switch DNSCrypt") switch_dnscrypt ;;
     "Switch Service") switch_service ;;
-    "Enable OpenVPN") sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN ensabled' -message '' -timeout 3;;
-    "Disable OpenVPN") sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3;;
+    "Switch OpenVPN") switch_openvpn ;;
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 ;;
-    "Show Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ; echo "0" > "$a1" ; open -a "$APP" ;;
-    "Hide Utility") osascript -e 'quit app "StatusBarApp"' ; echo "1" > "$a1" ;;
+    "Show/Hide Utility") switch_utility ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac

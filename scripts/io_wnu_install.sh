@@ -44,6 +44,8 @@ function io_config {
 	cp ../bin/dnscrypt-proxy /usr/local/sbin
 	echo Disabled > /tmp/tor
 	echo Disabled > /tmp/dnscrypt
+	echo Disabled > /tmp/openvpn
+	echo Enabled > /tmp/utility
 }
 
 function io_workflow {
