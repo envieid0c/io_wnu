@@ -30,11 +30,12 @@ function io_stop {
 }
 
 function io_config {
-	sudo mkdir -p /usr/local/sbin
+	mkdir -p /usr/local/sbin
 	mkdir -p /usr/local/opt/libevent/lib/
 	mkdir -p /usr/local/opt/libsodium/lib/
-	sudo cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
+	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
+	sudo cp dnscrypt-proxy.plist /Library/LaunchAgents/
 	cp ../bin/tor /usr/local/sbin
 	cp ../bin/openvpn /usr/local/sbin
 	cp ../lib/liblzo2* /usr/local/lib
@@ -42,18 +43,11 @@ function io_config {
 	cp ../lib/libsodium* /usr/local/opt/libsodium/lib/
 	cp ../config.ovpn ~/
 	cp ../bin/dnscrypt-proxy /usr/local/sbin
-	echo Disabled > /tmp/tor
-	echo Disabled > /tmp/dnscrypt
-	echo Disabled > /tmp/openvpn
-	echo Enabled > /tmp/utility
-}
-
-function io_workflow {
 	unzip ../bin/WNU_Switch.zip -d ~/Library/Services/
 	sudo rm -rf ~/Library/Services/__MACOSX/
 }
 
-function permissions {
+function io_permissions {
 	chmod +x /usr/local/sbin/io_wnu
 	chmod +x /usr/local/sbin/tor
 	chmod +x /usr/local/sbin/openvpn
@@ -78,18 +72,22 @@ function io_fix_mac {
 	sleep 3
 	CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 	grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
+	echo "Disabled" > "$CONF"tor
+	echo "Disabled" > "$CONF"dnscrypt
+	echo "Disabled" > "$CONF"openvpn
+	echo "Enabled" > "$CONF"utility
 }
 
 function io_start {
 	sudo kextload /System/Library/Extensions/RtWlanU.kext
 	sudo kextload /System/Library/Extensions/RtWlanU1827.kext/
 	launchctl load -w -F /Library/LaunchAgents/io_wnu.plist
+	launchctl load -w -F /Library/LaunchAgents/dnscrypt-proxy.plist
 }
 
 io_startup
 io_stop
 io_config
-io_workflow
 io_permissions
 io_drivers
 io_replace_app

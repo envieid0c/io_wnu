@@ -7,29 +7,31 @@ APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
-SERVICE=`launchctl list | grep wnu | awk '{print $2}'`
+SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
 
-#fix mac:
+# fix mac:
 networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
 
 # Status
 status_macaddress=$(cat "$CONF"MAC-FIX)
 status_public_ip=`wget http://ipinfo.io/ip -qO -`
-status_dnscrypt=$(cat /tmp/dnscrypt)
-status_tor=$(cat /tmp/tor)
-status_openvpn=$(cat /tmp/openvpn)
-status_service=$(cat /tmp/service)
+status_dnscrypt=$(cat "$CONF"dnscrypt)
+status_tor=$(cat "$CONF"tor)
+status_openvpn=$(cat "$CONF"openvpn)
+status_service=$(cat "$CONF"service)
 
 # check service status
-if [ "$SERVICE" != "0" ]; then
-  echo "Service Disabled" > /tmp/check_service
-  echo "Disabled" > /tmp/service
+if [ "$SERVICE" = "0" ]; then
+  echo "Service Enabled" > "$CONF"check_service
+  echo "Enabled" > "$CONF"service
+  echo "0" > "$CONF"service_status
 else
-  echo "Service Enabled" > /tmp/check_service
-  echo "Enabled" > /tmp/service
+  echo "Service Disabled" > "$CONF"check_service
+  echo "Disabled" > "$CONF"service
+  echo "1" > "$CONF"service_status
 fi
 
-CHECK_SERVICE=$(cat /tmp/check_service)
+CHECK_SERVICE=$(cat "$CONF"check_service)
 
 exec 6<&0
 exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
@@ -50,13 +52,13 @@ function switch_wifi {
 }
 
 function switch_tor {
-  unit=$(cat /tmp/tor)
+  unit=$(cat "$CONF"tor)
 
   if [ "$unit" != "Enabled" ]; then
-    echo Enabled > /tmp/tor
+    echo Enabled > "$CONF"tor
     networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3
   else
-    echo Disabled > /tmp/tor
+    echo Disabled > "$CONF"tor
     killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3
   fi
 }
@@ -69,56 +71,74 @@ function test_dns {
   fi
 }
 
-function switch_dnscrypt {
-  unit=$(cat /tmp/dnscrypt)
+function update_dnscrypt {
+  RESOLVERS_UPDATES_BASE_URL=https://download.dnscrypt.org/dnscrypt-proxy
+  RESOLVERS_LIST_BASE_DIR=/tmp/dnscrypt-proxy
+  RESOLVERS_LIST_PUBLIC_KEY="RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3"
+  mkdir -p /tmp/dnscrypt-proxy
+  curl -L --max-redirs 5 -4 -m 30 --connect-timeout 30 -s "${RESOLVERS_UPDATES_BASE_URL}/dnscrypt-resolvers.csv" > "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp"
+  curl -L --max-redirs 5 -4 -m 30 --connect-timeout 30 -s "${RESOLVERS_UPDATES_BASE_URL}/dnscrypt-resolvers.csv.minisig" > "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.minisig"
+  minisign -Vm ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp -x "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.minisig" -P "$RESOLVERS_LIST_PUBLIC_KEY" -q
+  mv -f ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv
+}
 
-  if [ "$tor" != "Enabled" ]; then
-    echo Enabled > /tmp/dnscrypt
-    sudo /usr/local/sbin/dnscrypt-proxy -a 127.0.0.1:53 -r 91.214.71.181:5353 --provider-name=2.dnscrypt-cert.ru.d0wn.biz --provider-key=0ECA:BC40:E0A1:335F:0221:4240:AB86:2919:D16A:2393:CCEB:4B40:9EB9:4F24:3077:ED99 & networksetup -setdnsservers "$INTERFACE" 127.0.0.1 && test_dns
+function switch_dnscrypt {
+  unit=$(cat "$CONF"dnscrypt)
+
+  if [ "$unit" != "Enabled" ]; then
+    echo Enabled > "$CONF"dnscrypt
+    update_dnscrypt
+    networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; sudo /usr/local/sbin/dnscrypt-proxy --ephemeral-keys --resolvers-list=/tmp/dnscrypt-proxy/dnscrypt-resolvers.csv --resolver-name=dnscrypt.eu-dk --user=nobody & test_dns
   else
-    echo Disabled > /tmp/dnscrypt
-    sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty && "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3
+    echo Disabled > "$CONF"dnscrypt
+    sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty ; "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3
+    rm -rf /tmp/dnscrypt-proxy
   fi
 }
 
 function switch_openvpn {
-  unit=$(cat /tmp/openvpn)
+  unit=$(cat "$CONF"openvpn)
 
   if [ "$unit" != "Enabled" ]; then
-    echo Enabled > /tmp/openvpn
+    echo Enabled > "$CONF"openvpn
     sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN enabled' -message '' -timeout 3
   else
-    echo Disabled > /tmp/openvpn
+    echo Disabled > "$CONF"openvpn
     sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3
   fi
 }
 
 function switch_utility {
-  unit=$(cat /tmp/utility)
+  unit=$(cat "$CONF"utility)
 
   if [ "$unit" != "Enabled" ]; then
-    echo Enabled > /tmp/utility
+    echo Enabled > "$CONF"utility
     osascript -e 'open app "StatusBarApp"' & "$POPUP" -title 'Shown Utility' -message '' -timeout 3
   else
-    echo Disabled > /tmp/utility
+    echo Disabled > "$CONF"utility
     osascript -e 'quit app "StatusBarApp"' & "$POPUP" -title 'Hidden Utility' -message '' -timeout 3
   fi
 }
 
 function switch_service {
-  launchctl list | grep wnu | awk '{print $2}' > /tmp/io_service
+  launchctl list | grep wnu | awk '{print $2}' > "$CONF"service_status
 
   exec 6<&0
-  exec < /tmp/io_service
+  exec < "$CONF"service_status
   read a1
 
   if [ "$a1" != "0" ]; then
-      launchctl load /Library/LaunchAgents/io_wnu.plist 
-      "$POPUP" -title ' Service enabled' -message '' -timeout 3
-      rm -rf /tmp/io_service
+    launchctl load /Library/LaunchAgents/io_wnu.plist
+    "$POPUP" -title ' Service enabled' -message '' -timeout 3
+    echo "Service Enabled" > "$CONF"check_service
+    echo "Enabled" > "$CONF"service
+    echo "0" > "$CONF"service_status
   else
-      launchctl unload /Library/LaunchAgents/io_wnu.plist
-      "$POPUP" -title ' Service disabled' -message '' -timeout 3
+    launchctl unload /Library/LaunchAgents/io_wnu.plist
+    "$POPUP" -title ' Service disabled' -message '' -timeout 3
+    echo "Service Disabled" > "$CONF"check_service
+    echo "Disabled" > "$CONF"service
+    echo "1" > "$CONF"service_status
   fi
 }
 

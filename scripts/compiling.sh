@@ -12,10 +12,6 @@ function obfuscation {
 	$shc io_wnu_popup.sh
 	$shc io_wnu_uninstall.sh
 	$shc io_wnu.sh
-	$shc service.sh
-	$shc tor.sh
-	$shc utility.sh
-	$shc wifi.sh
 }
 
 function move {
