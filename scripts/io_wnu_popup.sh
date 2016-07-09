@@ -14,7 +14,7 @@ networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
 
 # Status
 status_macaddress=$(cat "$CONF"MAC-FIX)
-status_public_ip=`dig +short myip.opendns.com @resolver1.opendns.com`
+status_public_ip=`dig +short myip.opendns.com @resolver1.opendns.com &`
 status_dnscrypt=$(cat "$CONF"dnscrypt)
 status_dnscrypt_update_base=$(cat "$CONF"dnscrypt_update)
 status_tor=$(cat "$CONF"tor)
@@ -57,7 +57,7 @@ function switch_tor {
 
   if [ "$unit" != "Enabled" ]; then
     echo Enabled > "$CONF"tor
-    networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+    networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; osascript -e "do shell script \"`/usr/local/sbin/tor`\" with administrator privileges" & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
   else
     echo Disabled > "$CONF"tor
     killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
@@ -90,10 +90,10 @@ function switch_dnscrypt {
   if [ "$unit" != "Enabled" ]; then
     echo Enabled > "$CONF"dnscrypt
     update_dnscrypt
-    networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; sudo /usr/local/sbin/dnscrypt-proxy --ephemeral-keys --resolvers-list=/tmp/dnscrypt-proxy/dnscrypt-resolvers.csv --resolver-name=dnscrypt.eu-dk --user=nobody & test_dns
+    osascript -e "do shell script \"`sudo /usr/local/sbin/dnscrypt-proxy --ephemeral-keys --resolvers-list=/tmp/dnscrypt-proxy/dnscrypt-resolvers.csv --resolver-name=dnscrypt.eu-dk --user=nobody`\" with administrator privileges" & sleep 2 ; networksetup -setdnsservers "$INTERFACE" 127.0.0.1 & test_dns
   else
     echo Disabled > "$CONF"dnscrypt
-    sudo killall -9 dnscrypt-proxy ; networksetup -setdnsservers "$INTERFACE" Empty ; "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+    osascript -e "do shell script \"`sudo killall -9 dnscrypt-proxy`\" with administrator privileges" ; networksetup -setdnsservers "$INTERFACE" Empty ; "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
     rm -rf /tmp/dnscrypt-proxy
   fi
 }
@@ -103,10 +103,10 @@ function switch_openvpn {
 
   if [ "$unit" != "Enabled" ]; then
     echo Enabled > "$CONF"openvpn
-    sudo /usr/local/sbin/openvpn --config ~/config.ovpn & "$POPUP" -title 'OpenVPN enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+    osascript -e "do shell script \"`sudo /usr/local/sbin/openvpn --config ~/config.ovpn`\" with administrator privileges" & sleep 3 ; "$POPUP" -title 'OpenVPN enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
   else
     echo Disabled > "$CONF"openvpn
-    sudo killall -9 openvpn & "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+    osascript -e "do shell script \"`sudo killall -9 openvpn`\" with administrator privileges" ; "$POPUP" -title 'OpenVPN disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
   fi
 }
 
@@ -151,7 +151,7 @@ function switch_mode {
      ln -s Dark Resources
      osascript -e 'quit app "StatusBarApp"'
      open -a "$APP"
-     "$POPUP" -title 'Dark Mode' -message ''  -timeout 2 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+     "$POPUP" -title 'Dark Mode' -message '' -timeout 2 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
   else
     rm -rf Resources
     ln -s Light Resources
