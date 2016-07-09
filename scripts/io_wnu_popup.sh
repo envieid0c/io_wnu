@@ -12,15 +12,6 @@ SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
 # fix mac:
 networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
 
-# Status
-status_macaddress=$(cat "$CONF"MAC-FIX)
-status_public_ip=`dig +short myip.opendns.com @resolver1.opendns.com &`
-status_dnscrypt=$(cat "$CONF"dnscrypt)
-status_dnscrypt_update_base=$(cat "$CONF"dnscrypt_update)
-status_tor=$(cat "$CONF"tor)
-status_openvpn=$(cat "$CONF"openvpn)
-status_service=$(cat "$CONF"service)
-
 # check service status
 if [ "$SERVICE" = "0" ]; then
   echo "Service Enabled" > "$CONF"check_service
@@ -161,9 +152,34 @@ function switch_mode {
   fi
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Status","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+function switch_dns {
+  Switch_DNS_CASE="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "DNS DHCP","DNS Local","DNS Google","DNS OpenDNS" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+      case $Switch_DNS_CASE in
+      "@TIMEOUT") echo "timeout" ;;
+      "@CLOSED") echo "You clicked on the default alert' close button" ;;
+      "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
+      "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
+      "DNS DHCP") networksetup -setdnsservers "$INTERFACE" Empty ; "$POPUP" -title 'Enabled DNS DHCP' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
+      "DNS Local") networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; "$POPUP" -title 'Enabled DNS Local' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
+      "DNS OpenDNS") networksetup -setdnsservers "$INTERFACE" 208.67.222.222 208.67.220.220 ; "$POPUP" -title 'Enabled DNS OpenDNS' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns;;
+      "DNS Google") networksetup -setdnsservers "$INTERFACE" 8.8.8.8 8.8.4.4 ; "$POPUP" -title 'Enabled DNS Google' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
+      esac
+}
+
+function iw_status {
+  status_macaddress=$(cat "$CONF"MAC-FIX)
+  status_public_ip=`dig +short myip.opendns.com @resolver1.opendns.com &`
+  status_dnscrypt=$(cat "$CONF"dnscrypt)
+  status_dnscrypt_update_base=$(cat "$CONF"dnscrypt_update)
+  status_tor=$(cat "$CONF"tor)
+  status_openvpn=$(cat "$CONF"openvpn)
+  status_service=$(cat "$CONF"service)
+  iw_status="$("$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+}
+
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
-    "@TIMEOUT") `pkill -f ~/.io_wnuup` ;;
+    "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
     "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
     "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
@@ -174,7 +190,10 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch OpenVPN") switch_openvpn ;;
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
+    "Switch DNS") switch_dns ;;
+    "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Show/Hide Utility") switch_utility ;;
-    "Status") "$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
+    "Status") iw_status ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
+
