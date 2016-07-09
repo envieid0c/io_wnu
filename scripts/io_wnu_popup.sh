@@ -183,18 +183,67 @@ function io_hostname {
   io_old_hostname=$(cat "$CONF"io_old_hostname)
   io_new_hostname=$(cat "$CONF"io_new_hostname)
   hostname > "$CONF"io_old_hostname
-  "$POPUP" -reply -message "What is the name of this release ?" -title "Deploy in progress..." > "$CONF"io_new_hostname
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_new_hostname
   exec 6<&0
   exec < "$CONF"io_new_hostname
   read a1
-  osascript -e "do shell script \"`sudo -v`\" with administrator privileges"
-  sudo scutil --set ComputerName "$io_new_hostname" && \
-  sudo scutil --set HostName "$io_new_hostname" && \
-  sudo scutil --set LocalHostName "$io_new_hostname" && \
+  osascript -e "do shell script \"`sudo -v`\" with administrator privileges" &&
+  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  sudo scutil --set ComputerName "$io_new_hostname"
+  sudo scutil --set HostName "$io_new_hostname"
+  sudo scutil --set LocalHostName "$io_new_hostname"
   sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$io_new_hostname"
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility","Set Hostname" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+function new_window {
+    TMP_FILE="tmp.command"
+    echo "#!/usr/bin/env bash" > $TMP_FILE
+    # Copy over environment (including functions), but filter out readonly stuff
+    set | grep -v "\(BASH_VERSINFO\|EUID\|PPID\|SHELLOPTS\|UID\)" >> $TMP_FILE
+    # Copy over exported envrionment
+    export -p >> $TMP_FILE
+    # Change to directory
+    echo "cd $(pwd)" >> $TMP_FILE
+    # Copy over target command line
+    echo "$@" >> $TMP_FILE
+    chmod +x "$TMP_FILE"
+    open -b com.apple.terminal "$TMP_FILE"
+    sleep 1 # Wait for terminal to start
+    rm "$TMP_FILE"
+}
+
+function io_ping {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window ping -c 3 "$a1"
+}
+
+function io_traceroute {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window traceroute "$a1"
+}
+
+function io_utility {
+  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping host","Traceroute host","New window" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+      case $io_utility_case in
+      "@TIMEOUT") echo "timeout" ;;
+      "@CLOSED") echo "You clicked on the default alert' close button" ;;
+      "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
+      "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
+      "Set Hostname") io_hostname ;;
+      "Open Terminal") `open -a Terminal /` ;;
+      "Ping host") io_ping ;;
+      "Traceroute host") io_traceroute ;;
+      "New window") new_window ping google.com;; 
+      esac
+}
+
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility","I/O WNU Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -211,6 +260,6 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Show/Hide Utility") switch_utility ;;
     "Status") io_status ;;
-    "Set Hostname") io_hostname ;; 
+    "I/O WNU Utility") io_utility ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
