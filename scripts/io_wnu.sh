@@ -55,7 +55,7 @@ function switch_utility {
 
 result=connected
 while [ true ]; do
-  errorscount="$(ping -c 3 google.com 2<&1| grep -icE 'unknown|expired|unreachable|time out')"
+  errorscount="$(ping -c 3 8.8.8.8 2<&1| grep -icE 'unknown|expired|unreachable|time out')"
   if [ "$result" = connected -a "$errorscount" != 0 ]; then
   result=disconnected
   exec 6<&0
