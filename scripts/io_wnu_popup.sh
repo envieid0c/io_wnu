@@ -175,10 +175,26 @@ function io_status {
   status_tor=$(cat "$CONF"tor)
   status_openvpn=$(cat "$CONF"openvpn)
   status_service=$(cat "$CONF"service)
-  iw_status="$("$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  status_hostname=$(cat "$CONF"io_new_hostname)
+  "$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","Hostname - $status_hostname","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+function io_hostname {
+  io_old_hostname=$(cat "$CONF"io_old_hostname)
+  io_new_hostname=$(cat "$CONF"io_new_hostname)
+  hostname > "$CONF"io_old_hostname
+  "$POPUP" -reply -message "What is the name of this release ?" -title "Deploy in progress..." > "$CONF"io_new_hostname
+  exec 6<&0
+  exec < "$CONF"io_new_hostname
+  read a1
+  osascript -e "do shell script \"`sudo -v`\" with administrator privileges"
+  sudo scutil --set ComputerName "$io_new_hostname" && \
+  sudo scutil --set HostName "$io_new_hostname" && \
+  sudo scutil --set LocalHostName "$io_new_hostname" && \
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$io_new_hostname"
+}
+
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility","Set Hostname" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -195,6 +211,6 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Show/Hide Utility") switch_utility ;;
     "Status") io_status ;;
+    "Set Hostname") io_hostname ;; 
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
-
