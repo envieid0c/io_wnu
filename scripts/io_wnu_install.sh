@@ -14,6 +14,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 function io_stop {
 	sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
 	sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+	launchctl unload /Library/LaunchAgents/io_wnu.plist
 	osascript -e 'quit app "StatusBarApp"'
 	sudo rm -rf /Library/LaunchAgents/io_wnu.plist
 	sudo rm -rf /usr/local/sbin/io_wnu
@@ -27,6 +28,7 @@ function io_stop {
 	sudo rm -rf /usr/local/opt/libsodium/
 	sudo rm -rf /usr/local/sbin/openvpn
 	sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
+	sudo killall -9 io_wnu
 }
 
 function io_config {

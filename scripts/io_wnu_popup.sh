@@ -153,7 +153,7 @@ function switch_mode {
 }
 
 function switch_dns {
-  Switch_DNS_CASE="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "DNS DHCP","DNS Local","DNS Google","DNS OpenDNS" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  Switch_DNS_CASE="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "DNS DHCP","DNS Local","DNS Google","DNS OpenDNS","Flush DNS Cache" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $Switch_DNS_CASE in
       "@TIMEOUT") echo "timeout" ;;
       "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -163,10 +163,11 @@ function switch_dns {
       "DNS Local") networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; "$POPUP" -title 'Enabled DNS Local' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
       "DNS OpenDNS") networksetup -setdnsservers "$INTERFACE" 208.67.222.222 208.67.220.220 ; "$POPUP" -title 'Enabled DNS OpenDNS' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns;;
       "DNS Google") networksetup -setdnsservers "$INTERFACE" 8.8.8.8 8.8.4.4 ; "$POPUP" -title 'Enabled DNS Google' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
+      "Flush DNS Cache") osascript -e "do shell script \"`sudo killall -HUP mDNSResponder`\" with administrator privileges" ;;
       esac
 }
 
-function iw_status {
+function io_status {
   status_macaddress=$(cat "$CONF"MAC-FIX)
   status_public_ip=`dig +short myip.opendns.com @resolver1.opendns.com &`
   status_dnscrypt=$(cat "$CONF"dnscrypt)
@@ -193,7 +194,7 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch DNS") switch_dns ;;
     "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Show/Hide Utility") switch_utility ;;
-    "Status") iw_status ;;
+    "Status") io_status ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
 
