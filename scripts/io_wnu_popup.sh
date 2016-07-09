@@ -227,9 +227,39 @@ function io_traceroute {
   read a1
   new_window traceroute "$a1"
 }
+function io_dig {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window dig "$a1"
+}
 
+function io_nslookup {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window nslookup "$a1"
+}
+
+function io_ssh {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_ssh
+  exec 6<&0
+  exec < "$CONF"io_ssh
+  read a1
+  new_window ssh "$a1"
+}
+
+function io_telnet {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window telnet "$a1"
+}
 function io_utility {
-  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping host","Traceroute host","New window" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping host","Traceroute host","Nslookup","Dig","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $io_utility_case in
       "@TIMEOUT") echo "timeout" ;;
       "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -237,13 +267,16 @@ function io_utility {
       "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
       "Set Hostname") io_hostname ;;
       "Open Terminal") `open -a Terminal /` ;;
-      "Ping host") io_ping ;;
-      "Traceroute host") io_traceroute ;;
-      "New window") new_window ping google.com;; 
+      "Ping") io_ping ;;
+      "Traceroute") io_traceroute ;;
+      "Nslookup") io_nslookup ;;
+      "Dig") io_dig ;;
+      "Telnet") io_telnet ;;
+      "SSH") io_ssh ;;
       esac
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility","I/O WNU Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -258,8 +291,8 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Switch DNS") switch_dns ;;
     "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
-    "Show/Hide Utility") switch_utility ;;
+    "Show/Hide Bar Menu") switch_utility ;;
     "Status") io_status ;;
-    "I/O WNU Utility") io_utility ;;
+    "Utility") io_utility ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
