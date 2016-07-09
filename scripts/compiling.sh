@@ -4,7 +4,7 @@
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 cd $ROOT_PATH;
 
-shc='./shc -v -r -T -f '
+shc='./shc -v -r -f'
 
 function obfuscation {
 	$shc compiling.sh
