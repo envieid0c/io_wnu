@@ -284,6 +284,22 @@ function io_tshark {
   rm -rf /tmp/device
 }
 
+function io_speedtest {
+  "$POPUP" -title 'Speedtest starting' -subtitle "$CHECK_SERVICE" -message 'Please wait...' -timeout 3 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+  /usr/local/sbin/speedtest.py  --share > "$CONF"io_speedtest
+  download=$(cat "$CONF"io_speedtest | grep Download)
+  upload=$(cat "$CONF"io_speedtest | grep Upload)
+  share=$(cat "$CONF"io_speedtest | grep Share | awk '{print $3}')
+  io_speedtest="$("$POPUP" -title "$download"  -message "$upload" -actions "$download","$upload","Share" -timeout 5 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+    case $io_speedtest in
+      "@TIMEOUT") echo "timeout" ;;
+      "@CLOSED") echo "You clicked on the default alert' close button" ;;
+      "@CONTENTCLICKED") open "$share" ;;
+      "@ACTIONCLICKED") echo "share" ;; #echo "You clicked the alert default action button" ;;
+      "Share") open "$share" ;;
+    esac
+}
+
 function io_ssh_menu {
   io_ssh_menu="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "SSH host","Host0","Host1","Host2","Host3","Host4","Host5","Host6","Host7","Host8","Host9","Clean history" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
     case $io_ssh_menu in
@@ -311,7 +327,7 @@ function io_telnet {
 }
 
 function io_utility {
-  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping","Ping FLOOD!!!","TShark","Traceroute","Nslookup","Dig","Whois","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping","Ping FLOOD!!!","TShark","Speedtest","Traceroute","Nslookup","Dig","Whois","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $io_utility_case in
       "@TIMEOUT") echo "timeout" ;;
       "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -322,6 +338,7 @@ function io_utility {
       "Ping") io_ping ;;
       "Ping FLOOD!!!") io_ping_flood ;;
       "TShark") io_tshark ;;
+      "Speedtest") io_speedtest ;;
       "Traceroute") io_traceroute ;;
       "Nslookup") io_nslookup ;;
       "Dig") io_dig ;;

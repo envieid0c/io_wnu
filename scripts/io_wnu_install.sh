@@ -29,6 +29,7 @@ function io_stop {
 	sudo rm -rf /usr/local/sbin/openvpn
 	sudo rm -rf /usr/local/sbin/tshark
 	sudo rm -rf /usr/local/sbin/pdml2html.xsl
+	sudo rm -rf /usr/local/sbin/speedtest.py
 	sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
 	sudo killall -9 io_wnu
 }
@@ -43,6 +44,7 @@ function io_config {
 	cp ../bin/tor /usr/local/sbin
 	cp ../bin/tshark /usr/local/sbin
 	cp ../bin/pdml2html.xsl /usr/local/sbin
+	cp ../bin/speedtest.py /usr/local/sbin
 	cp ../lib/liblzo2* /usr/local/lib
 	cp ../lib/libevent* /usr/local/opt/libevent/lib/
 	cp ../lib/libsodium* /usr/local/opt/libsodium/lib/
@@ -58,6 +60,7 @@ function io_permissions {
 	chmod +x /usr/local/sbin/openvpn
 	chmod +x /usr/local/sbin/tor
 	chmod +x /usr/local/sbin/tshark
+	chmod +x /usr/local/sbin/speedtest.py
 }
 
 function io_drivers {
