@@ -331,17 +331,34 @@ function io_netstat {
 }
 
 function io_tshark {
-  mkdir -p ~/Desktop/captured
+  mkdir -p ~/Desktop/dump
   tshark -D | grep USB | awk '{print $2}' &gt; /tmp/device
   "$POPUP" -reply -message "Set captures size packet" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_captures_sise
   io_captures_sise=$(cat "$CONF"io_captures_sise)
   exec 6&lt;&amp;0
   exec &lt; /tmp/device
   read a1
-  sudo tshark -i "$a1" -T pdml -c "$io_captures_sise" &gt; ~/Desktop/captured/captured.xml &amp;&amp;
-  cp /usr/local/sbin/pdml2html.xsl ~/Desktop/captured/pdml2html.xsl ;
-  open -a Safari ~/Desktop/captured/captured.xml
+  tshark -i "$a1" -T pdml -c "$io_captures_sise" &gt; ~/Desktop/dump/dump.xml
+  tcpdump -i "$a1" -c "$io_captures_sise" -w ~/Desktop/dump/dump.pcap
+  cp /usr/local/sbin/pdml2html.xsl ~/Desktop/dump/pdml2html.xsl ;
+  open -a Safari ~/Desktop/dump/dump.xml
   rm -rf /tmp/device
+}
+
+function io_speedtest {
+  "$POPUP" -title 'Speedtest starting' -subtitle "$CHECK_SERVICE" -message 'Please wait...' -timeout 3 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+  /usr/local/sbin/speedtest.py  --share &gt; "$CONF"io_speedtest
+  download=$(cat "$CONF"io_speedtest | grep Download)
+  upload=$(cat "$CONF"io_speedtest | grep Upload)
+  share=$(cat "$CONF"io_speedtest | grep Share | awk '{print $3}')
+  io_speedtest="$("$POPUP" -title "$download"  -message "$upload" -actions "$download","$upload","Share" -timeout 5 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+    case $io_speedtest in
+      "@TIMEOUT") echo "timeout" ;;
+      "@CLOSED") echo "You clicked on the default alert' close button" ;;
+      "@CONTENTCLICKED") open "$share" ;;
+      "@ACTIONCLICKED") echo "share" ;; #echo "You clicked the alert default action button" ;;
+      "Share") open "$share" ;;
+    esac
 }
 
 function io_ssh_menu {
@@ -371,7 +388,7 @@ function io_telnet {
 }
 
 function io_utility {
-  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping","Ping FLOOD!!!","TShark","Traceroute","Nslookup","Dig","Whois","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping","Ping FLOOD!!!","TShark","Speedtest","Traceroute","Nslookup","Dig","Whois","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $io_utility_case in
       "@TIMEOUT") echo "timeout" ;;
       "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -382,6 +399,7 @@ function io_utility {
       "Ping") io_ping ;;
       "Ping FLOOD!!!") io_ping_flood ;;
       "TShark") io_tshark ;;
+      "Speedtest") io_speedtest ;;
       "Traceroute") io_traceroute ;;
       "Nslookup") io_nslookup ;;
       "Dig") io_dig ;;
