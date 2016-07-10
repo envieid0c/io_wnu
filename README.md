@@ -21,6 +21,8 @@ Input/Output Wireless Network Utility
 * Show/Hide Utility
 * Auto fix MAC address
 * Button Status (Info (MAC, Public IP) All services status)
+* Button Utils (Set Hostname, ping,traceroute,nslookup,telnet,ssh, open terminal)
+* SSH menu (to new host, history last 10 host, clean history button)
 
 ## Download
 
