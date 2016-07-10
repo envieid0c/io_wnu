@@ -1,6 +1,7 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
+CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 cd $ROOT_PATH;
 
@@ -38,10 +39,13 @@ function io_config {
 	mkdir -p /usr/local/sbin
 	mkdir -p /usr/local/opt/libevent/lib/
 	mkdir -p /usr/local/opt/libsodium/lib/
+	mkdir -p /usr/local/opt/openssl/lib/
+	mkdir -p /usr/local/Cellar/openssl/1.0.2h_1/lib/ 
 	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
 	cp ../bin/openvpn /usr/local/sbin
 	cp ../bin/tor /usr/local/sbin
+	cp ../conf/torrc.sample "$CONF"
 	cp ../bin/tshark /usr/local/sbin
 	cp ../bin/pdml2html.xsl /usr/local/sbin
 	cp ../bin/speedtest.py /usr/local/sbin
@@ -79,7 +83,6 @@ function io_fix_mac {
 #autofix disabled wifi (testen on 1 device)
 	osascript -e 'open app "StatusBarApp"'
 	sleep 3
-	CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 	grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
 	echo "Disabled" > "$CONF"tor
 	echo "Disabled" > "$CONF"dnscrypt

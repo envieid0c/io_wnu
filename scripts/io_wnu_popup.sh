@@ -2,6 +2,7 @@
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 INTERFACE=`networksetup -listallnetworkservices | grep USB`
+INTERFACE=`networksetup -listallnetworkservices | grep USB` ## 802.11n WLAN Adapter
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
@@ -46,7 +47,7 @@ function switch_tor {
 
   if [ "$unit" != "Enabled" ]; then
     echo Enabled > "$CONF"tor
-    networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; osascript -e "do shell script \"`/usr/local/sbin/tor`\" with administrator privileges" & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+    networksetup -setsocksfirewallproxy "$INTERFACE" 127.0.0.1 9050 off ; /usr/local/sbin/tor -f "$CONF"torrc.sample & sleep 3 ; open https://check.torproject.org ; "$POPUP" -title 'TOR enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
   else
     echo Disabled > "$CONF"tor
     killall -9 tor ; networksetup -setsocksfirewallproxystate "$INTERFACE" off ; sleep 3 ; "$POPUP" -title 'TOR disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
