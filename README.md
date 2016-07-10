@@ -25,7 +25,13 @@ Input/Output Wireless Network Utility
     - Flush DNS Cache
 * Show/Hide Utility
 * Auto fix MAC address
-* Button Status (Info (MAC, Public IP) All services status)
+* Button Status
+    - MAC address
+    - Public IP
+    - Hostname
+    - All services status
+    - DNSCrypb base update time
+* 
 * Button Utils 
     - Set Hostname
     - ping
