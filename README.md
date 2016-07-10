@@ -46,6 +46,8 @@ Input/Output Wireless Network Utility
     - history last 10 host
     - clean history button
 * Button Tshark (Dump and analyze network traffic) & set captures sise
+* Speedtest
+    - Download/Upload & open url result
 
 ## Download
 
