@@ -8,6 +8,7 @@ SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
+CHECK_SERVICE=$(cat "$CONF"check_service)
 
 # fix mac:
 networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
@@ -23,13 +24,10 @@ else
   echo "1" > "$CONF"service_status
 fi
 
-CHECK_SERVICE=$(cat "$CONF"check_service)
-
-exec 6<&0
-exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
-read a1
-
 function switch_wifi {
+  exec 6<&0
+  exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
+  read a1
   if [ "$ACTIVE_DEVICE" != "1" ]; then
     osascript -e 'quit app "StatusBarApp"'
     echo "1" > "$a1"
@@ -243,12 +241,30 @@ function io_nslookup {
   new_window nslookup "$a1"
 }
 
-function io_ssh {
-  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_ssh
+function io_ssh_new_session {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_ssh_new_session
   exec 6<&0
-  exec < "$CONF"io_ssh
+  exec < "$CONF"io_ssh_new_session
   read a1
   new_window ssh "$a1"
+}
+
+function io_ssh_menu {
+  io_ssh_menu="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "SSH host","Host0","Host1","Host2","Host3","Host4","Host5","Host6","Host7","Host8","Host9","Clean history" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+    case $io_ssh_menu in
+    "SSH host") io_ssh_new_session ;;
+    "Host0") cat "$CONF"io_ssh_list | head -1 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host1") cat "$CONF"io_ssh_list | head -2 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host2") cat "$CONF"io_ssh_list | head -3 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host3") cat "$CONF"io_ssh_list | head -4 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host4") cat "$CONF"io_ssh_list | head -5 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host5") cat "$CONF"io_ssh_list | head -6 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host6") cat "$CONF"io_ssh_list | head -7 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host7") cat "$CONF"io_ssh_list | head -8 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host8") cat "$CONF"io_ssh_list | head -9 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host9") cat "$CONF"io_ssh_list | head -10 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Clean history") echo "" > "$CONF"io_ssh_list ;;
+  esac
 }
 
 function io_telnet {
@@ -258,6 +274,7 @@ function io_telnet {
   read a1
   new_window telnet "$a1"
 }
+
 function io_utility {
   io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping host","Traceroute host","Nslookup","Dig","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $io_utility_case in
@@ -272,7 +289,7 @@ function io_utility {
       "Nslookup") io_nslookup ;;
       "Dig") io_dig ;;
       "Telnet") io_telnet ;;
-      "SSH") io_ssh ;;
+      "SSH") io_ssh_menu ;;
       esac
 }
 

@@ -77,6 +77,7 @@ function io_fix_mac {
 	echo "Disabled" > "$CONF"dnscrypt
 	echo "Disabled" > "$CONF"openvpn
 	echo "Enabled" > "$CONF"utility
+	echo "" > "$CONF"io_ssh
 }
 
 function io_start {
