@@ -17,12 +17,29 @@ Input/Output Wireless Network Utility
 * Enable/Disable DNSCrypt (Randomize config DNSCrypt & Auto update base DNSCrypt)
 * Enable/Disable OpenVPN
 * Switch Dark/Light mode for macOS
-* Switch DNS (Local, DHCP, Google and OpenDNS & Flush DNS Cache)
+* Switch DNS 
+    - Local
+    - DHCP
+    - Google
+    - OpenDNS
+    - Flush DNS Cache
 * Show/Hide Utility
 * Auto fix MAC address
 * Button Status (Info (MAC, Public IP) All services status)
-* Button Utils (Set Hostname, ping,traceroute,nslookup,telnet,ssh, open terminal)
-* SSH menu (to new host, history last 10 host, clean history button)
+* Button Utils 
+    - Set Hostname
+    - ping
+    - ping flood
+    - traceroute
+    - nslookup
+    - telnet
+    - ssh
+    - open terminal
+* SSH menu
+    - new host
+    - history last 10 host
+    - clean history button
+* Button Tshark (Dump and analyze network traffic) & set captures sise
 
 ## Download
 
