@@ -27,6 +27,8 @@ function io_stop {
 	sudo rm -rf /usr/local/opt/libevent/
 	sudo rm -rf /usr/local/opt/libsodium/
 	sudo rm -rf /usr/local/sbin/openvpn
+	sudo rm -rf /usr/local/sbin/tshark
+	sudo rm -rf /usr/local/sbin/pdml2html.xsl
 	sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
 	sudo killall -9 io_wnu
 }
@@ -37,8 +39,10 @@ function io_config {
 	mkdir -p /usr/local/opt/libsodium/lib/
 	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
-	cp ../bin/tor /usr/local/sbin
 	cp ../bin/openvpn /usr/local/sbin
+	cp ../bin/tor /usr/local/sbin
+	cp ../bin/tshark /usr/local/sbin
+	cp ../bin/pdml2html.xsl /usr/local/sbin
 	cp ../lib/liblzo2* /usr/local/lib
 	cp ../lib/libevent* /usr/local/opt/libevent/lib/
 	cp ../lib/libsodium* /usr/local/opt/libsodium/lib/
@@ -49,10 +53,11 @@ function io_config {
 }
 
 function io_permissions {
-	chmod +x /usr/local/sbin/io_wnu
-	chmod +x /usr/local/sbin/tor
-	chmod +x /usr/local/sbin/openvpn
 	chmod +x /usr/local/sbin/dnscrypt-proxy
+	chmod +x /usr/local/sbin/io_wnu
+	chmod +x /usr/local/sbin/openvpn
+	chmod +x /usr/local/sbin/tor
+	chmod +x /usr/local/sbin/tshark
 }
 
 function io_drivers {

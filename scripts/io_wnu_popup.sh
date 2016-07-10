@@ -218,6 +218,14 @@ function io_ping {
   new_window ping -c 3 "$a1"
 }
 
+function io_ping_flood {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window sudo ping -f -s 56500 "$a1"
+}
+
 function io_traceroute {
   "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
   exec 6<&0
@@ -249,6 +257,32 @@ function io_ssh_new_session {
   new_window ssh "$a1"
 }
 
+function io_whois {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' > "$CONF"io_host
+  exec 6<&0
+  exec < "$CONF"io_host
+  read a1
+  new_window whois "$a1"
+}
+
+function io_netstat {
+  new_window netstat -i "$INTERFACE"
+}
+
+function io_tshark {
+  mkdir -p ~/Desktop/captured
+  tshark -D | grep USB | awk '{print $2}' > /tmp/device
+  "$POPUP" -reply -message "Set captures size packet" -title 'I/O Wireless Network Utility' > "$CONF"io_captures_sise
+  io_captures_sise=$(cat "$CONF"io_captures_sise)
+  exec 6<&0
+  exec < /tmp/device
+  read a1
+  sudo tshark -i "$a1" -T pdml -c "$io_captures_sise" > ~/Desktop/captured/captured.xml &&
+  cp /usr/local/sbin/pdml2html.xsl ~/Desktop/captured/pdml2html.xsl ;
+  open -a Safari ~/Desktop/captured/captured.xml
+  rm -rf /tmp/device
+}
+
 function io_ssh_menu {
   io_ssh_menu="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "SSH host","Host0","Host1","Host2","Host3","Host4","Host5","Host6","Host7","Host8","Host9","Clean history" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
     case $io_ssh_menu in
@@ -276,7 +310,7 @@ function io_telnet {
 }
 
 function io_utility {
-  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping host","Traceroute host","Nslookup","Dig","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping","Ping FLOOD!!!","TShark","Traceroute","Nslookup","Dig","Whois","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
       case $io_utility_case in
       "@TIMEOUT") echo "timeout" ;;
       "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -285,9 +319,12 @@ function io_utility {
       "Set Hostname") io_hostname ;;
       "Open Terminal") `open -a Terminal /` ;;
       "Ping") io_ping ;;
+      "Ping FLOOD!!!") io_ping_flood ;;
+      "TShark") io_tshark ;;
       "Traceroute") io_traceroute ;;
       "Nslookup") io_nslookup ;;
       "Dig") io_dig ;;
+      "Whois") io_whois ;;
       "Telnet") io_telnet ;;
       "SSH") io_ssh_menu ;;
       esac

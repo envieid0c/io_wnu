@@ -69,6 +69,7 @@ SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
+CHECK_SERVICE=$(cat "$CONF"check_service)
 
 # fix mac:
 networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' &gt; "$CONF"MAC-FIX
@@ -84,13 +85,10 @@ else
   echo "1" &gt; "$CONF"service_status
 fi
 
-CHECK_SERVICE=$(cat "$CONF"check_service)
-
-exec 6&lt;&amp;0
-exec &lt; /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
-read a1
-
 function switch_wifi {
+  exec 6&lt;&amp;0
+  exec &lt; /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
+  read a1
   if [ "$ACTIVE_DEVICE" != "1" ]; then
     osascript -e 'quit app "StatusBarApp"'
     echo "1" &gt; "$a1"
@@ -236,10 +234,164 @@ function io_status {
   status_tor=$(cat "$CONF"tor)
   status_openvpn=$(cat "$CONF"openvpn)
   status_service=$(cat "$CONF"service)
-  iw_status="$("$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  status_hostname=$(cat "$CONF"io_new_hostname)
+  "$POPUP" -title 'Status services' -actions "MAC - $status_macaddress","Public IP - $status_public_ip","Hostname - $status_hostname","TOR - $status_tor","DNSCrypt - $status_dnscrypt","DNSCrypt Base - $status_dnscrypt_update_base","OpenVPN - $status_openvpn","Service - $status_service" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Switch DNS","Status","Show/Hide Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+function io_hostname {
+  io_old_hostname=$(cat "$CONF"io_old_hostname)
+  io_new_hostname=$(cat "$CONF"io_new_hostname)
+  hostname &gt; "$CONF"io_old_hostname
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_new_hostname
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_new_hostname
+  read a1
+  osascript -e "do shell script \"`sudo -v`\" with administrator privileges" &amp;&amp;
+  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2&gt;/dev/null &amp;
+  sudo scutil --set ComputerName "$io_new_hostname"
+  sudo scutil --set HostName "$io_new_hostname"
+  sudo scutil --set LocalHostName "$io_new_hostname"
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$io_new_hostname"
+}
+
+function new_window {
+    TMP_FILE="tmp.command"
+    echo "#!/usr/bin/env bash" &gt; $TMP_FILE
+    # Copy over environment (including functions), but filter out readonly stuff
+    set | grep -v "\(BASH_VERSINFO\|EUID\|PPID\|SHELLOPTS\|UID\)" &gt;&gt; $TMP_FILE
+    # Copy over exported envrionment
+    export -p &gt;&gt; $TMP_FILE
+    # Change to directory
+    echo "cd $(pwd)" &gt;&gt; $TMP_FILE
+    # Copy over target command line
+    echo "$@" &gt;&gt; $TMP_FILE
+    chmod +x "$TMP_FILE"
+    open -b com.apple.terminal "$TMP_FILE"
+    sleep 1 # Wait for terminal to start
+    rm "$TMP_FILE"
+}
+
+function io_ping {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window ping -c 3 "$a1"
+}
+
+function io_ping_flood {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window sudo ping -f -s 56500 "$a1"
+}
+
+function io_traceroute {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window traceroute "$a1"
+}
+function io_dig {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window dig "$a1"
+}
+
+function io_nslookup {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window nslookup "$a1"
+}
+
+function io_ssh_new_session {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_ssh_new_session
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_ssh_new_session
+  read a1
+  new_window ssh "$a1"
+}
+
+function io_whois {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window whois "$a1"
+}
+
+function io_netstat {
+  new_window netstat -i "$INTERFACE"
+}
+
+function io_tshark {
+  mkdir -p ~/Desktop/captured
+  tshark -D | grep USB | awk '{print $2}' &gt; /tmp/device
+  "$POPUP" -reply -message "Set captures size packet" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_captures_sise
+  io_captures_sise=$(cat "$CONF"io_captures_sise)
+  exec 6&lt;&amp;0
+  exec &lt; /tmp/device
+  read a1
+  sudo tshark -i "$a1" -T pdml -c "$io_captures_sise" &gt; ~/Desktop/captured/captured.xml &amp;&amp;
+  cp /usr/local/sbin/pdml2html.xsl ~/Desktop/captured/pdml2html.xsl ;
+  open -a Safari ~/Desktop/captured/captured.xml
+  rm -rf /tmp/device
+}
+
+function io_ssh_menu {
+  io_ssh_menu="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "SSH host","Host0","Host1","Host2","Host3","Host4","Host5","Host6","Host7","Host8","Host9","Clean history" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+    case $io_ssh_menu in
+    "SSH host") io_ssh_new_session ;;
+    "Host0") cat "$CONF"io_ssh_list | head -1 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host1") cat "$CONF"io_ssh_list | head -2 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host2") cat "$CONF"io_ssh_list | head -3 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host3") cat "$CONF"io_ssh_list | head -4 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host4") cat "$CONF"io_ssh_list | head -5 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host5") cat "$CONF"io_ssh_list | head -6 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host6") cat "$CONF"io_ssh_list | head -7 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host7") cat "$CONF"io_ssh_list | head -8 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host8") cat "$CONF"io_ssh_list | head -9 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host9") cat "$CONF"io_ssh_list | head -10 | tail -1 &gt; "$CONF"io_ssh_active ; exec 6&lt;&amp;0 ; exec &lt; "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Clean history") echo "" &gt; "$CONF"io_ssh_list ;;
+  esac
+}
+
+function io_telnet {
+  "$POPUP" -reply -message "What is the name of this release ?" -title 'I/O Wireless Network Utility' &gt; "$CONF"io_host
+  exec 6&lt;&amp;0
+  exec &lt; "$CONF"io_host
+  read a1
+  new_window telnet "$a1"
+}
+
+function io_utility {
+  io_utility_case="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Set Hostname","Open Terminal","Ping","Ping FLOOD!!!","TShark","Traceroute","Nslookup","Dig","Whois","SSH","Telnet" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+      case $io_utility_case in
+      "@TIMEOUT") echo "timeout" ;;
+      "@CLOSED") echo "You clicked on the default alert' close button" ;;
+      "@CONTENTCLICKED") echo "You clicked the alert's content !" ;;
+      "@ACTIONCLICKED") echo "You clicked the alert default action button" ;;
+      "Set Hostname") io_hostname ;;
+      "Open Terminal") `open -a Terminal /` ;;
+      "Ping") io_ping ;;
+      "Ping FLOOD!!!") io_ping_flood ;;
+      "TShark") io_tshark ;;
+      "Traceroute") io_traceroute ;;
+      "Nslookup") io_nslookup ;;
+      "Dig") io_dig ;;
+      "Whois") io_whois ;;
+      "Telnet") io_telnet ;;
+      "SSH") io_ssh_menu ;;
+      esac
+}
+
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -254,11 +406,11 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl &gt; "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 &gt; "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Switch DNS") switch_dns ;;
     "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
-    "Show/Hide Utility") switch_utility ;;
+    "Show/Hide Bar Menu") switch_utility ;;
     "Status") io_status ;;
+    "Utility") io_utility ;;
     **) echo "? --&gt; $StatusBarApp_POPUP" ;;
   esac
-
 </string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
