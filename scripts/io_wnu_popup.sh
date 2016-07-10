@@ -270,16 +270,17 @@ function io_netstat {
 }
 
 function io_tshark {
-  mkdir -p ~/Desktop/captured
+  mkdir -p ~/Desktop/dump
   tshark -D | grep USB | awk '{print $2}' > /tmp/device
   "$POPUP" -reply -message "Set captures size packet" -title 'I/O Wireless Network Utility' > "$CONF"io_captures_sise
   io_captures_sise=$(cat "$CONF"io_captures_sise)
   exec 6<&0
   exec < /tmp/device
   read a1
-  sudo tshark -i "$a1" -T pdml -c "$io_captures_sise" > ~/Desktop/captured/captured.xml &&
-  cp /usr/local/sbin/pdml2html.xsl ~/Desktop/captured/pdml2html.xsl ;
-  open -a Safari ~/Desktop/captured/captured.xml
+  tshark -i "$a1" -T pdml -c "$io_captures_sise" > ~/Desktop/dump/dump.xml
+  tcpdump -i "$a1" -c "$io_captures_sise" -w ~/Desktop/dump/dump.pcap
+  cp /usr/local/sbin/pdml2html.xsl ~/Desktop/dump/pdml2html.xsl ;
+  open -a Safari ~/Desktop/dump/dump.xml
   rm -rf /tmp/device
 }
 
