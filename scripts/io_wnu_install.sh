@@ -27,6 +27,7 @@ function io_stop {
 	sudo rm -rf /usr/local/lib/liblzo2*
 	sudo rm -rf /usr/local/opt/libevent/
 	sudo rm -rf /usr/local/opt/libsodium/
+	sudo rm -rf /usr/local/sbin/minisign
 	sudo rm -rf /usr/local/sbin/openvpn
 	sudo rm -rf /usr/local/sbin/tshark
 	sudo rm -rf /usr/local/sbin/pdml2html.xsl
@@ -49,6 +50,7 @@ function io_config {
 	cp ../bin/tshark /usr/local/sbin
 	cp ../bin/pdml2html.xsl /usr/local/sbin
 	cp ../bin/speedtest.py /usr/local/sbin
+	cp ../bin/minisign /usr/local/sbin
 	cp ../lib/liblzo2* /usr/local/lib
 	cp ../lib/libevent* /usr/local/opt/libevent/lib/
 	cp ../lib/libsodium* /usr/local/opt/libsodium/lib/

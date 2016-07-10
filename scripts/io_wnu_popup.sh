@@ -1,9 +1,19 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
-INTERFACE=`networksetup -listallnetworkservices | grep USB`
-INTERFACE=`networksetup -listallnetworkservices | grep USB` ## 802.11n WLAN Adapter
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
+
+# check_interface_name
+networksetup -listallnetworkservices | grep USB > "$CONF"device_name
+INTERFACE=$(cat "$CONF"device_name)
+
+if [ "networksetup -listallnetworkservices | grep USB" != 'cat "$CONF"device_name' ]; then
+    networksetup -listallnetworkservices | grep USB > "$CONF"device_name
+else
+    networksetup -listallnetworkservices | grep Adapter > "$CONF"device_name
+fi
+
+#INTERFACE=`networksetup -listallnetworkservices | grep USB` ## 802.11n WLAN Adapter
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
 POPUP=/usr/local/sbin/io_wnu_popup
@@ -80,7 +90,7 @@ function switch_dnscrypt {
   if [ "$unit" != "Enabled" ]; then
     echo Enabled > "$CONF"dnscrypt
     update_dnscrypt
-    osascript -e "do shell script \"`sudo /usr/local/sbin/dnscrypt-proxy --ephemeral-keys --resolvers-list=/tmp/dnscrypt-proxy/dnscrypt-resolvers.csv --resolver-name=dnscrypt.eu-dk --user=nobody`\" with administrator privileges" & sleep 2 ; networksetup -setdnsservers "$INTERFACE" 127.0.0.1 & test_dns
+    networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; osascript -e "do shell script \"`sudo /usr/local/sbin/dnscrypt-proxy --ephemeral-keys --resolvers-list=/tmp/dnscrypt-proxy/dnscrypt-resolvers.csv --resolver-name=dnscrypt.eu-dk --user=nobody`\" with administrator privileges" & sleep 2 & test_dns
   else
     echo Disabled > "$CONF"dnscrypt
     osascript -e "do shell script \"`sudo killall -9 dnscrypt-proxy`\" with administrator privileges" ; networksetup -setdnsservers "$INTERFACE" Empty ; "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
