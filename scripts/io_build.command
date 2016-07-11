@@ -7,11 +7,11 @@ cd $ROOT_PATH;
 shc='./shc -v -r -f'
 
 function obfuscation {
-	$shc compiling.sh
-	$shc io_wnu_install.sh
-	$shc io_wnu_popup.sh
-	$shc io_wnu_uninstall.sh
-	$shc io_wnu.sh
+	$shc io_build.command
+	$shc io_wnu_install.command
+	$shc io_wnu_popup.command
+	$shc io_wnu_uninstall.command
+	$shc io_wnu.command
 }
 
 function move {
@@ -21,7 +21,7 @@ function move {
 }
 
 function rename {
-	for i in `find c_bin/ -name "*.sh.x"`; do mv $i $(ls $i|sed -e 's/\.sh.x//'); done
+	for i in `find c_bin/ -name "*.command.x"`; do mv $i $(ls $i|sed -e 's/\.command.x//'); done
 }
 obfuscation
 move

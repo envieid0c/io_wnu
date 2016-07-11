@@ -1,7 +1,13 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
+APP=/Library/Application\ Support/WLAN/StatusBarApp.app
 CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
+POPUP=/usr/local/sbin/io_wnu_popup
+SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
+SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
+ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
+CHECK_SERVICE=$(cat "$CONF"check_service)
 
 # check_interface_name
 networksetup -listallnetworkservices | grep USB > "$CONF"device_name
@@ -12,14 +18,6 @@ if [ "networksetup -listallnetworkservices | grep USB" != 'cat "$CONF"device_nam
 else
     networksetup -listallnetworkservices | grep Adapter > "$CONF"device_name
 fi
-
-#INTERFACE=`networksetup -listallnetworkservices | grep USB` ## 802.11n WLAN Adapter
-APP=/Library/Application\ Support/WLAN/StatusBarApp.app
-SET_MODE=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents
-POPUP=/usr/local/sbin/io_wnu_popup
-ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
-SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
-CHECK_SERVICE=$(cat "$CONF"check_service)
 
 # fix mac:
 networksetup -getmacaddress "$INTERFACE" | awk '{print $3}' > "$CONF"MAC-FIX
