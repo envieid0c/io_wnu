@@ -97,6 +97,7 @@ function io_start {
 	sudo kextload /System/Library/Extensions/RtWlanU.kext
 	sudo kextload /System/Library/Extensions/RtWlanU1827.kext/
 	launchctl load -w -F /Library/LaunchAgents/io_wnu.plist
+	killall Finder
 }
 
 io_startup
