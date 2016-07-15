@@ -142,6 +142,20 @@ function switch_service {
   fi
 }
 
+function switch_ssh_server {
+  unit=$(cat "$CONF"io_ssh_server)
+
+  if [ "$unit" != "Enabled" ]; then
+    echo Enabled > "$CONF"io_ssh_server
+    osascript -e "do shell script \"`sudo systemsetup -f -setremotelogin on`\" with administrator privileges"
+    "$POPUP" -title 'SSH Service enabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+  else
+    echo Disabled > "$CONF"io_ssh_server
+    osascript -e "do shell script \"`sudo systemsetup -f -setremotelogin off`\" with administrator privileges"
+    "$POPUP" -title 'SSH Service disabled' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns
+  fi
+}
+
 function switch_mode {
   CHECK=`ls -al | sed -n '9p' | awk '{print $11}'`
   if [ "$CHECK" != "Dark" ]; then
@@ -357,7 +371,7 @@ function io_utility {
       esac
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Switch SSH Server","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Utility" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -368,6 +382,7 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch DNSCrypt") switch_dnscrypt ;;
     "Switch Service") switch_service ;;
     "Switch OpenVPN") switch_openvpn ;;
+    "Switch SSH Server") switch_ssh_server ;;
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
     "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 -appIcon "$APP"/Contents/Resources/ModelIcon.icns ;;
     "Switch DNS") switch_dns ;;
