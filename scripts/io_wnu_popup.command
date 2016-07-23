@@ -324,19 +324,19 @@ function io_speedtest {
 }
 
 function io_ssh_menu {
-  io_ssh_menu="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "SSH host","Host0","Host1","Host2","Host3","Host4","Host5","Host6","Host7","Host8","Host9","Clean history" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
+  io_ssh_menu="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "SSH host","Host 0","Host 1","Host 2","Host 3","Host 4","Host 5","Host 6","Host 7","Host 8","Host 9","Clean history" -timeout 15 -sound default -appIcon "$APP"/Contents/Resources/ModelIcon.icns)"
     case $io_ssh_menu in
     "SSH host") io_ssh_new_session ;;
-    "Host0") cat "$CONF"io_ssh_list | head -1 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host1") cat "$CONF"io_ssh_list | head -2 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host2") cat "$CONF"io_ssh_list | head -3 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host3") cat "$CONF"io_ssh_list | head -4 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host4") cat "$CONF"io_ssh_list | head -5 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host5") cat "$CONF"io_ssh_list | head -6 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host6") cat "$CONF"io_ssh_list | head -7 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host7") cat "$CONF"io_ssh_list | head -8 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host8") cat "$CONF"io_ssh_list | head -9 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
-    "Host9") cat "$CONF"io_ssh_list | head -10 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 0") cat "$CONF"io_ssh_list | head -1 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 1") cat "$CONF"io_ssh_list | head -2 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 2") cat "$CONF"io_ssh_list | head -3 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 3") cat "$CONF"io_ssh_list | head -4 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 4") cat "$CONF"io_ssh_list | head -5 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 5") cat "$CONF"io_ssh_list | head -6 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 6") cat "$CONF"io_ssh_list | head -7 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 7") cat "$CONF"io_ssh_list | head -8 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 8") cat "$CONF"io_ssh_list | head -9 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
+    "Host 9") cat "$CONF"io_ssh_list | head -10 | tail -1 > "$CONF"io_ssh_active ; exec 6<&0 ; exec < "$CONF"io_ssh_active ; read a1 ; new_window ssh "$a1" ;;
     "Clean history") echo "" > "$CONF"io_ssh_list ;;
   esac
 }
