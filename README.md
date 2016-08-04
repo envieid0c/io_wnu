@@ -17,6 +17,7 @@ Input/Output Wireless Network Utility
 * Enable/Disable DNSCrypt (Randomize config DNSCrypt & Auto update base DNSCrypt)
 * Enable/Disable OpenVPN
 * Switch Dark/Light mode for macOS
+* Switch SSH Server
 * Switch DNS 
     - Local
     - DHCP
