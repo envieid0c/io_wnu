@@ -33,6 +33,7 @@ function io_stop {
 	sudo rm -rf /usr/local/sbin/pdml2html.xsl
 	sudo rm -rf /usr/local/sbin/speedtest.py
 	sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
+	sudo rm -rf /usr/local/sbin/io_wnu_popup
 	sudo killall -9 io_wnu
 }
 
@@ -71,7 +72,7 @@ function io_permissions {
 
 function io_drivers {
 	unzip ../bin/BearExtender-Turbo-b8.zip  -d ../bin/
-	sudo ../bin/installpkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Installer.pkg
+	sudo installer -pkg ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/Installer.pkg -target /
 	rm -rf ../bin/RTLWlanU_MacOS10.6_MacOS10.11_Driver_1830.2.b17_1827.4.b22_DropDownMenu_5.0.2.b8/
 }
 
