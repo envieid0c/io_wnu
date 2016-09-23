@@ -42,22 +42,15 @@ function io_config {
 	mkdir -p /usr/local/opt/libevent/lib/
 	mkdir -p /usr/local/opt/libsodium/lib/
 	mkdir -p /usr/local/opt/openssl/lib/
-	mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/ 
-	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
+	mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
 	sudo cp io_wnu.plist /Library/LaunchAgents/
-	cp ../bin/openvpn /usr/local/sbin
-	cp ../bin/tor/* /usr/local/sbin
-	cp ../bin/event_rpcgen.py /usr/local/sbin
-	cp ../conf/torrc.sample "$CONF"
-	cp ../bin/tshark /usr/local/sbin
-	cp ../bin/pdml2html.xsl /usr/local/sbin
-	cp ../bin/speedtest.py /usr/local/sbin
-	cp ../bin/minisign /usr/local/sbin
-	cp ../lib/liblzo2* /usr/local/lib
-	cp ../lib/libevent* /usr/local/opt/libevent/lib/
-	cp ../lib/libsodium* /usr/local/opt/libsodium/lib/
+	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
+	cp ../alias/sbin/* /usr/local/sbin
+	cp ../alias/lib/liblzo2* /usr/local/lib
+	cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/
+	cp ../alias/lib/libsodium* /usr/local/opt/libsodium/lib/
 	cp ../config.ovpn ~/
-	cp ../bin/dnscrypt-proxy /usr/local/sbin
+	cp ../conf/torrc.sample "$CONF"
 	unzip ../bin/WNU_Switch.zip -d ~/Library/Services/
 	sudo rm -rf ~/Library/Services/__MACOSX/
 }
