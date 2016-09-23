@@ -42,7 +42,7 @@ function io_config {
 	mkdir -p /usr/local/opt/libevent/lib/
 	mkdir -p /usr/local/opt/libsodium/lib/
 	mkdir -p /usr/local/opt/openssl/lib/
-	mkdir -p /usr/local/Cellar/openssl/1.0.2h_1/lib/ 
+	mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/ 
 	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
 	cp ../bin/openvpn /usr/local/sbin
