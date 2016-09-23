@@ -12,6 +12,8 @@
 	<true/>
 	<key>KeepAlive</key>
 	<true/>
+	<key>Disabled</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)</string>
 </dict>
