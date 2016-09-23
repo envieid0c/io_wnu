@@ -15,6 +15,8 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 function io_stop {
 	sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
 	sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+	sudo kextunload -b com.realtek.driver.RtWlanU 2>/dev/null
+	sudo kextunload -b com.realtek.driver.RtWlanU1827 2>/dev/null
 	launchctl unload /Library/LaunchAgents/io_wnu.plist
 	osascript -e 'quit app "StatusBarApp"'
 	sudo rm -rf /Library/LaunchAgents/io_wnu.plist
@@ -44,8 +46,7 @@ function io_config {
 	mkdir -p /usr/local/opt/openssl/lib/
 	mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
 	sudo cp io_wnu.plist /Library/LaunchAgents/
-	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
-	cp ../alias/sbin/* /usr/local/sbin
+	cp ../alias/bin/* /usr/local/sbin
 	cp ../alias/lib/liblzo2* /usr/local/lib
 	cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/
 	cp ../alias/lib/libsodium* /usr/local/opt/libsodium/lib/
@@ -56,12 +57,7 @@ function io_config {
 }
 
 function io_permissions {
-	chmod +x /usr/local/sbin/dnscrypt-proxy
-	chmod +x /usr/local/sbin/io_wnu
-	chmod +x /usr/local/sbin/openvpn
-	chmod +x /usr/local/sbin/tor*
-	chmod +x /usr/local/sbin/tshark
-	chmod +x /usr/local/sbin/speedtest.py
+	chmod +x /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/bin/*
 }
 
 function io_drivers {
