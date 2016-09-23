@@ -20,7 +20,7 @@ function io_stop {
 	sudo rm -rf /Library/LaunchAgents/io_wnu.plist
 	sudo rm -rf /usr/local/sbin/io_wnu
 	sudo rm -rf /usr/local/sbin/io_wnu_popup
-	sudo rm -rf /usr/local/sbin/tor
+	sudo rm -rf /usr/local/sbin/tor*
 	sudo rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
 	sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/
 	sudo rm -rf /usr/local/sbin/dnscrypt-proxy
@@ -46,7 +46,8 @@ function io_config {
 	cp c_bin/io_wnu ../bin/io_wnu_popup /usr/local/sbin
 	sudo cp io_wnu.plist /Library/LaunchAgents/
 	cp ../bin/openvpn /usr/local/sbin
-	cp ../bin/tor /usr/local/sbin
+	cp ../bin/tor/* /usr/local/sbin
+	cp ../bin/event_rpcgen.py /usr/local/sbin
 	cp ../conf/torrc.sample "$CONF"
 	cp ../bin/tshark /usr/local/sbin
 	cp ../bin/pdml2html.xsl /usr/local/sbin
@@ -65,7 +66,7 @@ function io_permissions {
 	chmod +x /usr/local/sbin/dnscrypt-proxy
 	chmod +x /usr/local/sbin/io_wnu
 	chmod +x /usr/local/sbin/openvpn
-	chmod +x /usr/local/sbin/tor
+	chmod +x /usr/local/sbin/tor*
 	chmod +x /usr/local/sbin/tshark
 	chmod +x /usr/local/sbin/speedtest.py
 }
