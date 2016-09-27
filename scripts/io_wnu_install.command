@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
-CONF=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
+CONF=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents/conf/
 SLE=/System/Library/Extensions/
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 cd $ROOT_PATH;
@@ -36,7 +36,9 @@ function io_stop {
 	sudo rm -rf /usr/local/lib/liblzo2*
 	sudo rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
 	sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/
+	sudo rm -rf /Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 	sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
+	
 	# fix for remove config "yes" "no"
 	#sudo cp /Library/Application\ Support/WLAN/StatusBarApp.app/Content/conf* ~/Desktop/backup/
 	#sudo rm -rf /Library/Application\ Support/WLAN/com.realtek.utility.wifi/
@@ -50,6 +52,7 @@ function io_config {
 	mkdir -p /usr/local/opt/openssl/lib/
 	mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
 	sudo cp io_wnu.plist /Library/LaunchAgents/
+	cp ../alias/com.realtek.utility.wifi /Library/Application\ Support/WLAN/
 	cp ../alias/bin/* /usr/local/sbin
 	cp ../alias/lib/liblzo2* /usr/local/lib
 	cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/
