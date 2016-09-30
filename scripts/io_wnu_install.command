@@ -1,7 +1,9 @@
 #!/bin/bash
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
-CONF=/Library/Application\ Support/WLAN/StatusBarApp.app/Contents/conf/
+APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
+CONF="$APP"Contents/conf/
+SBIN="$APP"Contents/sbin/
 SLE=/System/Library/Extensions/
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 cd $ROOT_PATH;
@@ -52,8 +54,7 @@ function io_config {
 	mkdir -p /usr/local/opt/openssl/lib/
 	mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
 	sudo cp io_wnu.plist /Library/LaunchAgents/
-	cp ../alias/com.realtek.utility.wifi /Library/Application\ Support/WLAN/
-	cp ../alias/bin/* /usr/local/sbin
+	cp ../alias/sbin/* "$APP"
 	cp ../alias/lib/liblzo2* /usr/local/lib
 	cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/
 	cp ../alias/lib/libsodium* /usr/local/opt/libsodium/lib/
