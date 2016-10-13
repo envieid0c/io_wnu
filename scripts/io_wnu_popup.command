@@ -7,6 +7,7 @@ POPUP="$APP"Contents/sbin/io_wnu_popup
 SBIN="$APP"Contents/sbin/
 SET_MODE="$APP"Contents/
 SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
+SLE=/System/Library/Extensions/
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 CHECK_SERVICE=$(cat "$CONF"check_service)
 
@@ -372,7 +373,16 @@ function io_utility {
       esac
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Switch SSH Server","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Utility" -timeout 15 -sound default -appIcon "$APP"Contents/Resources/ModelIcon.icns)"
+function io_reload {
+	osascript -e "do shell script \"`sudo -v`\" with administrator privileges" &&
+	while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+	sudo kextload $SLE/RtWlanU.kext
+	sudo kextload $SLE/RtWlanU1827.kext
+	sudo killall -9 StatusBarApp
+	launchctl load -w -F /Library/LaunchAgents/io_wnu.plist
+}
+
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Switch SSH Server","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Reload Kext/Service","Utility" -timeout 15 -sound default -appIcon "$APP"Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -391,5 +401,6 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Show/Hide Bar Menu") switch_utility ;;
     "Status") io_status ;;
     "Utility") io_utility ;;
+	"Reload Kext/Service") io_reload ; "$POPUP" -title 'The Kext and Service reloader' -message '' -timeout 3 -appIcon "$APP"Contents/Resources/ModelIcon.icns ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
