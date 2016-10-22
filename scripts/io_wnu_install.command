@@ -5,13 +5,15 @@ printf '\e[8;34;90t'
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 CONF="$APP"Contents/conf/
-GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
+GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
-SCRIPTVER="v0.0.4"
-SELF_UPDATE_OPT="YES"
+SCRIPTVER="v0.0.3"
+SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
+
+BUILDER=$USER # don't touch!
 
 cd $ROOT_PATH;
 
@@ -171,46 +173,6 @@ printiownuScriptRev() {
     printHeader "IO_WNU script $SVERSION"
 }
 # --------------------------------------
-printCloverRev() {
-    # get the revisions
-    getRev "remote_local"
-
-    # Remote
-    if [ -z "${REMOTE_REV}" ]; then
-        PING_RESPONSE="NO"
-        REMOTE_REV="Something went wrong while getting the remote revision, check your internet connection!"
-        printError "$REMOTE_REV"
-        printf "\n"
-        # Local
-        if [ -z "${LOCAL_REV}" ]; then
-            LOCAL_REV="Something went wrong while getting the local revision!"
-            printError "$LOCAL_REV"
-        else
-            LOCAL_REV="${LOCAL_REV}"
-            printWarning "${2}${LOCAL_REV}"
-        fi
-    else
-        PING_RESPONSE="YES"
-        REMOTE_REV="${REMOTE_REV}"
-        printf "\033[1;32m${1}${REMOTE_REV}\033[0m\040"
-        # Local
-        if [ -z "${LOCAL_REV}" ]; then
-            LOCAL_REV="\nSomething went wrong while getting the local revision!"
-            printError "$LOCAL_REV"
-        else
-            LOCAL_REV="${LOCAL_REV}"
-            if [ "${LOCAL_REV}" == "${REMOTE_REV}" ]; then
-                printf "\033[1;32m${2}${LOCAL_REV}\033[0m\040"
-            else
-                printWarning "${2}${LOCAL_REV}"
-            fi
-        fi
-    fi
-
-    printf "\n"
-    echo "${Line}"
-}
-# --------------------------------------
 donwloader(){
     #$1 link
     #$2 file name
@@ -258,7 +220,7 @@ sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
-function io_stop() {
+io_uninstall() {
     echo "Remove App's & Kext's..."
     sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
     sudo kextunload $SLE/RtWlanU.kext 2>/dev/null
@@ -395,10 +357,22 @@ build() {
         echo 'Please enter your choice: '
         local options=()
         if [[ "$SELF_UPDATE_OPT" == YES ]]; then
-            options+=("update io_wnu_install.command")
+            options+=("update io_wnu.command")
         fi
-        if [[ -x $(which wget) ]]; then
-            selfUpdate wget
+
+        if [[ "$BUILDER" == 'slice' ]]; then
+            set +e
+        else
+            options+=("Reload kext")
+            options+=("UNINSTALL!")
+            options+=("Back to Main Menu")
+            options+=("Exit")
+        fi
+        
+        select opt in "${options[@]}"
+        do
+            case $opt in
+            "update io_wnu.command")
                 if [[ -x $(which wget) ]]; then
                     selfUpdate wget
                 elif [[ -x $(which curl) ]]; then
@@ -407,11 +381,25 @@ build() {
                     printError "\nNo curl nor wget are installed! Install one of them and retry..\n" && exit 1
                 fi
                 build
-        fi
+            ;;
+            "UNINSTALL!")
+                io_uninstall
+            ;;
+            "Back to Main Menu")
+                build
+            ;;
+            "Exit")
+                exit 0;
+            ;;
+            *)
+                build
+            ;;
+            esac
+        done
 }     
 
 build
-#io_stop
+#io_uninstall
 #io_drivers
 #io_cache
 #io_replace_app
