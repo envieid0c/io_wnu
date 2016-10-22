@@ -104,7 +104,7 @@ selfUpdate() {
         pressAnyKey 'was not possible to retrieve updates for io_wnu.command,'
     fi
     echo "test"
-    #rm -f /tmp/io_wnu.txt
+    rm -f /tmp/io_wnu.txt
 }
 
 # <----------------------------
