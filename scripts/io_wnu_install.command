@@ -9,7 +9,7 @@ GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
 SCRIPTVER="v0.0.4"
-SELF_UPDATE_OPT="NO"
+SELF_UPDATE_OPT="YES"
 SLE=/System/Library/Extensions/
 MODE="S"
 
@@ -395,7 +395,7 @@ build() {
         echo 'Please enter your choice: '
         local options=()
         if [[ "$SELF_UPDATE_OPT" == YES ]]; then
-            options+=("update Build_Clover.command")
+            options+=("update io_wnu_install.command")
         fi
         if [[ -x $(which wget) ]]; then
             selfUpdate wget
