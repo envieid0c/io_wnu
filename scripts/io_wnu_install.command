@@ -5,15 +5,32 @@ printf '\e[8;34;90t'
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 CONF="$APP"Contents/conf/
-GITHUB='https://github.com/envieid0c/io_wnu/blob/master/scripts/io_wnu_install.command'
+GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
+ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
 SCRIPTVER="v0.0.2"
+SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
-ROOT_PATH=$(cd $(dirname $0) && pwd);
+MODE="S"
+
 cd $ROOT_PATH;
 
+IsNumericOnly() {
+    if [[ "${1}" =~ ^-?[0-9]+$ ]]; then
+        return 0 # no, contains other or is empty
+    else
+        return 1 # yes is an integer (no matter for bash if there are zeroes at the beginning comparing it as integer)
+    fi
+}
+
+pressAnyKey(){
+    clear
+    printf "${1}\n"
+    read -rsp $'Press any key to continue...\n' -n1 key
+    clear
+}
+
 selfUpdate() {
-    printHeader "SELF UPDATE"
     local SELF_PATH="${0}"
     local cmd=""
     local newScriptRev=""
@@ -56,9 +73,7 @@ selfUpdate() {
                     if [[ "$MODE" == "R" ]]; then
                         if IsNumericOnly $lineVarNum; then
                             if [[ "$SYSNAME" == Linux ]]; then
-                                sed -i "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu.txt
-                            else
-                                sed -i "" "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu.txt
+                                sed -i /tmp/io_wnu.txt
                             fi
                             cat /tmp/io_wnu.txt > "${SELF_PATH}"
                             echo "done!"
@@ -86,8 +101,180 @@ selfUpdate() {
     else
         pressAnyKey 'was not possible to retrieve updates for io_wnu.command,'
     fi
-    rm -f /tmp/io_wnu.txt
+    echo "test"
+    #rm -f /tmp/io_wnu.txt
 }
+
+# <----------------------------
+# Separators lines
+ThickLine='==============================================================================='
+Line='                          <----------------------------------------------------'
+# --------------------------------------
+# functions
+# --------------------------------------
+# usefull before/after creating an array
+# with custom separator
+restoreIFS() {
+    IFS=$' \t\n';
+}
+# --------------------------------------
+printHeader() {
+    echo "${ThickLine}"
+    printf "\033[1;34m${1}\033[0m\n"
+    echo "${Line}"
+}
+# --------------------------------------
+printError() {
+    printf "\033[1;31m${1}\033[0m"
+#    exit 1
+}
+# --------------------------------------
+printWarning() {
+    printf "\033[1;33m${1}\033[0m"
+}
+# --------------------------------------
+# don't use sudo!
+if [[ $EUID -eq 0 ]]; then
+    echo
+    printError "\nThis script should not be run using sudo!!\n"
+    exit 1
+fi
+# --------------------------------------
+printiownuScriptRev() {
+    local LVALUE
+    local RVALUE
+    local SVERSION
+    local RSCRIPTVER
+
+    if ping -c 1 github.com >> /dev/null 2>&1; then
+        # Retrive and filter remote script version
+        RSCRIPTVER='v'$(curl -v --silent $GITHUB 2>&1 | grep '^SCRIPTVER="v' | tr -cd '.0-9')
+
+        LVALUE=$(echo $SCRIPTVER | tr -cd [:digit:])
+        RVALUE=$(echo $RSCRIPTVER | tr -cd [:digit:])
+
+        # Compare local and remote script version
+        if [ $LVALUE -eq $RVALUE ]; then
+            SELF_UPDATE_OPT="NO"
+            SVERSION="\033[1;32m${2}${SCRIPTVER}\033[0m\040 is the latest version avaiable"
+        elif [ $LVALUE -gt $RVALUE ]; then
+            SELF_UPDATE_OPT="NO"
+            SVERSION="${SCRIPTVER} (wow, you coming from the future?)"
+        else
+            SELF_UPDATE_OPT="YES"
+            SVERSION="${SCRIPTVER} a new version $RSCRIPTVER is available for download"
+        fi
+    else
+        printError "IO_WNU script ${SCRIPTVER}\n(remote version unavailable because\ngithub is unreachable, check your internet connection)\n"
+    fi
+    printHeader "IO_WNU script $SVERSION"
+}
+# --------------------------------------
+printCloverRev() {
+    # get the revisions
+    getRev "remote_local"
+
+    # Remote
+    if [ -z "${REMOTE_REV}" ]; then
+        PING_RESPONSE="NO"
+        REMOTE_REV="Something went wrong while getting the remote revision, check your internet connection!"
+        printError "$REMOTE_REV"
+        printf "\n"
+        # Local
+        if [ -z "${LOCAL_REV}" ]; then
+            LOCAL_REV="Something went wrong while getting the local revision!"
+            printError "$LOCAL_REV"
+        else
+            LOCAL_REV="${LOCAL_REV}"
+            printWarning "${2}${LOCAL_REV}"
+        fi
+    else
+        PING_RESPONSE="YES"
+        REMOTE_REV="${REMOTE_REV}"
+        printf "\033[1;32m${1}${REMOTE_REV}\033[0m\040"
+        # Local
+        if [ -z "${LOCAL_REV}" ]; then
+            LOCAL_REV="\nSomething went wrong while getting the local revision!"
+            printError "$LOCAL_REV"
+        else
+            LOCAL_REV="${LOCAL_REV}"
+            if [ "${LOCAL_REV}" == "${REMOTE_REV}" ]; then
+                printf "\033[1;32m${2}${LOCAL_REV}\033[0m\040"
+            else
+                printWarning "${2}${LOCAL_REV}"
+            fi
+        fi
+    fi
+
+    printf "\n"
+    echo "${Line}"
+}
+# --------------------------------------
+donwloader(){
+    #$1 link
+    #$2 file name
+    #$3 path (where will be saved)
+    local cmd=""
+    local downloadlink=""
+    local suggestedFilename=""
+    local downloadLocation=""
+
+    if [ -z "${1}" ]; then printError "\nError: donwloader() require 3 argument!!\n" && exit 1; fi
+    if [ -z "${2}" ]; then
+        printError "\nError: donwloader() require a suggested file name\n" && exit 1
+    fi
+    if [ -z "${3}" ] || [[ ! -d "${3}" ]]; then printError "\nError: donwloader() require the download path!!\n" && exit 1; fi
+
+    downloadlink="${1}"
+    suggestedFilename="${2}"
+    downloadLocation="${3}"
+
+    if [[ -x $(which wget) ]]; then
+        cmd="wget -O ${downloadLocation}/${suggestedFilename} ${downloadlink}"
+    elif [[ -x $(which curl) ]]; then
+        cmd="curl -o ${downloadLocation}/${suggestedFilename} -LOk ${downloadlink}"
+    else
+        printError "\nNo curl nor wget are installed! Install one of them and retry..\n" && exit 1
+    fi
+
+    # default behavior = replace existing download!
+    if [[ -d "${downloadLocation}/${suggestedFilename}" ]]; then
+        rm -rf "${downloadLocation}/${suggestedFilename}"
+    fi
+
+    eval "${cmd}"
+}
+# --------------------------------------
+aptInstall() {
+ 
+    if [[ -z "${1}" ]]; then 
+        return
+    fi
+    printWarning "IO_WNU need this:\n"
+    printError "${1}\n"
+    printWarning "..to be installed, but was not found.\n"
+    printWarning "would you allow to install it? (Y/N)\n"
+	
+    read answer
+
+    case $answer in
+    Y | y)
+        if [[ "$USER" != root ]]; then echo "type your password to install:"; fi
+        sudo apt-get update 	
+        sudo apt-get install "${1}"
+    ;;
+    *)
+        printError "IO_WNU cannot go ahead without it/them, process aborted!\n"
+        exit 1
+    ;;
+    esac
+    sudo -k	
+}
+# --------------------------------------
+clear
+# print local Script revision with relative info
+printiownuScriptRev
+printHeader "By Micky1979 based on Slice, Zenith432, STLVNUB, JrCs, cecekpawon, Needy,\ncvad, Rehabman, philip_petev, ErmaC\n\nSupported OSes: macOS X, Ubuntu 16.04, Debian Jessie 8.6"
 
 function io_startup() {
 # acquire sudo at the beginning
@@ -229,11 +416,19 @@ function io_start() {
 	launchctl load -w -F /Library/LaunchAgents/io_wnu.plist 2>/dev/null
 }
 
-io_stop
-io_drivers
-io_cache
-io_replace_app
-io_config
-io_permissions
-io_fix_mac
-io_start
+if [[ -x $(which wget) ]]; then
+                    selfUpdate wget
+                elif [[ -x $(which curl) ]]; then
+                    selfUpdate curl
+                else
+                	echo "1"
+                fi
+                	echo "2"
+#io_stop
+#io_drivers
+#io_cache
+#io_replace_app
+#io_config
+#io_permissions
+#io_fix_mac
+#io_start
