@@ -395,7 +395,7 @@ build() {
         echo 'Please enter your choice: '
         local options=()
         if [[ "$SELF_UPDATE_OPT" == YES ]]; then
-            options+=("update io_wnu_install.command")
+            options+=("update Build_Clover.command")
         fi
         if [[ -x $(which wget) ]]; then
             selfUpdate wget
@@ -408,7 +408,9 @@ build() {
                 fi
                 build
         fi
-}
+}     
+
+build
 #io_stop
 #io_drivers
 #io_cache
