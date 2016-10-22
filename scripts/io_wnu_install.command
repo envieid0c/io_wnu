@@ -5,7 +5,7 @@ printf '\e[8;34;90t'
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 CONF="$APP"Contents/conf/
-GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu.command'
+GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
 SCRIPTVER="v0.0.3"
@@ -56,44 +56,44 @@ selfUpdate() {
 
     # don't fail if no script is avail
     if [ -n "${newScript}" ]; then
-        echo "${newScript}" > /tmp/io_wnu.txt
-        newScript=$(cat /tmp/io_wnu.txt)
-        newScriptRev=$(cat /tmp/io_wnu.txt | grep 'SCRIPTVER=' | tr -cd [:digit:])
+        echo "${newScript}" > /tmp/io_wnu_install.txt
+        newScript=$(cat /tmp/io_wnu_install.txt)
+        newScriptRev=$(cat /tmp/io_wnu_install.txt | grep 'SCRIPTVER=' | tr -cd [:digit:])
 
         if IsNumericOnly $currScriptRev && IsNumericOnly $newScriptRev; then
             if [ "$newScriptRev" -gt "$currScriptRev" ]; then
                 # we have a new script, prompt the user
-                printf "\na new io_wnu.command is available,\n"
+                printf "\na new io_wnu_install.command is available,\n"
                 echo "do you want to overwrite the script? (Y/n)\n"
                 read answer
 
                 case $answer in
                 Y | y)
                     # get the line containing MODE variable and replace with what is currently in old script:
-                    local lineVarNum=$(cat /tmp/io_wnu.txt | grep -n '^MODE="' | awk -F ":" '{print $1}')
+                    local lineVarNum=$(cat /tmp/io_wnu_install.txt | grep -n '^MODE="' | awk -F ":" '{print $1}')
 
                     if [[ "$MODE" == "R" ]]; then
                         if IsNumericOnly $lineVarNum; then
                             if [[ "$SYSNAME" == Linux ]]; then
-                                sed -i "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu.txt
+                                sed -i "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu_install.txt
                             else
-                                sed -i "" "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu.txt
+                                sed -i "" "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu_install.txt
                             fi
-                            cat /tmp/io_wnu.txt > "${SELF_PATH}"
+                            cat /tmp/io_wnu_install.txt > "${SELF_PATH}"
                             echo "done!"
-                            rm -f /tmp/io_wnu.txt
+                            rm -f /tmp/io_wnu_install.txt
                             exec "${SELF_PATH}"
                         else
-                            cat /tmp/io_wnu.txt > "${SELF_PATH}"
+                            cat /tmp/io_wnu_install.txt > "${SELF_PATH}"
                             echo "Warning: was not possible to ensure that MODE var was correctly set,"
                             echo "so apply your changes (if any) and re run the new script"
-                            rm -f /tmp/io_wnu.txt
+                            rm -f /tmp/io_wnu_install.txt
                             exit 0
                         fi
                     else
-                        cat /tmp/io_wnu.txt > "${SELF_PATH}"
+                        cat /tmp/io_wnu_install.txt > "${SELF_PATH}"
                         echo "done!"
-                        rm -f /tmp/io_wnu.txt
+                        rm -f /tmp/io_wnu_install.txt
                         exec "${SELF_PATH}"
                     fi
                 ;;
@@ -103,9 +103,9 @@ selfUpdate() {
             fi
         fi
     else
-        pressAnyKey 'was not possible to retrieve updates for io_wnu.command,'
+        pressAnyKey 'was not possible to retrieve updates for io_wnu_install.command,'
     fi
-    rm -f /tmp/io_wnu.txt
+    rm -f /tmp/io_wnu_install.txt
 }
 
 # <----------------------------
@@ -222,12 +222,12 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 io_uninstall() {
     echo "Remove App's & Kext's..."
-    sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+    sudo launchctl unload /Library/LaunchAgents/io_wnu_install.plist 2>/dev/null
     sudo kextunload $SLE/RtWlanU.kext 2>/dev/null
     sudo kextunload $SLE/RtWlanU1827.kext 2>/dev/null
     sudo rm -rf $SLE/RtWlanU.kext
     sudo rm -rf $SLE/RtWlanU1827.kext
-    launchctl unload /Library/LaunchAgents/io_wnu.plist
+    launchctl unload /Library/LaunchAgents/io_wnu_install.plist
     osascript -e 'quit app "StatusBarApp"'
     sudo rm -rf /usr/local/opt/libevent/
     sudo rm -rf /usr/local/opt/libsodium/
@@ -238,7 +238,7 @@ io_uninstall() {
     sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
     # new fix
     echo "Remove UI..."
-    sudo rm -rf /Library/LaunchAgents/io_wnu.plist
+    sudo rm -rf /Library/LaunchAgents/io_wnu_install.plist
     sudo rm -rf /Library/LaunchAgents/WlanAC104.Software
     sudo rm -rf /Library/LaunchAgents/WlanAC.Software
     sudo rm -rf /Library/LaunchAgents/WlanAC.plist
@@ -314,7 +314,7 @@ function io_config() {
     mkdir -p /usr/local/opt/openssl/lib/
     mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
     mkdir -p /Library/Application\ Support/WLAN/com.realtek.utility.wifi
-    sudo cp io_wnu.plist /Library/LaunchAgents/
+    sudo cp io_wnu_install.plist /Library/LaunchAgents/
     cp ../alias/sbin/* "$APP"
     cp ../alias/lib/liblzo2* /usr/local/lib 2>/dev/null
     cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/ 2>/dev/null
@@ -349,14 +349,14 @@ function io_start() {
     sudo kextload $SLE/RtWlanU.kext 2>/dev/null
     sudo kextload $SLE/RtWlanU1827.kext 2>/dev/null
     sudo killall -9 StatusBarApp 2>/dev/null
-    launchctl load -w -F /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+    launchctl load -w -F /Library/LaunchAgents/io_wnu_install.plist 2>/dev/null
 }
 
 build() {
         echo 'Please enter your choice: '
         local options=()
         if [[ "$SELF_UPDATE_OPT" == YES ]]; then
-            options+=("update io_wnu.command")
+            options+=("Update Script")
         fi
 
         if [[ "$BUILDER" == 'slice' ]]; then
@@ -370,7 +370,7 @@ build() {
         select opt in "${options[@]}"
         do
             case $opt in
-            "update io_wnu.command")
+            "Update Script")
                 if [[ -x $(which wget) ]]; then
                     selfUpdate wget
                 elif [[ -x $(which curl) ]]; then
