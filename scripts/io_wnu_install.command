@@ -8,7 +8,7 @@ CONF="$APP"Contents/conf/
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
-SCRIPTVER="v0.0.3"
+SCRIPTVER="v0.0.4"
 SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
@@ -103,14 +103,13 @@ selfUpdate() {
     else
         pressAnyKey 'was not possible to retrieve updates for io_wnu.command,'
     fi
-    echo "test"
     rm -f /tmp/io_wnu.txt
 }
 
 # <----------------------------
 # Separators lines
-ThickLine='==============================================================================='
-Line='                          <----------------------------------------------------'
+ThickLine='=========================================================================================='
+Line='                          <---------------------------------------------------------------'
 # --------------------------------------
 # functions
 # --------------------------------------
@@ -250,7 +249,7 @@ donwloader(){
 clear
 # print local Script revision with relative info
 printiownuScriptRev
-printHeader "By Micky1979 based on Slice, Zenith432, STLVNUB, JrCs, cecekpawon, Needy,\ncvad, Rehabman, philip_petev, ErmaC\n\nSupported OSes: macOS X, Ubuntu 16.04, Debian Jessie 8.6"
+printHeader "By Micky1979 based on Slice"
 
 function io_startup() {
 # acquire sudo at the beginning
@@ -392,14 +391,24 @@ function io_start() {
     launchctl load -w -F /Library/LaunchAgents/io_wnu.plist 2>/dev/null
 }
 
-if [[ -x $(which wget) ]]; then
+build() {
+        echo 'Please enter your choice: '
+        local options=()
+        if [[ "$SELF_UPDATE_OPT" == YES ]]; then
+            options+=("update Build_Clover.command")
+        fi
+        if [[ -x $(which wget) ]]; then
+            selfUpdate wget
+                if [[ -x $(which wget) ]]; then
                     selfUpdate wget
                 elif [[ -x $(which curl) ]]; then
                     selfUpdate curl
                 else
-                    echo "1"
+                    printError "\nNo curl nor wget are installed! Install one of them and retry..\n" && exit 1
                 fi
-                    echo "2"
+                build
+        fi
+}
 #io_stop
 #io_drivers
 #io_cache
