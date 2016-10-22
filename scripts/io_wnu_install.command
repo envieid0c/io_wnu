@@ -63,12 +63,39 @@ selfUpdate() {
                 # we have a new script, prompt the user
                 printf "\na new io_wnu.command is available,\n"
                 echo "do you want to overwrite the script? (Y/n)\n"
+                read answer
+
+                case $answer in
+                Y | y)
                     # get the line containing MODE variable and replace with what is currently in old script:
                     local lineVarNum=$(cat /tmp/io_wnu.txt | grep -n '^MODE="' | awk -F ":" '{print $1}')
+
+                    if [[ "$MODE" == "R" ]]; then
+                        if IsNumericOnly $lineVarNum; then
+                            if [[ "$SYSNAME" == Linux ]]; then
+                                sed -i "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu.txt
+                            else
+                                sed -i "" "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu.txt
+                            fi
+                            cat /tmp/io_wnu.txt > "${SELF_PATH}"
+                            echo "done!"
+                            rm -f /tmp/io_wnu.txt
+                            exec "${SELF_PATH}"
+                        else
+                            cat /tmp/io_wnu.txt > "${SELF_PATH}"
+                            echo "Warning: was not possible to ensure that MODE var was correctly set,"
+                            echo "so apply your changes (if any) and re run the new script"
+                            rm -f /tmp/io_wnu.txt
+                            exit 0
+                        fi
+                    else
                         cat /tmp/io_wnu.txt > "${SELF_PATH}"
                         echo "done!"
                         rm -f /tmp/io_wnu.txt
                         exec "${SELF_PATH}"
+                    fi
+                ;;
+                esac
             else
                 pressAnyKey 'your script is up to date,\n'
             fi
@@ -218,32 +245,6 @@ donwloader(){
     fi
 
     eval "${cmd}"
-}
-# --------------------------------------
-aptInstall() {
- 
-    if [[ -z "${1}" ]]; then 
-        return
-    fi
-    printWarning "IO_WNU need this:\n"
-    printError "${1}\n"
-    printWarning "..to be installed, but was not found.\n"
-    printWarning "would you allow to install it? (Y/N)\n"
-    
-    read answer
-
-    case $answer in
-    Y | y)
-        if [[ "$USER" != root ]]; then echo "type your password to install:"; fi
-        sudo apt-get update     
-        sudo apt-get install "${1}"
-    ;;
-    *)
-        printError "IO_WNU cannot go ahead without it/them, process aborted!\n"
-        exit 1
-    ;;
-    esac
-    sudo -k 
 }
 # --------------------------------------
 clear
@@ -396,9 +397,9 @@ if [[ -x $(which wget) ]]; then
                 elif [[ -x $(which curl) ]]; then
                     selfUpdate curl
                 else
-                    printError "\nNo curl nor wget are installed! Install one of them and retry..\n" && exit 1
+                    echo "1"
                 fi
-                    echo "OK"
+                    echo "2"
 #io_stop
 #io_drivers
 #io_cache
