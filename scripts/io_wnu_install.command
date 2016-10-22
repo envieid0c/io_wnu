@@ -288,8 +288,7 @@ io_uninstall() {
 
 function io_drivers() {
     echo "Install drivers..."
-    sudo installer -pkg ../bin/1011/Installer.pkg -target /
-    #sudo installer -pkg ../bin/1012/Installer.pkg -target /
+    sudo installer -pkg ../bin/1012/Installer.pkg -target /
     sudo rm -rf /Library/LaunchAgents/Wlan.Software.plist
 }
 
@@ -363,7 +362,6 @@ build() {
         if [[ "$BUILDER" == 'slice' ]]; then
             set +e
         else
-            options+=("Reload kext")
             options+=("UNINSTALL!")
             options+=("Back to Main Menu")
             options+=("Exit")
