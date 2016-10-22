@@ -396,9 +396,9 @@ if [[ -x $(which wget) ]]; then
                 elif [[ -x $(which curl) ]]; then
                     selfUpdate curl
                 else
-                    echo "1"
+                    printError "\nNo curl nor wget are installed! Install one of them and retry..\n" && exit 1
                 fi
-                    echo "2"
+                    echo "OK"
 #io_stop
 #io_drivers
 #io_cache
