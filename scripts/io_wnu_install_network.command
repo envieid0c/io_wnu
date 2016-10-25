@@ -26,9 +26,7 @@ IsNumericOnly() {
 }
 
 pressAnyKey(){
-    if [[ "${2}" != noclear ]]; then
-        clear
-    fi
+    clear
     printf "${1}\n"
     read -rsp $'Press any key to continue...\n' -n1 key
     clear
@@ -224,12 +222,12 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 io_uninstall() {
     echo "Remove App's & Kext's..."
-    sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+    sudo launchctl unload /Library/LaunchAgents/io_wnu_install.plist 2>/dev/null
     sudo kextunload $SLE/RtWlanU.kext 2>/dev/null
     sudo kextunload $SLE/RtWlanU1827.kext 2>/dev/null
     sudo rm -rf $SLE/RtWlanU.kext
     sudo rm -rf $SLE/RtWlanU1827.kext
-    launchctl unload /Library/LaunchAgents/io_wnu.plist
+    launchctl unload /Library/LaunchAgents/io_wnu_install.plist
     osascript -e 'quit app "StatusBarApp"'
     sudo rm -rf /usr/local/opt/libevent/
     sudo rm -rf /usr/local/opt/libsodium/
@@ -240,7 +238,7 @@ io_uninstall() {
     sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/
     # new fix
     echo "Remove UI..."
-    sudo rm -rf /Library/LaunchAgents/io_wnu.plist
+    sudo rm -rf /Library/LaunchAgents/io_wnu_install.plist
     sudo rm -rf /Library/LaunchAgents/WlanAC104.Software
     sudo rm -rf /Library/LaunchAgents/WlanAC.Software
     sudo rm -rf /Library/LaunchAgents/WlanAC.plist
@@ -288,27 +286,27 @@ io_uninstall() {
     sudo installer -pkg ../bin/1011/Uninstall.pkg -target /
 }
 
-io_drivers() {
+function io_drivers() {
     echo "Install drivers..."
     sudo installer -pkg ../bin/1012/Installer.pkg -target /
     sudo rm -rf /Library/LaunchAgents/Wlan.Software.plist
 }
 
-io_cache() {
+function io_cache() {
     echo "Fix cache..."
     sudo touch /System/Library/Extensions 2>/dev/null
     sudo touch /Library/Extensions 2>/dev/null
     sudo kextcache -u / 2>/dev/null
 }
 
-io_replace_app() {
+function io_replace_app() {
     echo "Replace App..."
     sudo rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
     unzip ../bin/StatusBarApp_mod_AirPort.zip  -d /Library/Application\ Support/WLAN/ >/dev/null
     sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/
 }
 
-io_config() {
+function io_config() {
     echo "Install Config's..."
     mkdir -p /usr/local/sbin
     mkdir -p /usr/local/opt/libevent/lib/ 2>/dev/null
@@ -316,7 +314,7 @@ io_config() {
     mkdir -p /usr/local/opt/openssl/lib/
     mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
     mkdir -p /Library/Application\ Support/WLAN/com.realtek.utility.wifi
-    sudo cp io_wnu.plist /Library/LaunchAgents/
+    sudo cp io_wnu_install.plist /Library/LaunchAgents/
     cp ../alias/sbin/* "$APP"
     cp ../alias/lib/liblzo2* /usr/local/lib 2>/dev/null
     cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/ 2>/dev/null
@@ -327,12 +325,12 @@ io_config() {
     sudo rm -rf ~/Library/Services/__MACOSX/
 }
 
-io_permissions() {
+function io_permissions() {
     echo "Fix Permissions..."
     chmod +x /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/bin/* 2>/dev/null
 }
 
-io_fix_mac() {
+function io_fix_mac() {
     echo "Fix MAC-address..."
 #autofix disabled wifi (testen on 1 device)
     osascript -e 'open app "StatusBarApp"' 2>/dev/null
@@ -346,27 +344,12 @@ io_fix_mac() {
     echo ""         > "$CONF"io_ssh
 }
 
-io_start() {
+function io_start() {
     echo "Start App..."
     sudo kextload $SLE/RtWlanU.kext 2>/dev/null
     sudo kextload $SLE/RtWlanU1827.kext 2>/dev/null
     sudo killall -9 StatusBarApp 2>/dev/null
-    launchctl load -w -F /Library/LaunchAgents/io_wnu.plist 2>/dev/null
-}
-
-showInfo () {
-    clear
-    printHeader "INFO"
-    printf "This script was originally created to be run in newer OSes like El Capitan\n"
-    printf "using Xcode 7.3 +, but should works fine using gcc 4,9 (GCC49)\n"
-    printf "in older ones. Also gcc 5,3 can be used but not actually advised.\n"
-    echo
-    printf "Warning using the \"R\" mode of this script to create the src folder\n"
-    printf "outside the Home folder:\n"
-    printf "Blank spaces in the path are not allowed because it will auto-fail!\n"
-    echo "${Line}"
-    pressAnyKey '' noclear
-    build
+    launchctl load -w -F /Library/LaunchAgents/io_wnu_install.plist 2>/dev/null
 }
 
 build() {
@@ -380,9 +363,7 @@ build() {
             set +e
             options+=("Back to Main Menu")
         else
-            options+=("Update")
-            options+=("Uninstall")
-            options+=("info and limitations about this script")
+            options+=("UNINSTALL!")
             options+=("Exit")
         fi
         
@@ -399,22 +380,8 @@ build() {
                 fi
                 build
             ;;
-            "Update")
-				io_uninstall
-                io_drivers
-                io_cache
-                io_replace_app
-                io_config
-                io_permissions
-                io_fix_mac
-                io_start
-                printf "\033[1;31m ${count}) ${opt}\033[0m\n"
-            ;;
-            "Uninstall")
+            "UNINSTALL!")
                 io_uninstall
-            ;;
-            "info and limitations about this script")
-                showInfo
             ;;
             "Back to Main Menu")
                 build
@@ -423,7 +390,7 @@ build() {
                 exit 0;
             ;;
             *)
-                clear && echo "invalid option!!" && build
+                build
             ;;
             esac
         done

@@ -11,6 +11,200 @@ SLE=/System/Library/Extensions/
 ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
 CHECK_SERVICE=$(cat "$CONF"check_service)
 
+function io_check_update {
+
+  GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_popup.command'
+APPVER="v0.0.3"
+SELF_UPDATE_OPT="NO"
+MODE="S"
+BUILDER=$USER # don't touch!
+
+IsNumericOnly() {
+    if [[ "${1}" =~ ^-?[0-9]+$ ]]; then
+        return 0 # no, contains other or is empty
+    else
+        return 1 # yes is an integer (no matter for bash if there are zeroes at the beginning comparing it as integer)
+    fi
+}
+
+pressAnyKey(){
+    clear
+    printf "${1}\n"
+    read -rsp $'Press any key to continue...\n' -n1 key
+    clear
+}
+
+selfUpdate() {
+    local SELF_PATH="${0}"
+    local cmd=""
+    local newScriptRev=""
+    local currScriptRev=$(echo $APPVER | tr -cd [:digit:]) # in case of beta suffix
+    local newScript=""
+
+    case $1 in
+    wget)
+        cmd='$1 $GITHUB -q -O -'
+    ;;
+    curl)
+        cmd='$1 -L $GITHUB'
+    ;;
+    *)
+        printError "selfUpdate(): invalid cmd!\n"
+        return
+    ;;
+    esac
+
+    newScript=$(eval $cmd)
+
+    # don't fail if no script is avail
+    if [ -n "${newScript}" ]; then
+        echo "${newScript}" > /tmp/io_wnu_popup.txt
+        newScript=$(cat /tmp/io_wnu_popup.txt)
+        newScriptRev=$(cat /tmp/io_wnu_popup.txt | grep 'APPVER=' | tr -cd [:digit:])
+
+        if IsNumericOnly $currScriptRev && IsNumericOnly $newScriptRev; then
+            if [ "$newScriptRev" -gt "$currScriptRev" ]; then
+                # we have a new script, prompt the user
+                printf "\na new io_wnu_popup.command is available,\n"
+                echo "do you want to overwrite the script? (Y/n)\n"
+                read answer
+
+                case $answer in
+                Y | y)
+                    # get the line containing MODE variable and replace with what is currently in old script:
+                    local lineVarNum=$(cat /tmp/io_wnu_popup.txt | grep -n '^MODE="' | awk -F ":" '{print $1}')
+
+                    if [[ "$MODE" == "R" ]]; then
+                        if IsNumericOnly $lineVarNum; then
+                            if [[ "$SYSNAME" == Linux ]]; then
+                                sed -i "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu_popup.txt
+                            else
+                                sed -i "" "${lineVarNum}s/.*/MODE=\"R\"/" /tmp/io_wnu_popup.txt
+                            fi
+                            cat /tmp/io_wnu_popup.txt > "${SELF_PATH}"
+                            echo "done!"
+                            rm -f /tmp/io_wnu_popup.txt
+                            exec "${SELF_PATH}"
+                        else
+                            cat /tmp/io_wnu_popup.txt > "${SELF_PATH}"
+                            echo "Warning: was not possible to ensure that MODE var was correctly set,"
+                            echo "so apply your changes (if any) and re run the new script"
+                            rm -f /tmp/io_wnu_popup.txt
+                            exit 0
+                        fi
+                    else
+                        cat /tmp/io_wnu_popup.txt > "${SELF_PATH}"
+                        echo "done!"
+                        rm -f /tmp/io_wnu_popup.txt
+                        exec "${SELF_PATH}"
+                    fi
+                ;;
+                esac
+            else
+                pressAnyKey 'your script is up to date,\n'
+            fi
+        fi
+    else
+        pressAnyKey 'was not possible to retrieve updates for io_wnu_popup.command,'
+    fi
+    #rm -f /tmp/io_wnu_popup.txt
+}
+
+# <----------------------------
+# functions
+# --------------------------------------
+# usefull before/after creating an array
+# with custom separator
+restoreIFS() {
+    IFS=$' \t\n';
+}
+# --------------------------------------
+printHeader() {
+    printf "\033[1;34m${1}\033[0m\n"
+}
+# --------------------------------------
+printError() {
+    printf "\033[1;31m${1}\033[0m"
+#    exit 1
+}
+# --------------------------------------
+printWarning() {
+    printf "\033[1;33m${1}\033[0m"
+}
+# --------------------------------------
+# don't use sudo!
+if [[ $EUID -eq 0 ]]; then
+    printError "\nThis script should not be run using sudo!!\n"
+    exit 1
+fi
+# --------------------------------------
+printiownuScriptRev() {
+    local LVALUE
+    local RVALUE
+    local SVERSION
+    local RAPPVER
+
+    if ping -c 1 github.com >> /dev/null 2>&1; then
+        # Retrive and filter remote script version
+        RAPPVER='v'$(curl -v --silent $GITHUB 2>&1 | grep '^APPVER="v' | tr -cd '.0-9')
+
+        LVALUE=$(echo $APPVER | tr -cd [:digit:])
+        RVALUE=$(echo $RAPPVER | tr -cd [:digit:])
+
+        # Compare local and remote script version
+        if [ $LVALUE -eq $RVALUE ]; then
+            SELF_UPDATE_OPT="NO"
+            SVERSION="\033[1;32m${2}${APPVER}\033[0m\040 is the latest version avaiable"
+        elif [ $LVALUE -gt $RVALUE ]; then
+            SELF_UPDATE_OPT="NO"
+            SVERSION="${APPVER} (wow, you coming from the future?)"
+        else
+            SELF_UPDATE_OPT="YES"
+            SVERSION="${APPVER} a new version $RAPPVER is available for download"
+        fi
+    else
+        printError "IO_WNU script ${APPVER}\n(remote version unavailable because\ngithub is unreachable, check your internet connection)\n"
+    fi
+    printHeader "IO_WNU script $SVERSION"
+}
+# --------------------------------------
+donwloader(){
+    #$1 link
+    #$2 file name
+    #$3 path (where will be saved)
+    local cmd=""
+    local downloadlink=""
+    local suggestedFilename=""
+    local downloadLocation=""
+
+    if [ -z "${1}" ]; then printError "\nError: donwloader() require 3 argument!!\n" && exit 1; fi
+    if [ -z "${2}" ]; then
+        printError "\nError: donwloader() require a suggested file name\n" && exit 1
+    fi
+    if [ -z "${3}" ] || [[ ! -d "${3}" ]]; then printError "\nError: donwloader() require the download path!!\n" && exit 1; fi
+
+    downloadlink="${1}"
+    suggestedFilename="${2}"
+    downloadLocation="${3}"
+
+    if [[ -x $(which wget) ]]; then
+        cmd="wget -O ${downloadLocation}/${suggestedFilename} ${downloadlink}"
+    elif [[ -x $(which curl) ]]; then
+        cmd="curl -o ${downloadLocation}/${suggestedFilename} -LOk ${downloadlink}"
+    else
+        printError "\nNo curl nor wget are installed! Install one of them and retry..\n" && exit 1
+    fi
+
+    # default behavior = replace existing download!
+    if [[ -d "${downloadLocation}/${suggestedFilename}" ]]; then
+        rm -rf "${downloadLocation}/${suggestedFilename}"
+    fi
+
+    eval "${cmd}"
+}
+
+}
+
 # check_interface_name
 networksetup -listallnetworkservices | grep USB > "$CONF"device_name
 INTERFACE=$(cat "$CONF"device_name)
@@ -382,7 +576,7 @@ function io_reload {
 	launchctl load -w -F /Library/LaunchAgents/io_wnu.plist
 }
 
-StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Switch SSH Server","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Reload Kext/Service","Utility" -timeout 15 -sound default -appIcon "$APP"Contents/Resources/ModelIcon.icns)"
+StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "$CHECK_SERVICE" -message 'Actions?' -actions "Switch Wi-Fi","Switch TOR","Switch DNSCrypt","Switch OpenVPN","Switch Service","Switch SSH Server","Dark/Light mode","Fix Device","Show/Hide Bar Menu","Switch DNS","Status","Reload Kext/Service","Utility","Check Update" -timeout 15 -sound default -appIcon "$APP"Contents/Resources/ModelIcon.icns)"
   case $StatusBarApp_POPUP in
     "@TIMEOUT") echo "timeout" ;;
     "@CLOSED") echo "You clicked on the default alert' close button" ;;
@@ -401,6 +595,7 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Show/Hide Bar Menu") switch_utility ;;
     "Status") io_status ;;
     "Utility") io_utility ;;
-	"Reload Kext/Service") io_reload ; "$POPUP" -title 'The Kext and Service reloader' -message '' -timeout 3 -appIcon "$APP"Contents/Resources/ModelIcon.icns ;;
+    "Check Update") io_check_update ;;
+    "Reload Kext/Service") io_reload ; "$POPUP" -title 'The Kext and Service reloader' -message '' -timeout 3 -appIcon "$APP"Contents/Resources/ModelIcon.icns ;;
     **) echo "? --> $StatusBarApp_POPUP" ;;
   esac
