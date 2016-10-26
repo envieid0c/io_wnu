@@ -5,11 +5,12 @@ printf '\e[8;34;90t'
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 CONF="$APP"Contents/conf/
-HOSTS="$APP"Contents/conf/hosts
+CONTENT="$APP"Contents/
+HOSTS="$APP"Contents/hosts
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
-SCRIPTVER="v0.0.3"
+SCRIPTVER="v0.0.4"
 SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
@@ -359,7 +360,7 @@ io_update_hosts() {
     sudo rm -rf "$HOSTS" /Library/LaunchAgents/io.wnu.hosts.update.plist 
 
     mkdir -p "$"/log/
-    cd "$CONF"
+    cd "$CONTENT"
     git clone "https://github.com/envieid0c/hosts.git"
     cd hosts
     git fetch --all
