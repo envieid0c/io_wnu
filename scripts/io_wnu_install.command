@@ -6,7 +6,7 @@ printf '\e[8;34;90t'
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 CONF="$APP"Contents/conf/
 CONTENT="$APP"Contents/
-HOSTS="$APP"Contents/hosts
+HOSTS="$APP"Contents/hosts/
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
@@ -362,13 +362,13 @@ io_update_hosts() {
     mkdir -p "$"/log/
     cd "$CONTENT"
     git clone "https://github.com/envieid0c/hosts.git"
-    cd hosts
+    cd "$HOSTS"
     git fetch --all
     git reset --hard origin/master
 
     python updateHostsFile.py -a -r
 
-    sudo cp io.wnu.hosts.update.plist /Library/LaunchAgents/
+    sudo cp "$HOSTS"io.wnu.hosts.update.plist /Library/LaunchAgents/
     sudo chmod 600 /Library/LaunchAgents/io.wnu.hosts.update.plist 
     sudo chown root /Library/LaunchAgents/io.wnu.hosts.update.plist
     sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist
