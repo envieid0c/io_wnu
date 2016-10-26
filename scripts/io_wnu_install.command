@@ -372,8 +372,8 @@ io_update_hosts() {
     sudo cp "$HOSTS"io.wnu.hosts.update.plist /Library/LaunchAgents/
     sudo chmod 600 /Library/LaunchAgents/io.wnu.hosts.update.plist 
     sudo chown root /Library/LaunchAgents/io.wnu.hosts.update.plist
-    sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist
-    sudo launchctl load /Library/LaunchAgents/io.wnu.hosts.update.plist
+    sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
+    sudo launchctl load /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
 
 }
 showInfo () {
