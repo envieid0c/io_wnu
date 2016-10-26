@@ -227,6 +227,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 io_uninstall() {
     echo "Remove App's & Kext's..."
     sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+    sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
     sudo kextunload $SLE/RtWlanU.kext 2>/dev/null
     sudo kextunload $SLE/RtWlanU1827.kext 2>/dev/null
     sudo rm -rf $SLE/RtWlanU.kext
