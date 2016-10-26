@@ -10,10 +10,11 @@ HOSTS="$APP"Contents/hosts/
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
-SCRIPTVER="v0.0.4"
+SCRIPTVER="v0.0.5"
 SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
+FLUSHDNS="sudo killall -HUP mDNSResponder"
 
 BUILDER=$USER # don't touch!
 
@@ -354,10 +355,10 @@ io_start() {
     sudo kextload $SLE/RtWlanU.kext 2>/dev/null
     sudo kextload $SLE/RtWlanU1827.kext 2>/dev/null
     sudo killall -9 StatusBarApp 2>/dev/null
-    launchctl load -w -F /Library/LaunchAgents/io_wnu.plist 2>/dev/null
+    launchctl load -w -F /Library/LaunchAgents/io_wnu.plist >/dev/null
 }
 
-io_update_hosts() {
+io_update_hosts_full() {
     sudo rm -rf "$HOSTS" /Library/LaunchAgents/io.wnu.hosts.update.plist 
 
     mkdir -p "$"/log/
@@ -366,6 +367,7 @@ io_update_hosts() {
     cd "$HOSTS"
     git fetch --all
     git reset --hard origin/master
+    sudo cp /etc/hosts /etc/hosts_orig
 
     python updateHostsFile.py -a -r
 
@@ -374,8 +376,20 @@ io_update_hosts() {
     sudo chown root /Library/LaunchAgents/io.wnu.hosts.update.plist
     sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
     sudo launchctl load /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
-
 }
+
+io_update_hosts_db() {
+    cd cd "$HOSTS"
+    python updateHostsFile.py -a -r
+    "$FLUSHDNS"
+}
+
+io_rever_hosts() {
+    sudo rm /etc/hosts
+    sudo cp /etc/hosts_orig /etc/hosts
+    "$FLUSHDNS"
+}
+
 showInfo () {
     clear
     printHeader "INFO"
@@ -402,7 +416,10 @@ build() {
             set +e
             options+=("Back to Main Menu")
         else
-            options+=("Update")
+            options+=("Update ALL")
+            options+=("Update hosts FULL")
+            options+=("Update hosts DB")
+            options+=("Rever hosts to original")
             options+=("Uninstall")
             options+=("info and limitations about this script")
             options+=("Exit")
@@ -421,7 +438,7 @@ build() {
                 fi
                 build
             ;;
-            "Update")
+            "Update ALL")
 				io_uninstall
                 io_drivers
                 io_cache
@@ -430,8 +447,17 @@ build() {
                 io_permissions
                 io_fix_mac
                 io_start
-                io_update_hosts
+                io_update_hosts_full
                 printf "\033[1;31m ${count}) ${opt}\033[0m\n"
+            ;;
+            "Update hosts FULL")
+                io_update_hosts_full
+            ;;
+            "Update hosts DB")
+               io_update_hosts_db
+            ;;
+            "Rever hosts to original")
+                io_rever_hosts
             ;;
             "Uninstall")
                 io_uninstall
