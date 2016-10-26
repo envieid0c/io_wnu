@@ -14,7 +14,6 @@ SCRIPTVER="v0.0.5"
 SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
-FLUSHDNS="sudo killall -HUP mDNSResponder"
 
 BUILDER=$USER # don't touch!
 
@@ -369,7 +368,7 @@ io_update_hosts_full() {
     git reset --hard origin/master
     sudo cp /etc/hosts /etc/hosts_orig
 
-    python updateHostsFile.py -a -r
+    sudo python updateHostsFile.py -a -r
 
     sudo cp "$HOSTS"io.wnu.hosts.update.plist /Library/LaunchAgents/
     sudo chmod 600 /Library/LaunchAgents/io.wnu.hosts.update.plist 
@@ -379,15 +378,14 @@ io_update_hosts_full() {
 }
 
 io_update_hosts_db() {
-    cd cd "$HOSTS"
-    python updateHostsFile.py -a -r
-    "$FLUSHDNS"
+    cd "$HOSTS"
+    sudo python updateHostsFile.py -a -r
 }
 
 io_rever_hosts() {
     sudo rm /etc/hosts
     sudo cp /etc/hosts_orig /etc/hosts
-    "$FLUSHDNS"
+    sudo killall -HUP mDNSResponder
 }
 
 showInfo () {
