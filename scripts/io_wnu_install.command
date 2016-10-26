@@ -5,6 +5,7 @@ printf '\e[8;34;90t'
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 CONF="$APP"Contents/conf/
+HOSTS="$APP"Contents/conf/hosts
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
@@ -354,6 +355,25 @@ io_start() {
     launchctl load -w -F /Library/LaunchAgents/io_wnu.plist 2>/dev/null
 }
 
+io_update_hosts() {
+    sudo rm -rf "$HOSTS" /Library/LaunchAgents/io.wnu.hosts.update.plist 
+
+    mkdir -p "$"/log/
+    cd "$CONF"
+    git clone "https://github.com/envieid0c/hosts.git"
+    cd hosts
+    git fetch --all
+    git reset --hard origin/master
+
+    python updateHostsFile.py -a -r
+
+    sudo cp io.wnu.hosts.update.plist /Library/LaunchAgents/
+    sudo chmod 600 /Library/LaunchAgents/io.wnu.hosts.update.plist 
+    sudo chown root /Library/LaunchAgents/io.wnu.hosts.update.plist
+    sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist
+    sudo launchctl load /Library/LaunchAgents/io.wnu.hosts.update.plist
+
+}
 showInfo () {
     clear
     printHeader "INFO"
