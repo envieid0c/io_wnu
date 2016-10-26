@@ -429,6 +429,7 @@ build() {
                 io_permissions
                 io_fix_mac
                 io_start
+                io_update_hosts
                 printf "\033[1;31m ${count}) ${opt}\033[0m\n"
             ;;
             "Uninstall")
