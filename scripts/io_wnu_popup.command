@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
+# Copyright © 2018 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
