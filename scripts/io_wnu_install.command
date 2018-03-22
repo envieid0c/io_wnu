@@ -11,7 +11,7 @@ HOSTS="$APP"Contents/hosts/
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
-SCRIPTVER="v0.0.7"
+SCRIPTVER="0.9d22"
 SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
@@ -445,8 +445,8 @@ io_uninstall() {
 
 io_drivers() {
     echo "Install drivers..."
-    sudo installer -pkg ../bin/1013/Installer.pkg -target /
-    sudo rm -rf /Library/LaunchAgents/Wlan.Software.plist
+    tar xf ../bin/1013/RtWlanU1827.tar.xz ; tar xf ../bin/1013/RtWlanU.tar.xz
+    sudo mv RtWlanU.kext RtWlanU1827.kext /System/Library/Extensions/
 }
 
 io_cache() {
@@ -459,7 +459,8 @@ io_cache() {
 io_replace_app() {
     echo "Replace App..."
     sudo rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
-    unzip ../bin/StatusBarApp_mod_AirPort.zip  -d /Library/Application\ Support/WLAN/ >/dev/null
+    tar xf ../bin/StatusBarApp.tar.xz
+    mv StatusBarApp.app /Library/Application\ Support/WLAN/ >/dev/null
     sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/
 }
 
