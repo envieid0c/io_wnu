@@ -350,7 +350,8 @@ io_fix_mac() {
     echo "Disabled" > "$CONF"io_ssh_server
     echo "Enabled"  > "$CONF"utility
     echo ""         > "$CONF"io_ssh
-    hostname        > "$CONF"io_new_hostname
+    echo ""         > "$CONF"io_new_hostname
+    hostname        > "$CONF"io_old_hostname
 }
 
 io_start() {

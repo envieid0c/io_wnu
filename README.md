@@ -17,8 +17,13 @@ Input/Output Wireless Network Utility
 * Added StatusBarApp_mod_AirPort (interface AirPort)
 * Added Create Network for Utils
 
+##Lib's
+* shc - 3.9.6
+* c-blosc - 1.14.2
+* bash - 4.4.19
+
 ##Software version's
-* dnscrypt-proxy - 2.0.6
+* dnscrypt-proxy - 2.0.7
 * openvpn - 2.4.5
 * tor - 0.3.2.10
 * speedtest - 2.0.0

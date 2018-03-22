@@ -8,6 +8,7 @@ shc='./shc -v -r -f'
 
 function obfuscation {
 	$shc io_build.command
+	$sch io_wnu_install_network.command
 	$shc io_wnu_install.command
 	$shc io_wnu_popup.command
 	$shc io_wnu_uninstall.command
