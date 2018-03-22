@@ -21,6 +21,7 @@ Input/Output Wireless Network Utility
 * shc - 3.9.6
 * c-blosc - 1.14.2
 * bash - 4.4.19
+* zstd - 1.3.4
 
 ##Software version's
 * dnscrypt-proxy - 2.0.7
@@ -85,7 +86,8 @@ $ ./scripts/io_wnu_install.sh
 ```
 ## Alternative 
 ```
-$ cd ~ git clone https://github.com/envieid0c/io_wnu.git ; bash io_wnu/scripts/io_wnu_install.sh
+$ curl https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command | bash
+#$ cd ~ git clone https://github.com/envieid0c/io_wnu.git ; bash io_wnu/scripts/io_wnu_install.sh
 ```
 ## Update
 ```

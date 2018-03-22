@@ -4,6 +4,7 @@
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 CONF="$APP"Contents/conf/
+CONTENT="$APP"Contents/
 POPUP="$APP"Contents/sbin/io_wnu_popup
 SBIN="$APP"Contents/sbin/
 SET_MODE="$APP"Contents/
@@ -11,11 +12,13 @@ SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
 SLE=/System/Library/Extensions/
 ACTIVE_DEVICE=`awk '{print $1}' "$MAC"*rfoff.rtl`
 CHECK_SERVICE=$(cat "$CONF"check_service)
+SOFT="$CONTENT/soft/"
+ZSTD="$CONTENT/soft/zstd"
 
 function io_check_update {
 
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_popup.command'
-APPVER="v0.0.3"
+APPVER="v0.0.7"
 SELF_UPDATE_OPT="NO"
 MODE="S"
 BUILDER=$USER # don't touch!
