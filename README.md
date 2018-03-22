@@ -86,8 +86,7 @@ $ ./scripts/io_wnu_install.sh
 ```
 ## Alternative 
 ```
-$ curl https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command | bash
-#$ cd ~ git clone https://github.com/envieid0c/io_wnu.git ; bash io_wnu/scripts/io_wnu_install.sh
+$ curl https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.sh | bash
 ```
 ## Update
 ```
