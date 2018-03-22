@@ -1,0 +1,1881 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="101000" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="1575" customClass="NSApplication"/>
+        <menu title="AMainMenu" systemMenu="main" id="1576">
+            <items>
+                <menuItem title="StatusBarApp" id="1577">
+                    <menu key="submenu" title="StatusBarApp" systemMenu="apple" id="1578">
+                        <items>
+                            <menuItem title="About StatusBarApp" id="1579">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="orderFrontStandardAboutPanel:" target="-2" id="1775"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="1586">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Preferences…" keyEquivalent="," id="1584"/>
+                            <menuItem isSeparatorItem="YES" id="1585">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Services" id="1587">
+                                <menu key="submenu" title="Services" systemMenu="services" id="1588"/>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="1583">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Hide StatusBarApp" keyEquivalent="h" id="1580">
+                                <connections>
+                                    <action selector="hide:" target="-1" id="1776"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Hide Others" keyEquivalent="h" id="1590">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="hideOtherApplications:" target="-1" id="1778"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show All" id="1581">
+                                <connections>
+                                    <action selector="unhideAllApplications:" target="-1" id="1779"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="1589">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Quit StatusBarApp" keyEquivalent="q" id="1582">
+                                <connections>
+                                    <action selector="terminate:" target="1575" id="1777"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Help" id="1591">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Help" systemMenu="help" id="1592">
+                        <items>
+                            <menuItem title="StatusBarApp Help" keyEquivalent="?" id="1593">
+                                <connections>
+                                    <action selector="showHelp:" target="-1" id="1780"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+            </items>
+        </menu>
+        <menu id="1594">
+            <items>
+                <menuItem title="Join Other Network" id="1596">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="ShowJoinOtherNetworkDialog:" target="1630" id="1782"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Создать сеть..." tag="1" id="1597">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="ShowJoinOtherNetworkDialog:" target="1630" id="1783"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="WPS" id="1598">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="MenuItemWPS:" target="1600" id="1787"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Open Wireless Utility" id="1595">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="ShowNetworkDialog:" target="1630" id="1781"/>
+                    </connections>
+                </menuItem>
+            </items>
+            <connections>
+                <outlet property="delegate" destination="1602" id="1710"/>
+            </connections>
+        </menu>
+        <customObject id="1599" customClass="NSFontManager"/>
+        <customObject id="1600" customClass="WiFiStatusBarDelegate">
+            <connections>
+                <outlet property="MenuItem_JoinOther" destination="1596" id="1712"/>
+                <outlet property="MenuItem_Open" destination="1595" id="1713"/>
+                <outlet property="MenuItem_WPS" destination="1598" id="1714"/>
+                <outlet property="Model" destination="1601" id="1715"/>
+                <outlet property="WLAN_UtilityCtrl" destination="1630" id="1716"/>
+                <outlet property="WPS_Model" destination="1629" id="1717"/>
+                <outlet property="dropDownMenu" destination="1594" id="1718"/>
+            </connections>
+        </customObject>
+        <customObject id="1601" customClass="WLANClientUtilityModel"/>
+        <customObject id="1602" customClass="VAvailableNetworkMenuDelegate">
+            <connections>
+                <outlet property="WLAN_Controller" destination="1600" id="1719"/>
+            </connections>
+        </customObject>
+        <customObject id="1603" customClass="ScanListTableDataSourceDelegate">
+            <connections>
+                <outlet property="WLAN_Controller" destination="1600" id="1774"/>
+            </connections>
+        </customObject>
+        <customObject id="1604" customClass="ProfilesTableDataSourceDelegate"/>
+        <window title="WPS" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1605">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="396" y="239" width="427" height="200"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="778"/>
+            <view key="contentView" id="1606">
+                <rect key="frame" x="0.0" y="0.0" width="427" height="200"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" id="1621">
+                        <rect key="frame" x="90" y="152" width="298" height="28"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Please key the PIN code into your AP's config page" id="1622">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>sr_Latn_RS</string>
+                                <string>zh</string>
+                                <string>ro_RO</string>
+                                <string>be_BY</string>
+                                <string>si_LK</string>
+                                <string>fa_IR</string>
+                                <string>en_BW</string>
+                                <string>en_JM</string>
+                                <string>ka_GE</string>
+                                <string>zh_Hans_SG</string>
+                                <string>mk_MK</string>
+                                <string>en_HK</string>
+                                <string>ar_LB</string>
+                                <string>ii_CN</string>
+                                <string>ru_UA</string>
+                                <string>zh_Hant_HK</string>
+                                <string>af</string>
+                                <string>kl_GL</string>
+                                <string>az_Latn</string>
+                                <string>ar_SA</string>
+                                <string>en_BE</string>
+                                <string>bn_BD</string>
+                                <string>en_MH</string>
+                                <string>be</string>
+                                <string>nl_NL</string>
+                                <string>el_CY</string>
+                                <string>az_Cyrl_AZ</string>
+                                <string>ca</string>
+                                <string>sr_Latn</string>
+                                <string>om_ET</string>
+                                <string>es_CL</string>
+                                <string>bg</string>
+                                <string>en_VI</string>
+                                <string>es_VE</string>
+                                <string>uz_Cyrl_UZ</string>
+                                <string>fr_MC</string>
+                                <string>am</string>
+                                <string>zh_Hant</string>
+                                <string>uz_Arab</string>
+                                <string>en_GB</string>
+                                <string>da</string>
+                                <string>mr_IN</string>
+                                <string>es_MX</string>
+                                <string>es_PR</string>
+                                <string>sq_AL</string>
+                                <string>ar</string>
+                                <string>fi_FI</string>
+                                <string>bn</string>
+                                <string>en_NA</string>
+                                <string>de</string>
+                                <string>as</string>
+                                <string>cy_GB</string>
+                                <string>en_IE</string>
+                                <string>en_BZ</string>
+                                <string>de_CH</string>
+                                <string>en_US</string>
+                                <string>sr_Latn_BA</string>
+                                <string>te_IN</string>
+                                <string>ar_QA</string>
+                                <string>ar_TN</string>
+                                <string>zh_Hans_MO</string>
+                                <string>de_LI</string>
+                                <string>fa</string>
+                                <string>kw_GB</string>
+                                <string>cs_CZ</string>
+                                <string>hu_HU</string>
+                                <string>zh_Hant_TW</string>
+                                <string>uz_Latn</string>
+                                <string>ta_IN</string>
+                                <string>az</string>
+                                <string>ar_EG</string>
+                                <string>ar_SD</string>
+                                <string>cs</string>
+                                <string>ga</string>
+                                <string>ar_LY</string>
+                                <string>af_ZA</string>
+                                <string>el</string>
+                                <string>es_PA</string>
+                                <string>es_CO</string>
+                                <string>fi</string>
+                                <string>en</string>
+                                <string>ha</string>
+                                <string>eo</string>
+                                <string>gl_ES</string>
+                                <string>cy</string>
+                                <string>es_GT</string>
+                                <string>ms_BN</string>
+                                <string>ne_IN</string>
+                                <string>he_IL</string>
+                                <string>he</string>
+                                <string>es</string>
+                                <string>fo</string>
+                                <string>en_CA</string>
+                                <string>et</string>
+                                <string>hr_HR</string>
+                                <string>haw</string>
+                                <string>gl</string>
+                                <string>ar_SY</string>
+                                <string>fr_SN</string>
+                                <string>eu</string>
+                                <string>uz_Arab_AF</string>
+                                <string>id</string>
+                                <string>fr</string>
+                                <string>az_Latn_AZ</string>
+                                <string>hi</string>
+                                <string>zh_Hans_HK</string>
+                                <string>ja</string>
+                                <string>es_ES</string>
+                                <string>ar_AE</string>
+                                <string>uz_Latn_UZ</string>
+                                <string>ca_ES</string>
+                                <string>fr_BE</string>
+                                <string>hi_IN</string>
+                                <string>is_IS</string>
+                                <string>ii</string>
+                                <string>ps_AF</string>
+                                <string>ka</string>
+                                <string>tr_TR</string>
+                                <string>it_CH</string>
+                                <string>kk_Cyrl_KZ</string>
+                                <string>gu</string>
+                                <string>es_US</string>
+                                <string>gv</string>
+                                <string>en_PH</string>
+                                <string>es_HN</string>
+                                <string>hr</string>
+                                <string>sv_FI</string>
+                                <string>es_CR</string>
+                                <string>haw_US</string>
+                                <string>ar_MA</string>
+                                <string>hu</string>
+                                <string>nl_BE</string>
+                                <string>th_TH</string>
+                                <string>en_ZA</string>
+                                <string>kk_Cyrl</string>
+                                <string>is</string>
+                                <string>it</string>
+                                <string>es_PE</string>
+                                <string>hy</string>
+                                <string>de_DE</string>
+                                <string>en_NZ</string>
+                                <string>kk</string>
+                                <string>kl</string>
+                                <string>en_AU</string>
+                                <string>pa_Guru</string>
+                                <string>el_GR</string>
+                                <string>km</string>
+                                <string>kn</string>
+                                <string>ko</string>
+                                <string>nb</string>
+                                <string>ar_IQ</string>
+                                <string>es_PY</string>
+                                <string>es_EC</string>
+                                <string>en_US_POSIX</string>
+                                <string>vi_VN</string>
+                                <string>lv_LV</string>
+                                <string>ne</string>
+                                <string>kn_IN</string>
+                                <string>es_AR</string>
+                                <string>mk</string>
+                                <string>ml</string>
+                                <string>bg_BG</string>
+                                <string>hy_AM_REVISED</string>
+                                <string>kw</string>
+                                <string>uk_UA</string>
+                                <string>en_PK</string>
+                                <string>pa</string>
+                                <string>lt</string>
+                                <string>sk_SK</string>
+                                <string>nl</string>
+                                <string>ur_PK</string>
+                                <string>de_BE</string>
+                                <string>lv</string>
+                                <string>as_IN</string>
+                                <string>mr</string>
+                                <string>nn</string>
+                                <string>en_ZW</string>
+                                <string>fr_CA</string>
+                                <string>ne_NP</string>
+                                <string>ms</string>
+                                <string>pl_PL</string>
+                                <string>ti_ER</string>
+                                <string>ja_JP</string>
+                                <string>mt</string>
+                                <string>fr_LU</string>
+                                <string>om</string>
+                                <string>sr_Cyrl_ME</string>
+                                <string>en_IN</string>
+                                <string>ga_IE</string>
+                                <string>sw_KE</string>
+                                <string>pl</string>
+                                <string>kok</string>
+                                <string>ur_IN</string>
+                                <string>or</string>
+                                <string>it_IT</string>
+                                <string>hy_AM</string>
+                                <string>ml_IN</string>
+                                <string>en_SG</string>
+                                <string>es_SV</string>
+                                <string>am_ET</string>
+                                <string>pt_BR</string>
+                                <string>bn_IN</string>
+                                <string>mt_MT</string>
+                                <string>ar_KW</string>
+                                <string>es_DO</string>
+                                <string>pa_Arab</string>
+                                <string>gv_GB</string>
+                                <string>so_KE</string>
+                                <string>ti_ET</string>
+                                <string>ps</string>
+                                <string>ms_MY</string>
+                                <string>sl_SI</string>
+                                <string>es_UY</string>
+                                <string>en_MT</string>
+                                <string>pt</string>
+                                <string>sw_TZ</string>
+                                <string>ta</string>
+                                <string>nn_NO</string>
+                                <string>sr_Cyrl_RS</string>
+                                <string>si</string>
+                                <string>te</string>
+                                <string>ro</string>
+                                <string>so_SO</string>
+                                <string>sk</string>
+                                <string>az_Cyrl</string>
+                                <string>or_IN</string>
+                                <string>sl</string>
+                                <string>pa_Arab_PK</string>
+                                <string>ru_RU</string>
+                                <string>th</string>
+                                <string>ar_DZ</string>
+                                <string>ti</string>
+                                <string>so</string>
+                                <string>sr_Cyrl</string>
+                                <string>es_NI</string>
+                                <string>ha_Latn_NG</string>
+                                <string>ru</string>
+                                <string>en_TT</string>
+                                <string>sq</string>
+                                <string>fr_FR</string>
+                                <string>sr</string>
+                                <string>da_DK</string>
+                                <string>es_BO</string>
+                                <string>nb_NO</string>
+                                <string>de_LU</string>
+                                <string>uk</string>
+                                <string>eu_ES</string>
+                                <string>ar_JO</string>
+                                <string>sv</string>
+                                <string>so_ET</string>
+                                <string>tr</string>
+                                <string>sw</string>
+                                <string>vi</string>
+                                <string>zh_Hans_CN</string>
+                                <string>km_KH</string>
+                                <string>fa_AF</string>
+                                <string>et_EE</string>
+                                <string>ko_KR</string>
+                                <string>pa_Guru_IN</string>
+                                <string>sr_Latn_ME</string>
+                                <string>so_DJ</string>
+                                <string>ur</string>
+                                <string>kok_IN</string>
+                                <string>uz_Cyrl</string>
+                                <string>zh_Hant_MO</string>
+                                <string>zh_Hans</string>
+                                <string>ar_YE</string>
+                                <string>fo_FO</string>
+                                <string>sv_SE</string>
+                                <string>ha_Latn</string>
+                                <string>de_AT</string>
+                                <string>lt_LT</string>
+                                <string>ar_OM</string>
+                                <string>sr_Cyrl_BA</string>
+                                <string>uz</string>
+                                <string>ar_BH</string>
+                                <string>id_ID</string>
+                                <string>pt_PT</string>
+                                <string>af_NA</string>
+                                <string>om_KE</string>
+                                <string>fr_CH</string>
+                                <string>gu_IN</string>
+                            </allowedInputSourceLocales>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" id="1613">
+                        <rect key="frame" x="328" y="6" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1614">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="WpsWin_Cancel_Action:" target="1630" id="1784"/>
+                        </connections>
+                    </button>
+                    <imageView id="1623">
+                        <rect key="frame" x="17" y="132" width="65" height="56"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" image="WPSstring" id="1624"/>
+                    </imageView>
+                    <textField verticalHuggingPriority="750" id="1607">
+                        <rect key="frame" x="90" y="144" width="38" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="PIN:" id="1608">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1609">
+                        <rect key="frame" x="126" y="144" width="84" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="000000" id="1610">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1627">
+                        <rect key="frame" x="17" y="93" width="97" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="WPS Progress :" id="1628">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1619">
+                        <rect key="frame" x="342" y="64" width="63" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="120 sec" id="1620">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <progressIndicator verticalHuggingPriority="750" maxValue="120" bezeled="NO" controlSize="small" style="bar" id="1618">
+                        <rect key="frame" x="17" y="64" width="321" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </progressIndicator>
+                    <textField verticalHuggingPriority="750" id="1616">
+                        <rect key="frame" x="112" y="84" width="300" height="23"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="WPS Initial State" id="1617">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>sr_Latn_RS</string>
+                                <string>zh</string>
+                                <string>ro_RO</string>
+                                <string>be_BY</string>
+                                <string>si_LK</string>
+                                <string>fa_IR</string>
+                                <string>en_BW</string>
+                                <string>en_JM</string>
+                                <string>ka_GE</string>
+                                <string>zh_Hans_SG</string>
+                                <string>mk_MK</string>
+                                <string>en_HK</string>
+                                <string>ar_LB</string>
+                                <string>ii_CN</string>
+                                <string>ru_UA</string>
+                                <string>zh_Hant_HK</string>
+                                <string>af</string>
+                                <string>kl_GL</string>
+                                <string>az_Latn</string>
+                                <string>ar_SA</string>
+                                <string>en_BE</string>
+                                <string>bn_BD</string>
+                                <string>en_MH</string>
+                                <string>be</string>
+                                <string>nl_NL</string>
+                                <string>el_CY</string>
+                                <string>az_Cyrl_AZ</string>
+                                <string>ca</string>
+                                <string>sr_Latn</string>
+                                <string>om_ET</string>
+                                <string>es_CL</string>
+                                <string>bg</string>
+                                <string>en_VI</string>
+                                <string>es_VE</string>
+                                <string>uz_Cyrl_UZ</string>
+                                <string>fr_MC</string>
+                                <string>am</string>
+                                <string>zh_Hant</string>
+                                <string>uz_Arab</string>
+                                <string>en_GB</string>
+                                <string>da</string>
+                                <string>mr_IN</string>
+                                <string>es_MX</string>
+                                <string>es_PR</string>
+                                <string>sq_AL</string>
+                                <string>ar</string>
+                                <string>fi_FI</string>
+                                <string>bn</string>
+                                <string>en_NA</string>
+                                <string>de</string>
+                                <string>as</string>
+                                <string>cy_GB</string>
+                                <string>en_IE</string>
+                                <string>en_BZ</string>
+                                <string>de_CH</string>
+                                <string>en_US</string>
+                                <string>sr_Latn_BA</string>
+                                <string>te_IN</string>
+                                <string>ar_QA</string>
+                                <string>ar_TN</string>
+                                <string>zh_Hans_MO</string>
+                                <string>de_LI</string>
+                                <string>fa</string>
+                                <string>kw_GB</string>
+                                <string>cs_CZ</string>
+                                <string>hu_HU</string>
+                                <string>zh_Hant_TW</string>
+                                <string>uz_Latn</string>
+                                <string>ta_IN</string>
+                                <string>az</string>
+                                <string>ar_EG</string>
+                                <string>ar_SD</string>
+                                <string>cs</string>
+                                <string>ga</string>
+                                <string>ar_LY</string>
+                                <string>af_ZA</string>
+                                <string>el</string>
+                                <string>es_PA</string>
+                                <string>es_CO</string>
+                                <string>fi</string>
+                                <string>en</string>
+                                <string>ha</string>
+                                <string>eo</string>
+                                <string>gl_ES</string>
+                                <string>cy</string>
+                                <string>es_GT</string>
+                                <string>ms_BN</string>
+                                <string>ne_IN</string>
+                                <string>he_IL</string>
+                                <string>he</string>
+                                <string>es</string>
+                                <string>fo</string>
+                                <string>en_CA</string>
+                                <string>et</string>
+                                <string>hr_HR</string>
+                                <string>haw</string>
+                                <string>gl</string>
+                                <string>ar_SY</string>
+                                <string>fr_SN</string>
+                                <string>eu</string>
+                                <string>uz_Arab_AF</string>
+                                <string>id</string>
+                                <string>fr</string>
+                                <string>az_Latn_AZ</string>
+                                <string>hi</string>
+                                <string>zh_Hans_HK</string>
+                                <string>ja</string>
+                                <string>es_ES</string>
+                                <string>ar_AE</string>
+                                <string>uz_Latn_UZ</string>
+                                <string>ca_ES</string>
+                                <string>fr_BE</string>
+                                <string>hi_IN</string>
+                                <string>is_IS</string>
+                                <string>ii</string>
+                                <string>ps_AF</string>
+                                <string>ka</string>
+                                <string>tr_TR</string>
+                                <string>it_CH</string>
+                                <string>kk_Cyrl_KZ</string>
+                                <string>gu</string>
+                                <string>es_US</string>
+                                <string>gv</string>
+                                <string>en_PH</string>
+                                <string>es_HN</string>
+                                <string>hr</string>
+                                <string>sv_FI</string>
+                                <string>es_CR</string>
+                                <string>haw_US</string>
+                                <string>ar_MA</string>
+                                <string>hu</string>
+                                <string>nl_BE</string>
+                                <string>th_TH</string>
+                                <string>en_ZA</string>
+                                <string>kk_Cyrl</string>
+                                <string>is</string>
+                                <string>it</string>
+                                <string>es_PE</string>
+                                <string>hy</string>
+                                <string>de_DE</string>
+                                <string>en_NZ</string>
+                                <string>kk</string>
+                                <string>kl</string>
+                                <string>en_AU</string>
+                                <string>pa_Guru</string>
+                                <string>el_GR</string>
+                                <string>km</string>
+                                <string>kn</string>
+                                <string>ko</string>
+                                <string>nb</string>
+                                <string>ar_IQ</string>
+                                <string>es_PY</string>
+                                <string>es_EC</string>
+                                <string>en_US_POSIX</string>
+                                <string>vi_VN</string>
+                                <string>lv_LV</string>
+                                <string>ne</string>
+                                <string>kn_IN</string>
+                                <string>es_AR</string>
+                                <string>mk</string>
+                                <string>ml</string>
+                                <string>bg_BG</string>
+                                <string>hy_AM_REVISED</string>
+                                <string>kw</string>
+                                <string>uk_UA</string>
+                                <string>en_PK</string>
+                                <string>pa</string>
+                                <string>lt</string>
+                                <string>sk_SK</string>
+                                <string>nl</string>
+                                <string>ur_PK</string>
+                                <string>de_BE</string>
+                                <string>lv</string>
+                                <string>as_IN</string>
+                                <string>mr</string>
+                                <string>nn</string>
+                                <string>en_ZW</string>
+                                <string>fr_CA</string>
+                                <string>ne_NP</string>
+                                <string>ms</string>
+                                <string>pl_PL</string>
+                                <string>ti_ER</string>
+                                <string>ja_JP</string>
+                                <string>mt</string>
+                                <string>fr_LU</string>
+                                <string>om</string>
+                                <string>sr_Cyrl_ME</string>
+                                <string>en_IN</string>
+                                <string>ga_IE</string>
+                                <string>sw_KE</string>
+                                <string>pl</string>
+                                <string>kok</string>
+                                <string>ur_IN</string>
+                                <string>or</string>
+                                <string>it_IT</string>
+                                <string>hy_AM</string>
+                                <string>ml_IN</string>
+                                <string>en_SG</string>
+                                <string>es_SV</string>
+                                <string>am_ET</string>
+                                <string>pt_BR</string>
+                                <string>bn_IN</string>
+                                <string>mt_MT</string>
+                                <string>ar_KW</string>
+                                <string>es_DO</string>
+                                <string>pa_Arab</string>
+                                <string>gv_GB</string>
+                                <string>so_KE</string>
+                                <string>ti_ET</string>
+                                <string>ps</string>
+                                <string>ms_MY</string>
+                                <string>sl_SI</string>
+                                <string>es_UY</string>
+                                <string>en_MT</string>
+                                <string>pt</string>
+                                <string>sw_TZ</string>
+                                <string>ta</string>
+                                <string>nn_NO</string>
+                                <string>sr_Cyrl_RS</string>
+                                <string>si</string>
+                                <string>te</string>
+                                <string>ro</string>
+                                <string>so_SO</string>
+                                <string>sk</string>
+                                <string>az_Cyrl</string>
+                                <string>or_IN</string>
+                                <string>sl</string>
+                                <string>pa_Arab_PK</string>
+                                <string>ru_RU</string>
+                                <string>th</string>
+                                <string>ar_DZ</string>
+                                <string>ti</string>
+                                <string>so</string>
+                                <string>sr_Cyrl</string>
+                                <string>es_NI</string>
+                                <string>ha_Latn_NG</string>
+                                <string>ru</string>
+                                <string>en_TT</string>
+                                <string>sq</string>
+                                <string>fr_FR</string>
+                                <string>sr</string>
+                                <string>da_DK</string>
+                                <string>es_BO</string>
+                                <string>nb_NO</string>
+                                <string>de_LU</string>
+                                <string>uk</string>
+                                <string>eu_ES</string>
+                                <string>ar_JO</string>
+                                <string>sv</string>
+                                <string>so_ET</string>
+                                <string>tr</string>
+                                <string>sw</string>
+                                <string>vi</string>
+                                <string>zh_Hans_CN</string>
+                                <string>km_KH</string>
+                                <string>fa_AF</string>
+                                <string>et_EE</string>
+                                <string>ko_KR</string>
+                                <string>pa_Guru_IN</string>
+                                <string>sr_Latn_ME</string>
+                                <string>so_DJ</string>
+                                <string>ur</string>
+                                <string>kok_IN</string>
+                                <string>uz_Cyrl</string>
+                                <string>zh_Hant_MO</string>
+                                <string>zh_Hans</string>
+                                <string>ar_YE</string>
+                                <string>fo_FO</string>
+                                <string>sv_SE</string>
+                                <string>ha_Latn</string>
+                                <string>de_AT</string>
+                                <string>lt_LT</string>
+                                <string>ar_OM</string>
+                                <string>sr_Cyrl_BA</string>
+                                <string>uz</string>
+                                <string>ar_BH</string>
+                                <string>id_ID</string>
+                                <string>pt_PT</string>
+                                <string>af_NA</string>
+                                <string>om_KE</string>
+                                <string>fr_CH</string>
+                                <string>gu_IN</string>
+                            </allowedInputSourceLocales>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" id="1611">
+                        <rect key="frame" x="14" y="6" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="PIN" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1612">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="WpsWin_PIN_Action:" target="1630" id="1785"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" id="1625">
+                        <rect key="frame" x="123" y="6" width="84" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="PBC" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1626">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="WpsWin_PBC_Action:" target="1630" id="1786"/>
+                        </connections>
+                    </button>
+                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="1615">
+                        <rect key="frame" x="391" y="172" width="16" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    </progressIndicator>
+                </subviews>
+            </view>
+        </window>
+        <customObject id="1629" customClass="WPS">
+            <connections>
+                <outlet property="WLAN_Controller" destination="1600" id="1720"/>
+                <outlet property="WLAN_Model" destination="1601" id="1721"/>
+                <outlet property="WLAN_UtilityCtrl" destination="1630" id="1722"/>
+            </connections>
+        </customObject>
+        <customObject id="1630" customClass="WiFiUtility">
+            <connections>
+                <outlet property="AboutWin_Copyright" destination="1700" id="1727"/>
+                <outlet property="AboutWin_DriverVersion" destination="1704" id="1728"/>
+                <outlet property="AboutWin_Panel" destination="1696" id="1729"/>
+                <outlet property="AboutWin_UtilityName" destination="1698" id="1730"/>
+                <outlet property="AboutWin_UtilityVersion" destination="1706" id="1731"/>
+                <outlet property="JoinWin_AboutBtn" destination="1655" id="1732"/>
+                <outlet property="JoinWin_BottomView" destination="1641" id="1733"/>
+                <outlet property="JoinWin_CancelBtn" destination="1645" id="1734"/>
+                <outlet property="JoinWin_DescText" destination="1635" id="1735"/>
+                <outlet property="JoinWin_Icon" destination="1637" id="1736"/>
+                <outlet property="JoinWin_JoinBtn" destination="1647" id="1737"/>
+                <outlet property="JoinWin_JoinOtherBtn" destination="1653" id="1738"/>
+                <outlet property="JoinWin_MiddleView" destination="1639" id="1739"/>
+                <outlet property="JoinWin_ProfileBtn" destination="1649" id="1740"/>
+                <outlet property="JoinWin_ScanProgress" destination="1642" id="1741"/>
+                <outlet property="JoinWin_ScanProgressText" destination="1643" id="1742"/>
+                <outlet property="JoinWin_ScanTable" destination="1663" id="1743"/>
+                <outlet property="JoinWin_ScanUpperView" destination="1657" id="1744"/>
+                <outlet property="JoinWin_ShowNetBtn" destination="1651" id="1745"/>
+                <outlet property="JoinWin_SubDescText" destination="1633" id="1746"/>
+                <outlet property="JoinWin_UpperView" destination="1640" id="1747"/>
+                <outlet property="ProfileWin_ApplyBtn" destination="1689" id="1748"/>
+                <outlet property="ProfileWin_BottomView" destination="1688" id="1749"/>
+                <outlet property="ProfileWin_CancelBtn" destination="1691" id="1750"/>
+                <outlet property="ProfileWin_Desc" destination="1674" id="1751"/>
+                <outlet property="ProfileWin_MiddleView" destination="1695" id="1752"/>
+                <outlet property="ProfileWin_Panel" destination="1672" id="1753"/>
+                <outlet property="ProfileWin_ProfileTable" destination="1679" id="1754"/>
+                <outlet property="ProfileWin_RemoveBtn" destination="1693" id="1755"/>
+                <outlet property="ProfileWin_UpperView" destination="1676" id="1756"/>
+                <outlet property="WLAN_Controller" destination="1600" id="1757"/>
+                <outlet property="WLAN_UtilityWindow" destination="1631" id="1758"/>
+                <outlet property="WPS_Model" destination="1629" id="1759"/>
+                <outlet property="WpsWin_CancelBtn" destination="1613" id="1760"/>
+                <outlet property="WpsWin_DescText" destination="1621" id="1761"/>
+                <outlet property="WpsWin_FlowProgress" destination="1616" id="1762"/>
+                <outlet property="WpsWin_FlowTitle" destination="1627" id="1763"/>
+                <outlet property="WpsWin_Icon" destination="1623" id="1764"/>
+                <outlet property="WpsWin_PBCBtn" destination="1625" id="1765"/>
+                <outlet property="WpsWin_PINBtn" destination="1611" id="1766"/>
+                <outlet property="WpsWin_PinCode" destination="1609" id="1767"/>
+                <outlet property="WpsWin_PinText" destination="1607" id="1768"/>
+                <outlet property="WpsWin_ProcessTimerCount" destination="1619" id="1769"/>
+                <outlet property="WpsWin_ProcessTimer_BAR" destination="1618" id="1770"/>
+                <outlet property="WpsWin_ProgressIndicator" destination="1615" id="1771"/>
+                <outlet property="WpsWin_Window" destination="1605" id="1772"/>
+            </connections>
+        </customObject>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1631">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="406" y="354" width="427" height="302"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="778"/>
+            <view key="contentView" id="1632">
+                <rect key="frame" x="0.0" y="0.0" width="427" height="302"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" id="1635">
+                        <rect key="frame" x="80" y="244" width="325" height="39"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="This network &quot;Isaiahaaaa&quot; requires a WPA password" id="1636">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>sr_Latn_RS</string>
+                                <string>zh</string>
+                                <string>ro_RO</string>
+                                <string>be_BY</string>
+                                <string>si_LK</string>
+                                <string>fa_IR</string>
+                                <string>en_BW</string>
+                                <string>en_JM</string>
+                                <string>ka_GE</string>
+                                <string>zh_Hans_SG</string>
+                                <string>mk_MK</string>
+                                <string>en_HK</string>
+                                <string>ar_LB</string>
+                                <string>ii_CN</string>
+                                <string>ru_UA</string>
+                                <string>zh_Hant_HK</string>
+                                <string>af</string>
+                                <string>kl_GL</string>
+                                <string>az_Latn</string>
+                                <string>ar_SA</string>
+                                <string>en_BE</string>
+                                <string>bn_BD</string>
+                                <string>en_MH</string>
+                                <string>be</string>
+                                <string>nl_NL</string>
+                                <string>el_CY</string>
+                                <string>az_Cyrl_AZ</string>
+                                <string>ca</string>
+                                <string>sr_Latn</string>
+                                <string>om_ET</string>
+                                <string>es_CL</string>
+                                <string>bg</string>
+                                <string>en_VI</string>
+                                <string>es_VE</string>
+                                <string>uz_Cyrl_UZ</string>
+                                <string>fr_MC</string>
+                                <string>am</string>
+                                <string>zh_Hant</string>
+                                <string>uz_Arab</string>
+                                <string>en_GB</string>
+                                <string>da</string>
+                                <string>mr_IN</string>
+                                <string>es_MX</string>
+                                <string>es_PR</string>
+                                <string>sq_AL</string>
+                                <string>ar</string>
+                                <string>fi_FI</string>
+                                <string>bn</string>
+                                <string>en_NA</string>
+                                <string>de</string>
+                                <string>as</string>
+                                <string>cy_GB</string>
+                                <string>en_IE</string>
+                                <string>en_BZ</string>
+                                <string>de_CH</string>
+                                <string>en_US</string>
+                                <string>sr_Latn_BA</string>
+                                <string>te_IN</string>
+                                <string>ar_QA</string>
+                                <string>ar_TN</string>
+                                <string>zh_Hans_MO</string>
+                                <string>de_LI</string>
+                                <string>fa</string>
+                                <string>kw_GB</string>
+                                <string>cs_CZ</string>
+                                <string>hu_HU</string>
+                                <string>zh_Hant_TW</string>
+                                <string>uz_Latn</string>
+                                <string>ta_IN</string>
+                                <string>az</string>
+                                <string>ar_EG</string>
+                                <string>ar_SD</string>
+                                <string>cs</string>
+                                <string>ga</string>
+                                <string>ar_LY</string>
+                                <string>af_ZA</string>
+                                <string>el</string>
+                                <string>es_PA</string>
+                                <string>es_CO</string>
+                                <string>fi</string>
+                                <string>en</string>
+                                <string>ha</string>
+                                <string>eo</string>
+                                <string>gl_ES</string>
+                                <string>cy</string>
+                                <string>es_GT</string>
+                                <string>ms_BN</string>
+                                <string>ne_IN</string>
+                                <string>he_IL</string>
+                                <string>he</string>
+                                <string>es</string>
+                                <string>fo</string>
+                                <string>en_CA</string>
+                                <string>et</string>
+                                <string>hr_HR</string>
+                                <string>haw</string>
+                                <string>gl</string>
+                                <string>ar_SY</string>
+                                <string>fr_SN</string>
+                                <string>eu</string>
+                                <string>uz_Arab_AF</string>
+                                <string>id</string>
+                                <string>fr</string>
+                                <string>az_Latn_AZ</string>
+                                <string>hi</string>
+                                <string>zh_Hans_HK</string>
+                                <string>ja</string>
+                                <string>es_ES</string>
+                                <string>ar_AE</string>
+                                <string>uz_Latn_UZ</string>
+                                <string>ca_ES</string>
+                                <string>fr_BE</string>
+                                <string>hi_IN</string>
+                                <string>is_IS</string>
+                                <string>ii</string>
+                                <string>ps_AF</string>
+                                <string>ka</string>
+                                <string>tr_TR</string>
+                                <string>it_CH</string>
+                                <string>kk_Cyrl_KZ</string>
+                                <string>gu</string>
+                                <string>es_US</string>
+                                <string>gv</string>
+                                <string>en_PH</string>
+                                <string>es_HN</string>
+                                <string>hr</string>
+                                <string>sv_FI</string>
+                                <string>es_CR</string>
+                                <string>haw_US</string>
+                                <string>ar_MA</string>
+                                <string>hu</string>
+                                <string>nl_BE</string>
+                                <string>th_TH</string>
+                                <string>en_ZA</string>
+                                <string>kk_Cyrl</string>
+                                <string>is</string>
+                                <string>it</string>
+                                <string>es_PE</string>
+                                <string>hy</string>
+                                <string>de_DE</string>
+                                <string>en_NZ</string>
+                                <string>kk</string>
+                                <string>kl</string>
+                                <string>en_AU</string>
+                                <string>pa_Guru</string>
+                                <string>el_GR</string>
+                                <string>km</string>
+                                <string>kn</string>
+                                <string>ko</string>
+                                <string>nb</string>
+                                <string>ar_IQ</string>
+                                <string>es_PY</string>
+                                <string>es_EC</string>
+                                <string>en_US_POSIX</string>
+                                <string>vi_VN</string>
+                                <string>lv_LV</string>
+                                <string>ne</string>
+                                <string>kn_IN</string>
+                                <string>es_AR</string>
+                                <string>mk</string>
+                                <string>ml</string>
+                                <string>bg_BG</string>
+                                <string>hy_AM_REVISED</string>
+                                <string>kw</string>
+                                <string>uk_UA</string>
+                                <string>en_PK</string>
+                                <string>pa</string>
+                                <string>lt</string>
+                                <string>sk_SK</string>
+                                <string>nl</string>
+                                <string>ur_PK</string>
+                                <string>de_BE</string>
+                                <string>lv</string>
+                                <string>as_IN</string>
+                                <string>mr</string>
+                                <string>nn</string>
+                                <string>en_ZW</string>
+                                <string>fr_CA</string>
+                                <string>ne_NP</string>
+                                <string>ms</string>
+                                <string>pl_PL</string>
+                                <string>ti_ER</string>
+                                <string>ja_JP</string>
+                                <string>mt</string>
+                                <string>fr_LU</string>
+                                <string>om</string>
+                                <string>sr_Cyrl_ME</string>
+                                <string>en_IN</string>
+                                <string>ga_IE</string>
+                                <string>sw_KE</string>
+                                <string>pl</string>
+                                <string>kok</string>
+                                <string>ur_IN</string>
+                                <string>or</string>
+                                <string>it_IT</string>
+                                <string>hy_AM</string>
+                                <string>ml_IN</string>
+                                <string>en_SG</string>
+                                <string>es_SV</string>
+                                <string>am_ET</string>
+                                <string>pt_BR</string>
+                                <string>bn_IN</string>
+                                <string>mt_MT</string>
+                                <string>ar_KW</string>
+                                <string>es_DO</string>
+                                <string>pa_Arab</string>
+                                <string>gv_GB</string>
+                                <string>so_KE</string>
+                                <string>ti_ET</string>
+                                <string>ps</string>
+                                <string>ms_MY</string>
+                                <string>sl_SI</string>
+                                <string>es_UY</string>
+                                <string>en_MT</string>
+                                <string>pt</string>
+                                <string>sw_TZ</string>
+                                <string>ta</string>
+                                <string>nn_NO</string>
+                                <string>sr_Cyrl_RS</string>
+                                <string>si</string>
+                                <string>te</string>
+                                <string>ro</string>
+                                <string>so_SO</string>
+                                <string>sk</string>
+                                <string>az_Cyrl</string>
+                                <string>or_IN</string>
+                                <string>sl</string>
+                                <string>pa_Arab_PK</string>
+                                <string>ru_RU</string>
+                                <string>th</string>
+                                <string>ar_DZ</string>
+                                <string>ti</string>
+                                <string>so</string>
+                                <string>sr_Cyrl</string>
+                                <string>es_NI</string>
+                                <string>ha_Latn_NG</string>
+                                <string>ru</string>
+                                <string>en_TT</string>
+                                <string>sq</string>
+                                <string>fr_FR</string>
+                                <string>sr</string>
+                                <string>da_DK</string>
+                                <string>es_BO</string>
+                                <string>nb_NO</string>
+                                <string>de_LU</string>
+                                <string>uk</string>
+                                <string>eu_ES</string>
+                                <string>ar_JO</string>
+                                <string>sv</string>
+                                <string>so_ET</string>
+                                <string>tr</string>
+                                <string>sw</string>
+                                <string>vi</string>
+                                <string>zh_Hans_CN</string>
+                                <string>km_KH</string>
+                                <string>fa_AF</string>
+                                <string>et_EE</string>
+                                <string>ko_KR</string>
+                                <string>pa_Guru_IN</string>
+                                <string>sr_Latn_ME</string>
+                                <string>so_DJ</string>
+                                <string>ur</string>
+                                <string>kok_IN</string>
+                                <string>uz_Cyrl</string>
+                                <string>zh_Hant_MO</string>
+                                <string>zh_Hans</string>
+                                <string>ar_YE</string>
+                                <string>fo_FO</string>
+                                <string>sv_SE</string>
+                                <string>ha_Latn</string>
+                                <string>de_AT</string>
+                                <string>lt_LT</string>
+                                <string>ar_OM</string>
+                                <string>sr_Cyrl_BA</string>
+                                <string>uz</string>
+                                <string>ar_BH</string>
+                                <string>id_ID</string>
+                                <string>pt_PT</string>
+                                <string>af_NA</string>
+                                <string>om_KE</string>
+                                <string>fr_CH</string>
+                                <string>gu_IN</string>
+                            </allowedInputSourceLocales>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1633">
+                        <rect key="frame" x="80" y="225" width="325" height="34"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Enter the name of the network you want to join, and then enter the password if necessary." id="1634">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            <allowedInputSourceLocales>
+                                <string>sr_Latn_RS</string>
+                                <string>zh</string>
+                                <string>ro_RO</string>
+                                <string>be_BY</string>
+                                <string>si_LK</string>
+                                <string>fa_IR</string>
+                                <string>en_BW</string>
+                                <string>en_JM</string>
+                                <string>ka_GE</string>
+                                <string>zh_Hans_SG</string>
+                                <string>mk_MK</string>
+                                <string>en_HK</string>
+                                <string>ar_LB</string>
+                                <string>ii_CN</string>
+                                <string>ru_UA</string>
+                                <string>zh_Hant_HK</string>
+                                <string>af</string>
+                                <string>kl_GL</string>
+                                <string>az_Latn</string>
+                                <string>ar_SA</string>
+                                <string>en_BE</string>
+                                <string>bn_BD</string>
+                                <string>en_MH</string>
+                                <string>be</string>
+                                <string>nl_NL</string>
+                                <string>el_CY</string>
+                                <string>az_Cyrl_AZ</string>
+                                <string>ca</string>
+                                <string>sr_Latn</string>
+                                <string>om_ET</string>
+                                <string>es_CL</string>
+                                <string>bg</string>
+                                <string>en_VI</string>
+                                <string>es_VE</string>
+                                <string>uz_Cyrl_UZ</string>
+                                <string>fr_MC</string>
+                                <string>am</string>
+                                <string>zh_Hant</string>
+                                <string>uz_Arab</string>
+                                <string>en_GB</string>
+                                <string>da</string>
+                                <string>mr_IN</string>
+                                <string>es_MX</string>
+                                <string>es_PR</string>
+                                <string>sq_AL</string>
+                                <string>ar</string>
+                                <string>fi_FI</string>
+                                <string>bn</string>
+                                <string>en_NA</string>
+                                <string>de</string>
+                                <string>as</string>
+                                <string>cy_GB</string>
+                                <string>en_IE</string>
+                                <string>en_BZ</string>
+                                <string>de_CH</string>
+                                <string>en_US</string>
+                                <string>sr_Latn_BA</string>
+                                <string>te_IN</string>
+                                <string>ar_QA</string>
+                                <string>ar_TN</string>
+                                <string>zh_Hans_MO</string>
+                                <string>de_LI</string>
+                                <string>fa</string>
+                                <string>kw_GB</string>
+                                <string>cs_CZ</string>
+                                <string>hu_HU</string>
+                                <string>zh_Hant_TW</string>
+                                <string>uz_Latn</string>
+                                <string>ta_IN</string>
+                                <string>az</string>
+                                <string>ar_EG</string>
+                                <string>ar_SD</string>
+                                <string>cs</string>
+                                <string>ga</string>
+                                <string>ar_LY</string>
+                                <string>af_ZA</string>
+                                <string>el</string>
+                                <string>es_PA</string>
+                                <string>es_CO</string>
+                                <string>fi</string>
+                                <string>en</string>
+                                <string>ha</string>
+                                <string>eo</string>
+                                <string>gl_ES</string>
+                                <string>cy</string>
+                                <string>es_GT</string>
+                                <string>ms_BN</string>
+                                <string>ne_IN</string>
+                                <string>he_IL</string>
+                                <string>he</string>
+                                <string>es</string>
+                                <string>fo</string>
+                                <string>en_CA</string>
+                                <string>et</string>
+                                <string>hr_HR</string>
+                                <string>haw</string>
+                                <string>gl</string>
+                                <string>ar_SY</string>
+                                <string>fr_SN</string>
+                                <string>eu</string>
+                                <string>uz_Arab_AF</string>
+                                <string>id</string>
+                                <string>fr</string>
+                                <string>az_Latn_AZ</string>
+                                <string>hi</string>
+                                <string>zh_Hans_HK</string>
+                                <string>ja</string>
+                                <string>es_ES</string>
+                                <string>ar_AE</string>
+                                <string>uz_Latn_UZ</string>
+                                <string>ca_ES</string>
+                                <string>fr_BE</string>
+                                <string>hi_IN</string>
+                                <string>is_IS</string>
+                                <string>ii</string>
+                                <string>ps_AF</string>
+                                <string>ka</string>
+                                <string>tr_TR</string>
+                                <string>it_CH</string>
+                                <string>kk_Cyrl_KZ</string>
+                                <string>gu</string>
+                                <string>es_US</string>
+                                <string>gv</string>
+                                <string>en_PH</string>
+                                <string>es_HN</string>
+                                <string>hr</string>
+                                <string>sv_FI</string>
+                                <string>es_CR</string>
+                                <string>haw_US</string>
+                                <string>ar_MA</string>
+                                <string>hu</string>
+                                <string>nl_BE</string>
+                                <string>th_TH</string>
+                                <string>en_ZA</string>
+                                <string>kk_Cyrl</string>
+                                <string>is</string>
+                                <string>it</string>
+                                <string>es_PE</string>
+                                <string>hy</string>
+                                <string>de_DE</string>
+                                <string>en_NZ</string>
+                                <string>kk</string>
+                                <string>kl</string>
+                                <string>en_AU</string>
+                                <string>pa_Guru</string>
+                                <string>el_GR</string>
+                                <string>km</string>
+                                <string>kn</string>
+                                <string>ko</string>
+                                <string>nb</string>
+                                <string>ar_IQ</string>
+                                <string>es_PY</string>
+                                <string>es_EC</string>
+                                <string>en_US_POSIX</string>
+                                <string>vi_VN</string>
+                                <string>lv_LV</string>
+                                <string>ne</string>
+                                <string>kn_IN</string>
+                                <string>es_AR</string>
+                                <string>mk</string>
+                                <string>ml</string>
+                                <string>bg_BG</string>
+                                <string>hy_AM_REVISED</string>
+                                <string>kw</string>
+                                <string>uk_UA</string>
+                                <string>en_PK</string>
+                                <string>pa</string>
+                                <string>lt</string>
+                                <string>sk_SK</string>
+                                <string>nl</string>
+                                <string>ur_PK</string>
+                                <string>de_BE</string>
+                                <string>lv</string>
+                                <string>as_IN</string>
+                                <string>mr</string>
+                                <string>nn</string>
+                                <string>en_ZW</string>
+                                <string>fr_CA</string>
+                                <string>ne_NP</string>
+                                <string>ms</string>
+                                <string>pl_PL</string>
+                                <string>ti_ER</string>
+                                <string>ja_JP</string>
+                                <string>mt</string>
+                                <string>fr_LU</string>
+                                <string>om</string>
+                                <string>sr_Cyrl_ME</string>
+                                <string>en_IN</string>
+                                <string>ga_IE</string>
+                                <string>sw_KE</string>
+                                <string>pl</string>
+                                <string>kok</string>
+                                <string>ur_IN</string>
+                                <string>or</string>
+                                <string>it_IT</string>
+                                <string>hy_AM</string>
+                                <string>ml_IN</string>
+                                <string>en_SG</string>
+                                <string>es_SV</string>
+                                <string>am_ET</string>
+                                <string>pt_BR</string>
+                                <string>bn_IN</string>
+                                <string>mt_MT</string>
+                                <string>ar_KW</string>
+                                <string>es_DO</string>
+                                <string>pa_Arab</string>
+                                <string>gv_GB</string>
+                                <string>so_KE</string>
+                                <string>ti_ET</string>
+                                <string>ps</string>
+                                <string>ms_MY</string>
+                                <string>sl_SI</string>
+                                <string>es_UY</string>
+                                <string>en_MT</string>
+                                <string>pt</string>
+                                <string>sw_TZ</string>
+                                <string>ta</string>
+                                <string>nn_NO</string>
+                                <string>sr_Cyrl_RS</string>
+                                <string>si</string>
+                                <string>te</string>
+                                <string>ro</string>
+                                <string>so_SO</string>
+                                <string>sk</string>
+                                <string>az_Cyrl</string>
+                                <string>or_IN</string>
+                                <string>sl</string>
+                                <string>pa_Arab_PK</string>
+                                <string>ru_RU</string>
+                                <string>th</string>
+                                <string>ar_DZ</string>
+                                <string>ti</string>
+                                <string>so</string>
+                                <string>sr_Cyrl</string>
+                                <string>es_NI</string>
+                                <string>ha_Latn_NG</string>
+                                <string>ru</string>
+                                <string>en_TT</string>
+                                <string>sq</string>
+                                <string>fr_FR</string>
+                                <string>sr</string>
+                                <string>da_DK</string>
+                                <string>es_BO</string>
+                                <string>nb_NO</string>
+                                <string>de_LU</string>
+                                <string>uk</string>
+                                <string>eu_ES</string>
+                                <string>ar_JO</string>
+                                <string>sv</string>
+                                <string>so_ET</string>
+                                <string>tr</string>
+                                <string>sw</string>
+                                <string>vi</string>
+                                <string>zh_Hans_CN</string>
+                                <string>km_KH</string>
+                                <string>fa_AF</string>
+                                <string>et_EE</string>
+                                <string>ko_KR</string>
+                                <string>pa_Guru_IN</string>
+                                <string>sr_Latn_ME</string>
+                                <string>so_DJ</string>
+                                <string>ur</string>
+                                <string>kok_IN</string>
+                                <string>uz_Cyrl</string>
+                                <string>zh_Hant_MO</string>
+                                <string>zh_Hans</string>
+                                <string>ar_YE</string>
+                                <string>fo_FO</string>
+                                <string>sv_SE</string>
+                                <string>ha_Latn</string>
+                                <string>de_AT</string>
+                                <string>lt_LT</string>
+                                <string>ar_OM</string>
+                                <string>sr_Cyrl_BA</string>
+                                <string>uz</string>
+                                <string>ar_BH</string>
+                                <string>id_ID</string>
+                                <string>pt_PT</string>
+                                <string>af_NA</string>
+                                <string>om_KE</string>
+                                <string>fr_CH</string>
+                                <string>gu_IN</string>
+                            </allowedInputSourceLocales>
+                        </textFieldCell>
+                    </textField>
+                    <imageView id="1637">
+                        <rect key="frame" x="17" y="233" width="48" height="48"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSApplicationIcon" id="1638"/>
+                    </imageView>
+                    <customView id="1641">
+                        <rect key="frame" x="0.0" y="0.0" width="427" height="70"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textField hidden="YES" verticalHuggingPriority="750" id="1643">
+                                <rect key="frame" x="37" y="47" width="120" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Scanning ..." id="1644">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <progressIndicator hidden="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="1642">
+                                <rect key="frame" x="20" y="45" width="16" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </progressIndicator>
+                            <button verticalHuggingPriority="750" id="1645">
+                                <rect key="frame" x="246" y="6" width="82" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1646">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="winCtrl_windowOrderOut:" target="1630" id="1791"/>
+                                    <outlet property="nextKeyView" destination="1647" id="1773"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="1647">
+                                <rect key="frame" x="330" y="6" width="82" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Join" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1648">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="winCtrl_inputPasswordAndLink:" target="1630" id="1792"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="1649">
+                                <rect key="frame" x="142" y="6" width="82" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Profiles" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1650">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ShowProfilePanel:" target="1630" id="1789"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="1651">
+                                <rect key="frame" x="15" y="20" width="127" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Show Networks" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1652">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ShowNetworkDialog:" target="1630" id="1790"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="1653">
+                                <rect key="frame" x="15" y="6" width="127" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <buttonCell key="cell" type="push" title="Join Other" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1654">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ShowJoinOtherNetworkDialog:" target="1630" id="1788"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </customView>
+                    <customView id="1640">
+                        <rect key="frame" x="0.0" y="90" width="427" height="125"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                    </customView>
+                    <customView id="1639">
+                        <rect key="frame" x="0.0" y="70" width="427" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                    </customView>
+                    <button horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1655">
+                        <rect key="frame" x="400" y="272" width="25" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="help" bezelStyle="helpButton" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1656">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="ShowAboutPanel:" target="1630" id="1797"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+        </window>
+        <customView id="1657">
+            <rect key="frame" x="0.0" y="0.0" width="427" height="125"/>
+            <subviews>
+                <scrollView focusRingType="none" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="1660">
+                    <rect key="frame" x="69" y="27" width="338" height="98"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <clipView key="contentView" copiesOnScroll="NO" id="XGG-qM-IEu">
+                        <rect key="frame" x="1" y="1" width="336" height="96"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" id="1663">
+                                <rect key="frame" x="0.0" y="0.0" width="336" height="96"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <size key="intercellSpacing" width="3" height="2"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                <tableColumns>
+                                    <tableColumn identifier="ScanTable_Current" editable="NO" width="25" minWidth="10" maxWidth="3.4028234663852886e+38" id="1670">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Associated">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                        </tableHeaderCell>
+                                        <imageCell key="dataCell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1671"/>
+                                        <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
+                                    </tableColumn>
+                                    <tableColumn identifier="ScanTable_SSID" editable="NO" width="240" minWidth="40" maxWidth="1000" id="1664">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SSID">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="1665">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                    </tableColumn>
+                                    <tableColumn identifier="ScanTable_SiteEncry" editable="NO" width="40" minWidth="40" maxWidth="1000" id="1666">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Security">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                        </tableHeaderCell>
+                                        <imageCell key="dataCell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1667"/>
+                                        <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
+                                    </tableColumn>
+                                    <tableColumn identifier="ScanTable_SignalStrength" editable="NO" width="19" minWidth="10" maxWidth="3.4028234663852886e+38" id="1668">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SignalStrength">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                        </tableHeaderCell>
+                                        <imageCell key="dataCell" lineBreakMode="truncatingTail" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1669"/>
+                                        <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
+                                    </tableColumn>
+                                </tableColumns>
+                                <connections>
+                                    <outlet property="dataSource" destination="1603" id="1725"/>
+                                    <outlet property="delegate" destination="1603" id="1726"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </clipView>
+                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="1662">
+                        <rect key="frame" x="-100" y="-100" width="336" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="1661">
+                        <rect key="frame" x="321" y="1" width="16" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                </scrollView>
+                <button hidden="YES" id="1658">
+                    <rect key="frame" x="67" y="1" width="173" height="18"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <buttonCell key="cell" type="check" title="Remember this network" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" inset="2" id="1659">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+            </subviews>
+        </customView>
+        <window title="Profiles" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1672" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="131" y="158" width="427" height="300"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="778"/>
+            <view key="contentView" id="1673">
+                <rect key="frame" x="0.0" y="0.0" width="427" height="300"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" id="1674">
+                        <rect key="frame" x="17" y="258" width="222" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Preferred Networks:" id="1675">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <customView id="1676">
+                        <rect key="frame" x="0.0" y="95" width="427" height="155"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                        <subviews>
+                            <scrollView focusRingType="none" horizontalLineScroll="18" horizontalPageScroll="10" verticalLineScroll="18" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="1677">
+                                <rect key="frame" x="20" y="6" width="387" height="145"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <clipView key="contentView" copiesOnScroll="NO" id="ONo-bQ-fLL">
+                                    <rect key="frame" x="1" y="0.0" width="385" height="144"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="16" headerView="1678" id="1679">
+                                            <rect key="frame" x="0.0" y="0.0" width="385" height="121"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <size key="intercellSpacing" width="3" height="2"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                            <tableColumns>
+                                                <tableColumn identifier="ProfilesTable_State" editable="NO" width="45" minWidth="40" maxWidth="1000" id="1684">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="State">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </tableHeaderCell>
+                                                    <imageCell key="dataCell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1685"/>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
+                                                </tableColumn>
+                                                <tableColumn identifier="ProfilesTable_SSID" editable="NO" width="163" minWidth="40" maxWidth="1000" id="1682">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="SSID">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="1683">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                </tableColumn>
+                                                <tableColumn identifier="ProfilesTable_AuthEncry" editable="NO" width="168" minWidth="10" maxWidth="3.4028234663852886e+38" id="1680">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Security">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="1681">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                </tableColumn>
+                                            </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="1604" id="1723"/>
+                                                <outlet property="delegate" destination="1604" id="1724"/>
+                                            </connections>
+                                        </tableView>
+                                    </subviews>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="1686">
+                                    <rect key="frame" x="-100" y="-100" width="447" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="1687">
+                                    <rect key="frame" x="370" y="23" width="16" height="121"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <tableHeaderView key="headerView" id="1678">
+                                    <rect key="frame" x="0.0" y="0.0" width="385" height="23"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableHeaderView>
+                            </scrollView>
+                        </subviews>
+                    </customView>
+                    <customView id="1688">
+                        <rect key="frame" x="0.0" y="0.0" width="427" height="75"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" id="1689">
+                                <rect key="frame" x="311" y="6" width="101" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Apply" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1690">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="winCtrl_inputPasswordAndLink:" target="1630" id="1794"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="1693">
+                                <rect key="frame" x="11" y="6" width="101" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Remove" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1694">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="profileWin_DeleteProfile:" target="1630" id="1795"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" id="1691">
+                                <rect key="frame" x="210" y="6" width="101" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1692">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="profileWin_PanelCancel:" target="1630" id="1793"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </customView>
+                    <customView id="1695">
+                        <rect key="frame" x="0.0" y="75" width="427" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                    </customView>
+                </subviews>
+            </view>
+        </window>
+        <window title="About" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1696" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="131" y="158" width="427" height="170"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="778"/>
+            <view key="contentView" id="1697">
+                <rect key="frame" x="0.0" y="0.0" width="427" height="170"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" id="1698">
+                        <rect key="frame" x="0.0" y="128" width="427" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="1699">
+                            <font key="font" metaFont="systemBold"/>
+                            <string key="title">Wireless Network Utility
+</string>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1704">
+                        <rect key="frame" x="0.0" y="70" width="427" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Driver Version: 1830.3.b3.10232015" id="1705">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1706">
+                        <rect key="frame" x="0.0" y="99" width="427" height="21"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Utility Version: v1.8.8 (2011/01/05)" id="1707">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="1700">
+                        <rect key="frame" x="0.0" y="48" width="427" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Copyright 2003-2015." id="1701">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <imageView id="1708">
+                        <rect key="frame" x="17" y="100" width="48" height="48"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSApplicationIcon" id="1709"/>
+                    </imageView>
+                    <button verticalHuggingPriority="750" id="1702">
+                        <rect key="frame" x="332" y="5" width="80" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="1703">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="AboutWin_PanelOK:" target="1630" id="1796"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+        </window>
+    </objects>
+    <resources>
+        <image name="NSApplicationIcon" width="128" height="128"/>
+        <image name="WPSstring" width="128" height="128"/>
+    </resources>
+</document>

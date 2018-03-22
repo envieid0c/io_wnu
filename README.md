@@ -2,10 +2,29 @@
 Input/Output Wireless Network Utility
 
 * Binary BearExtender-Turbo-b8.zip
-* Utility Version: 5.0.2.b8 (2016/05/25)
-* Driver Version: 1830.2.b17_1827.4.b22
+* Utility Version: 5.0.7 (2018/02/23)
+	- Fix tracking area of RF On/Off menu item.
+* Driver Version: 1830.20.b14_1827.4.b29
+	- Support 8188GU.
+	- Add IO Wrapper.
+	- Fix 8822BU endurance test failed.
+	- NIC into ifconfig down after U2/U3 switching.
+	- Revise for krack.
+	- Fix Web page load failed.
+	- Fix C9 endurance test issue.
+	- Power Table customization.
+	- Fix 8814AU hot-plug failed.
 * Added StatusBarApp_mod_AirPort (interface AirPort)
 * Added Create Network for Utils
+
+##Software version's
+* dnscrypt-proxy - 2.0.6
+* openvpn - 2.4.5
+* tor - 0.3.2.10
+* speedtest - 2.0.0
+* tshark - 2.4.5
+* openssl - 1.0.2n
+* bash - 4.4.18
 
 ##Functions
 
@@ -108,7 +127,7 @@ This project is based on a fork of:
 
 All the works are available under the MIT license.
 
-Copyright (C) 2016 Fedor Mankov(envieid0c) <envieidoc@gmail.com>
+Copyright (C) 2018 Fedor Mankov(envieid0c) <envieidoc@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

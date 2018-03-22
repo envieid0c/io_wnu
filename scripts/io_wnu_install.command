@@ -1,16 +1,17 @@
 #!/bin/bash
-# Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
+# Copyright © 2018 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 printf '\e[8;34;90t'
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
+MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 CONF="$APP"Contents/conf/
 CONTENT="$APP"Contents/
 HOSTS="$APP"Contents/hosts/
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
 SBIN="$APP"Contents/sbin/
-SCRIPTVER="v0.0.5"
+SCRIPTVER="v0.0.6"
 SELF_UPDATE_OPT="NO"
 SLE=/System/Library/Extensions/
 MODE="S"
@@ -288,12 +289,12 @@ io_uninstall() {
     #sudo rm -rf /Library/Application\ Support/WLAN/com.realtek.utility.wifi/
     sudo killall -9 io_wnu 2>/dev/null
     # uninstall apps original
-    sudo installer -pkg ../bin/1011/Uninstall.pkg -target /
+    sudo installer -pkg ../bin/1013/Uninstall.pkg -target /
 }
 
 io_drivers() {
     echo "Install drivers..."
-    sudo installer -pkg ../bin/1012/Installer.pkg -target /
+    sudo installer -pkg ../bin/1013/Installer.pkg -target /
     sudo rm -rf /Library/LaunchAgents/Wlan.Software.plist
 }
 
@@ -317,7 +318,7 @@ io_config() {
     mkdir -p /usr/local/opt/libevent/lib/ 2>/dev/null
     mkdir -p /usr/local/opt/libsodium/lib/ 2>/dev/null
     mkdir -p /usr/local/opt/openssl/lib/
-    mkdir -p /usr/local/Cellar/openssl/1.0.2i/lib/
+    mkdir -p /usr/local/Cellar/openssl/1.0.2n/lib/
     mkdir -p /Library/Application\ Support/WLAN/com.realtek.utility.wifi
     sudo cp io_wnu.plist /Library/LaunchAgents/
     cp ../alias/sbin/* "$APP"
@@ -338,15 +339,18 @@ io_permissions() {
 io_fix_mac() {
     echo "Fix MAC-address..."
 #autofix disabled wifi (testen on 1 device)
+    rm -rf "$MAC"*rfoff.rtl
     osascript -e 'open app "StatusBarApp"' 2>/dev/null
     sleep 3
-    grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
+    grep -rl "0" "$MAC"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE
     echo "Disabled" > "$CONF"tor
     echo "Disabled" > "$CONF"dnscrypt
+    echo ""         > "$CONF"dnscrypt_update
     echo "Disabled" > "$CONF"openvpn
     echo "Disabled" > "$CONF"io_ssh_server
     echo "Enabled"  > "$CONF"utility
     echo ""         > "$CONF"io_ssh
+    hostname        > "$CONF"io_new_hostname
 }
 
 io_start() {
@@ -414,7 +418,7 @@ build() {
             set +e
             options+=("Back to Main Menu")
         else
-            options+=("Update ALL")
+            options+=("Install ALL")
             options+=("Update hosts FULL")
             options+=("Update hosts DB")
             options+=("Rever hosts to original")
@@ -436,7 +440,7 @@ build() {
                 fi
                 build
             ;;
-            "Update ALL")
+            "Install ALL")
 				io_uninstall
                 io_drivers
                 io_cache
@@ -445,7 +449,7 @@ build() {
                 io_permissions
                 io_fix_mac
                 io_start
-                io_update_hosts_full
+                #io_update_hosts_full
                 printf "\033[1;31m ${count}) ${opt}\033[0m\n"
             ;;
             "Update hosts FULL")

@@ -2,18 +2,19 @@
 # Copyright © 2016 Fedor Mankov envieid0c (envieidoc@gmail.com)
 
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
+MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 CONF="$APP"Contents/conf/
 POPUP="$APP"Contents/sbin/io_wnu_popup
 SBIN="$APP"Contents/sbin/
 SET_MODE="$APP"Contents/
 SERVICE=`launchctl list | grep io_wnu | awk '{print $2}'`
 SLE=/System/Library/Extensions/
-ACTIVE_DEVICE=`awk '{print $1}' "$CONF"*rfoff.rtl`
+ACTIVE_DEVICE=`awk '{print $1}' "$MAC"*rfoff.rtl`
 CHECK_SERVICE=$(cat "$CONF"check_service)
 
 function io_check_update {
 
-  GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_popup.command'
+GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_popup.command'
 APPVER="v0.0.3"
 SELF_UPDATE_OPT="NO"
 MODE="S"
@@ -231,7 +232,7 @@ fi
 
 function switch_wifi {
   exec 6<&0
-  exec < /Library/Application\ Support/WLAN/com.realtek.utility.wifi/MAC
+  exec < "$CONF"/MAC
   read a1
   if [ "$ACTIVE_DEVICE" != "1" ]; then
     osascript -e 'quit app "StatusBarApp"'
@@ -266,25 +267,12 @@ function test_dns {
   fi
 }
 
-function update_dnscrypt {
-  RESOLVERS_UPDATES_BASE_URL=https://download.dnscrypt.org/dnscrypt-proxy
-  RESOLVERS_LIST_BASE_DIR=/tmp/dnscrypt-proxy
-  RESOLVERS_LIST_PUBLIC_KEY="RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3"
-  mkdir -p /tmp/dnscrypt-proxy
-  curl -L --max-redirs 5 -4 -m 30 --connect-timeout 30 -s "${RESOLVERS_UPDATES_BASE_URL}/dnscrypt-resolvers.csv" > "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp"
-  curl -L --max-redirs 5 -4 -m 30 --connect-timeout 30 -s "${RESOLVERS_UPDATES_BASE_URL}/dnscrypt-resolvers.csv.minisig" > "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.minisig"
-  minisign -Vm ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp -x "${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.minisig" -P "$RESOLVERS_LIST_PUBLIC_KEY" -q
-  mv -f ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv.tmp ${RESOLVERS_LIST_BASE_DIR}/dnscrypt-resolvers.csv
-  echo `date "+%y/%m/%d %H:%M:%S"` > "$CONF"dnscrypt_update
-}
 
 function switch_dnscrypt {
   unit=$(cat "$CONF"dnscrypt)
-
   if [ "$unit" != "Enabled" ]; then
     echo Enabled > "$CONF"dnscrypt
-    update_dnscrypt
-    networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; osascript -e "do shell script \"`sudo "$SBIN"/dnscrypt-proxy --ephemeral-keys --resolvers-list=/tmp/dnscrypt-proxy/dnscrypt-resolvers.csv --resolver-name=dnscrypt.eu-dk --user=nobody`\" with administrator privileges" & sleep 2 & test_dns
+    networksetup -setdnsservers "$INTERFACE" 127.0.0.1 ; osascript -e "do shell script \"`sudo "$SBIN"/dnscrypt-proxy "$SBIN"/dnscrypt-proxy.toml`\" with administrator privileges" & sleep 2 & test_dns
   else
     echo Disabled > "$CONF"dnscrypt
     osascript -e "do shell script \"`sudo killall -9 dnscrypt-proxy`\" with administrator privileges" ; networksetup -setdnsservers "$INTERFACE" Empty ; "$POPUP" -title 'DNSCrypt disabled' -message '' -timeout 3 -appIcon "$APP"Contents/Resources/ModelIcon.icns
@@ -413,7 +401,7 @@ function io_hostname {
 }
 
 function new_window {
-    TMP_FILE="tmp.command"
+    TMP_FILE="/tmp/tmp.command"
     echo "#!/usr/bin/env bash" > $TMP_FILE
     # Copy over environment (including functions), but filter out readonly stuff
     set | grep -v "\(BASH_VERSINFO\|EUID\|PPID\|SHELLOPTS\|UID\)" >> $TMP_FILE
@@ -426,7 +414,7 @@ function new_window {
     chmod +x "$TMP_FILE"
     open -b com.apple.terminal "$TMP_FILE"
     sleep 1 # Wait for terminal to start
-    rm "$TMP_FILE"
+    #rm "$TMP_FILE"
 }
 
 function io_ping {
@@ -589,7 +577,7 @@ StatusBarApp_POPUP="$("$POPUP" -title 'I/O Wireless Network Utility' -subtitle "
     "Switch OpenVPN") switch_openvpn ;;
     "Switch SSH Server") switch_ssh_server ;;
     "Dark/Light mode") cd "$SET_MODE" ; switch_mode ;;
-    "Fix Device") grep -rl "0" "$CONF"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 -appIcon "$APP"Contents/Resources/ModelIcon.icns ;;
+    "Fix Device") grep -rl "0" "$MAC"*rfoff.rtl > "$CONF"MAC ; cat "$CONF"MAC | cut -c 60-71 > "$CONF"DEVICE ; "$POPUP" -title 'The device is fixed' -message '' -timeout 3 -appIcon "$APP"Contents/Resources/ModelIcon.icns ;;
     "Switch DNS") switch_dns ;;
     "Switch Service") "$POPUP" -title 'Status services' -actions "DHCP $Switch_DNS_CASE" -timeout 10 -appIcon "$APP"Contents/Resources/ModelIcon.icns ;;
     "Show/Hide Bar Menu") switch_utility ;;
