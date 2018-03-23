@@ -330,6 +330,7 @@ clear () {
 }
 
 download
+uncompress
 io_uninstall
 io_drivers
 io_cache
