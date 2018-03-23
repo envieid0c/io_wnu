@@ -82,10 +82,6 @@ Prebuilt binaries are available from the
 
 ##  Install
 ```
-$ ./scripts/io_wnu_install.sh
-```
-## Alternative 
-```
 $ curl https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.sh | bash
 ```
 ## Update
