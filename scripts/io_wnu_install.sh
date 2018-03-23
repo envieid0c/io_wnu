@@ -22,9 +22,9 @@ download() {
 
 uncompress () {
     ## add library for zstd
-    mkdir -p /usr/local/opt/lz4
+    mkdir -p /usr/local/opt/lz4/lib
     cd soft
-    unzip lib.zip ; cp -R lib/ /usr/local/opt/lz4/ 
+    unzip lib.zip ; cp -R lib/ /usr/local/opt/lz4/lib
     # decompress zatd package
 	tar -xf zstd.tar.xz
 	cd ../bin
