@@ -15,8 +15,7 @@ ZSTD=/private/tmp/work/soft/zstd
 
 download() {
     rm -rf /tmp/work
-    mkdir -p /tmp
-    cd /tmp/
+    cd /tmp
     wget https://github.com/envieid0c/io_wnu/raw/master/work/io_wnu.zip
     unzip io_wnu.zip ; cd work/
 }
@@ -326,7 +325,8 @@ io_start() {
 }
 
 clear () {
- rm -rf /tmp/word io_wnu
+ rm -rf /tmp/work
+ rm -rf /tmp/io_wnu.zip
 }
 
 download
