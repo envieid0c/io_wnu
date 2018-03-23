@@ -208,3 +208,7 @@ bin/StatusBarApp\.app/Contents/MacOS/wpa_supplicant
 bin/StatusBarApp\.app/Contents/PkgInfo
 
 bin/StatusBarApp\.app/Contents/Resources
+
+scripts/key\.txt
+
+scripts/obfuscation-de-obfuscation\.sh
