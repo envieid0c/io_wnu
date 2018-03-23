@@ -12,7 +12,6 @@ CONF="$APP"Contents/conf/
 MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 ZSTD=/tmp/work/soft/zstd
 
-
 download() {
     rm -rf /tmp/work
     cd /tmp
@@ -329,8 +328,9 @@ io_start() {
 }
 
 clear () {
- rm -rf /tmp/work
- rm -rf /tmp/io_wnu.zip
+    cd ~
+    rm -rf /tmp/work
+    rm -rf /tmp/io_wnu.zip
 }
 
 download
@@ -343,4 +343,4 @@ io_config
 io_permissions
 io_fix_mac
 io_start
-
+clear
