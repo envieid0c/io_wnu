@@ -7,7 +7,7 @@ cd $ROOT_PATH;
 shc='./shc -v -r -f'
 zstd='./zstd -f'
 
-function obfuscation {
+obfuscation() {
 	$shc io_build.command
 	$shc io_wnu_install.command
 	$shc io_wnu_popup.command
@@ -15,7 +15,7 @@ function obfuscation {
 	$shc io_wnu.command
 }
 
-function zstd {
+zstd() {
 	$zstd io_build.command.x -o io_build.command.zst
 	$zstd io_wnu_install.command.x -o io_wnu_install.command.zst
 	$zstd io_wnu_popup.command.x -o io_wnu_popup.command.zst
@@ -23,18 +23,19 @@ function zstd {
 	$zstd io_wnu.command.x -o io_wnu.command.zst
 }
 
-function move {
+move() {
 	mkdir -p c_code/ c_bin/ c_bin_zst/
 	mv -f *.x.c c_code/
 	mv -f *.x c_bin/
 	mv -f *.zst c_bin_zst/
 }
 
-function rename {
+rename() {
 	for i in `find c_bin/ -name "*.command.x"`; do mv $i $(ls $i|sed -e 's/\.command.x//'); done
 }
 
-function create_work{
+create_work() {
+	rm -rf ../work/*
 	cp -Rf c_bin_zst/ ../work/bin
 	cp -Rf ../alias/lib/ ../work/lib
 	cp -Rf ../alias/sbin/ ../work/sbin
@@ -43,15 +44,23 @@ function create_work{
 	mkdir -p ../work/app
 	cp -Rf ../bin/StatusBarApp.tar.xz ../work/app
 	cp -Rf ../bin/WNU_Switch.workflow.tar.xz ../work/app
+	mkdir -p ../work/kext
+	cp -Rf ../bin/1013/* ../work/kext
+	cp io_wnu.plist ../work/
+	rm -rf ../work/soft/.DS_Store
+	rm -rf ../work/.DS_Store
 }
-function comress_all {
-	tar -cf - ../work | xz -9 -c - > ../io_wnu.tar.xz
+
+comress_all() {
+	zip --symlinks -r ../io_wnu.zip ../work/
 	rm -rf ../work/
 	mkdir -p ../work
-	mv ../io_wnu.tar.xz ../work/
+	mv ../io_wnu.zip ../work/
 }
 
 obfuscation
 zstd
 move
 rename
+create_work
+comress_all
