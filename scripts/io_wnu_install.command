@@ -3,10 +3,13 @@
 
 printf '\e[8;34;90t'
 
+SUDO=sudo
+
 APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
 CONF="$APP"Contents/conf/
 CONTENT="$APP"Contents/
+POPUP="$APP"Contents/sbin/io_wnu_popup
 HOSTS="$APP"Contents/hosts/
 GITHUB='https://raw.githubusercontent.com/envieid0c/io_wnu/master/scripts/io_wnu_install.command'
 ROOT_PATH=$(cd $(dirname $0) && pwd);
@@ -143,10 +146,10 @@ printWarning() {
     printf "\033[1;33m${1}\033[0m"
 }
 # --------------------------------------
-# don't use sudo!
+# don't use $SUDO!
 if [[ $EUID -eq 0 ]]; then
     echo
-    printError "\nThis script should not be run using sudo!!\n"
+    printError "\nThis script should not be run using $SUDO!!\n"
     exit 1
 fi
 # --------------------------------------
@@ -218,13 +221,13 @@ donwloader(){
 clear
 # print local Script revision with relative info
 printiownuScriptRev
-printHeader "By Micky1979 based on Slice"
+printHeader "By envieidoc based on Slice and Micky1979"
 
 function io_startup() {
-# acquire sudo at the beginning
-sudo -v
-# Keep-alive: update existing `sudo` time stamp until `.osx` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# acquire $SUDO at the beginning
+$SUDO -v
+# Keep-alive: update existing `$SUDO` time stamp until `.osx` has finished
+while true; do $SUDO -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
 io_uninstall() {
@@ -235,7 +238,7 @@ io_uninstall() {
         pid=$(ps -A | grep "$process_name" |grep -v grep| awk '{print $1}')
         if [ "$pid" ]; then
             #echo "\tkillall::$process_name"
-            sudo killall -c "$process_name"
+            $SUDO killall -c "$process_name"
         fi
     }
 
@@ -244,7 +247,7 @@ io_uninstall() {
         #echo "\n[remove_file]:: $file_name"
         if [ -e "$file_name" ]; then
             #echo "\trm::$file_name"
-            sudo rm -rf "$file_name"
+            $SUDO rm -rf "$file_name"
         fi
     }
 
@@ -253,7 +256,7 @@ io_uninstall() {
         #echo "\n[remove_directory]:: $dir_name"
         if [ -d "$dir_name" ]; then
             #echo "\trm_dir::$dir_name"
-            sudo rm -rf "$dir_name"
+            $SUDO rm -rf "$dir_name"
         fi
     }
 
@@ -265,15 +268,15 @@ io_uninstall() {
         index=$(kextstat -b $bundle_id |grep $bundle_id | awk '{print $1}')
         if [ "$index" ]; then
         #echo "\tkextunload::$kext_name"
-        #sudo kextunload -c "$kext_name"
+        #$SUDO kextunload -c "$kext_name"
 
-        if [ -e "/System/Library/Extensions/$kext_name.kext" ]; then
-            sudo kextunload "/System/Library/Extensions/$kext_name.kext"
+        if [ -e "$SLE/$kext_name.kext" ]; then
+            $SUDO kextunload "$SLE/$kext_name.kext"
             sleep 2
         fi
 
         if [ -e "/Library/Extensions/$kext_name.kext" ]; then
-            sudo kextunload "/Library/Extensions/$kext_name.kext"
+            $SUDO kextunload "/Library/Extensions/$kext_name.kext"
             sleep 2
         fi
 
@@ -285,36 +288,8 @@ io_uninstall() {
         #echo "\n[remove_wildcard_file]:: $wildcard_file"
         for efile in $wildcard_file ; do
         #echo "\tefile: $efile"
-        sudo rm -rf "$efile"
+        $SUDO rm -rf "$efile"
         done
-    }
-
-    small_clean() {
-        echo "Remove App's & Kext's..." 
-        sudo launchctl unload /Library/LaunchAgents/io_wnu.plist 2>/dev/null 
-        sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null 
-        sudo kextunload $SLE/RtWlanU.kext 2>/dev/null 
-        sudo kextunload $SLE/RtWlanU1827.kext 2>/dev/null 
-        sudo rm -rf $SLE/RtWlanU.kext 
-        sudo rm -rf $SLE/RtWlanU1827.kext 
-        launchctl unload /Library/LaunchAgents/io_wnu.plist 
-        osascript -e 'quit app "StatusBarApp"' 
-        sudo rm -rf /usr/local/opt/libevent/ 
-        sudo rm -rf /usr/local/opt/libsodium/ 
-        sudo rm -rf /usr/local/lib/liblzo2* 
-        sudo rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/ 
-        sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/ 
-        sudo rm -rf /Library/Application\ Support/WLAN/com.realtek.utility.wifi/ 
-        sudo rm -rf ~/Library/Services/WNU\ Switch.workflow/ 
-        # new fix 
-        echo "Remove UI..." 
-        sudo rm -rf /Library/LaunchAgents/io_wnu.plist 
-        sudo rm -rf /Library/LaunchAgents/WlanAC104.Software 
-        sudo rm -rf /Library/LaunchAgents/WlanAC.Software 
-        sudo rm -rf /Library/LaunchAgents/WlanAC.plist 
-        sudo rm -rf /Library/LaunchAgents/Wlan104.Software 
-        sudo rm -rf /Library/LaunchAgents/Wlan.Software 
-        sudo rm -rf /Library/LaunchAgents/Wlan.Software.plist
     }
 
     mydir="$(dirname "$BASH_SOURCE")"
@@ -330,12 +305,12 @@ io_uninstall() {
         fi
 
     else
-        echo "\nPlease type the password of \"root\" to Uninstall"
+        echo "Please type the password of \"root\"..."
     fi
 
     FROM=`dirname "$0"`
 
-    echo "\nPhase1: Terminate Utility"
+    echo "Terminate Utility"
     kill_item "Wireless-AC Network Utility"
     kill_item "Wireless Network Utility"
     kill_item "TP-LINK Wireless Configuration Utility"
@@ -344,15 +319,15 @@ io_uninstall() {
     kill_item "StatusBarApp"
     sleep 2
 
-    echo "Phase2: System Information"
+    echo "System Information..."
 
     UnPreference="/Library/Application Support/WLAN/StatusBarApp.app/Contents/MacOS/UnPref"
     if [ -e "$UnPreference" ]; then
-        #sudo "$UnPreference" >> /tmp/2.txt
-        sudo "$UnPreference"
+        #$SUDO "$UnPreference" >> /tmp/2.txt
+        $SUDO "$UnPreference"
     fi
 
-    echo "Phase3: Remove Utility Related"
+    echo "Remove Utility Related..."
 
     # Wlan.Software / WlanAC104.Software / WlanAC.Software / Wlan104.Software
     remove_wildcard_file "/Library/LaunchAgents/Wlan*.Software"
@@ -371,7 +346,7 @@ io_uninstall() {
     remove_directory "/Applications/TP-LINK Wireless Configuration Utility.app"
     remove_directory "/Applications/BearExtender.app"
 
-    echo "Phase4: Remove Install Log"
+    echo "Remove Install Log..."
     remove_wildcard_file "/private/var/db/receipts/com.realtek.*"
     remove_wildcard_file "/private/var/db/receipts/com.Wlan.*"
     remove_wildcard_file "/private/var/db/receipts/com.wlan.*"
@@ -384,7 +359,7 @@ io_uninstall() {
     remove_wildcard_file "/private/var/db/receipts/com.BearExtender.*"
     remove_wildcard_file "/private/var/db/receipts/com.bearextenderturbo.*"
 
-    echo "Phase5: Removing Driver"
+    echo "Removing Driver..."
 
     unload_driver "RtWlanU1827"
     unload_driver "RtWlanU"
@@ -398,11 +373,11 @@ io_uninstall() {
     unload_driver "RTL8723BU"
 
     #RtWlanU.kext / RtWlanU1827.kext / RtWlanU_192.kext / RtWlanDisk.kext
-    remove_wildcard_file "/System/Library/Extensions/RtWlan*.kext"
+    remove_wildcard_file "$SLE/RtWlan*.kext"
 
     #RTL8192SU* / RTL8192CU* / RTL8192DU* / RTL8188EU* / 
     #RTL8192EU* / RTL8723BU* / RTL8812AU*
-    remove_wildcard_file "/System/Library/Extensions/RTL8*.kext"
+    remove_wildcard_file "$SLE/RTL8*.kext"
 
     #For BearExtender
     remove_wildcard_file "/Library/Extensions/RTL8812AU*.kext"
@@ -422,46 +397,46 @@ io_uninstall() {
     
         #if [ "$minor" -eq 6 ]; then
         #   echo 10.6 =$minor
-        #   #sudo kextcache -v 1 -a i386 -a x86_64 -m /System/Library/Caches/com.apple.kext.caches/Startup/Extensions.mkext /System/Library/Extensions
-        #   sudo touch /System/Library/Extensions
-        #   sudo kextcache -i /
+        #   #$SUDO kextcache -v 1 -a i386 -a x86_64 -m /System/Library/Caches/com.apple.kext.caches/Startup/Extensions.mkext $SLE
+        #   $SUDO touch $SLE
+        #   $SUDO kextcache -i /
         #elif [ "$minor" -ge 7 ] && [ "$minor" -le 10 ]; then
         #   echo 10.7~10.10 =$minor
-        #   #sudo kextcache -system-prelinked-kernel
-        #   #sudo kextcache -system-caches
-        #   sudo touch /System/Library/Extensions
+        #   #$SUDO kextcache -system-prelinked-kernel
+        #   #$SUDO kextcache -system-caches
+        #   $SUDO touch $SLE
         #
         #elif [ "$minor" -ge 11 ]; then
         #   echo 10.12~ =$minor
         if [ "$minor" -ge 12 ]; then
         #   echo 10.12~ =$minor
-            sudo touch /System/Library/Extensions
-        #   sudo kextcache -u
+            $SUDO touch $SLE
+        #   $SUDO kextcache -u
         fi
     fi
 
-    echo "\nUninstall Complete."
+    echo "Uninstall Complete..."
 }
 
 io_drivers() {
     echo "Install drivers..."
-    tar xf ../bin/1013/RtWlanU1827.tar.xz ; tar xf ../bin/1013/RtWlanU.tar.xz
-    sudo mv RtWlanU.kext RtWlanU1827.kext /System/Library/Extensions/
+    $SUDO tar -xf ../bin/1013/RtWlanU1827.tar.xz -C $SLE/
+    $SUDO tar -xf ../bin/1013/RtWlanU.tar.xz -C $SLE/
 }
 
 io_cache() {
     echo "Fix cache..."
-    sudo touch /System/Library/Extensions 2>/dev/null
-    sudo touch /Library/Extensions 2>/dev/null
-    sudo kextcache -u / 2>/dev/null
+    $SUDO touch $SLE 2>/dev/null
+    $SUDO touch /Library/Extensions 2>/dev/null
+    $SUDO kextcache -u / 2>/dev/null
 }
 
 io_replace_app() {
     echo "Replace App..."
-    sudo rm -rf /Library/Application\ Support/WLAN/StatusBarApp.app/
-    tar xf ../bin/StatusBarApp.tar.xz
-    mv StatusBarApp.app /Library/Application\ Support/WLAN/ >/dev/null
-    sudo rm -rf /Library/Application\ Support/WLAN/__MACOSX/
+    $SUDO mkdir -p /Library/Application\ Support/WLAN/
+    $SUDO chown "$USER" /Library/Application\ Support/WLAN/ 
+    tar -xf ../bin/StatusBarApp.tar.xz -C /Library/Application\ Support/WLAN/
+    $SUDO rm -rf /Library/Application\ Support/WLAN/__MACOSX/
 }
 
 io_config() {
@@ -472,21 +447,24 @@ io_config() {
     mkdir -p /usr/local/opt/openssl/lib/
     mkdir -p /usr/local/Cellar/openssl/1.0.2n/lib/
     mkdir -p /Library/Application\ Support/WLAN/com.realtek.utility.wifi
-    sudo cp io_wnu.plist /Library/LaunchAgents/
+    $SUDO cp io_wnu.plist /Library/LaunchAgents/
     cp ../alias/sbin/* "$SBIN"
-    CP ../alias/soft/* "$SOFT"
     cp ../alias/lib/liblzo2* /usr/local/lib 2>/dev/null
     cp ../alias/lib/libevent* /usr/local/opt/libevent/lib/ 2>/dev/null
     cp ../alias/lib/libsodium* /usr/local/opt/libsodium/lib/ 2>/dev/null
     cp ../config.ovpn ~/
     cp ../conf/torrc.sample "$CONF"
-    unzip -f ../bin/WNU_Switch.zip -d ~/Library/Services/ >/dev/null
-    sudo rm -rf ~/Library/Services/__MACOSX/
+    tar -xf ../bin/WNU_Switch.workflow.tar.xz -C ~/Library/Services/
+    tar -xf ../alias/soft/zstd.tar.xz -C "$SOFT"
+    $SUDO rm -rf ~/Library/Services/__MACOSX/
 }
 
 io_permissions() {
     echo "Fix Permissions..."
     chmod +x /Library/Application\ Support/WLAN/StatusBarApp.app/Contents/bin/* 2>/dev/null
+    $SUDO chown -R root:wheel /System/Library/Extensions/RtWlanU.kext
+    $SUDO chown -R root:wheel /System/Library/Extensions/RtWlanU1827.kext
+    $SUDO touch $SLE/ && $SUDO kextcache -u / 2>/dev/null
 }
 
 io_fix_mac() {
@@ -509,14 +487,14 @@ io_fix_mac() {
 
 io_start() {
     echo "Start App..."
-    sudo kextload $SLE/RtWlanU.kext 2>/dev/null
-    sudo kextload $SLE/RtWlanU1827.kext 2>/dev/null
-    sudo killall -9 StatusBarApp 2>/dev/null
+    $SUDO kextload $SLE/RtWlanU.kext 2>/dev/null
+    $SUDO kextload $SLE/RtWlanU1827.kext 2>/dev/null
+    $SUDO killall -9 StatusBarApp 2>/dev/null
     launchctl load -w -F /Library/LaunchAgents/io_wnu.plist >/dev/null
 }
 
 io_update_hosts_full() {
-    sudo rm -rf "$HOSTS" /Library/LaunchAgents/io.wnu.hosts.update.plist 
+    $SUDO rm -rf "$HOSTS" /Library/LaunchAgents/io.wnu.hosts.update.plist 
 
     mkdir -p "$"/log/
     cd "$CONTENT"
@@ -524,26 +502,26 @@ io_update_hosts_full() {
     cd "$HOSTS"
     git fetch --all
     git reset --hard origin/master
-    sudo cp /etc/hosts /etc/hosts_orig
+    $SUDO cp /etc/hosts /etc/hosts_orig
 
-    sudo python updateHostsFile.py -a -r
+    $SUDO python updateHostsFile.py -a -r
 
-    sudo cp "$HOSTS"io.wnu.hosts.update.plist /Library/LaunchAgents/
-    sudo chmod 600 /Library/LaunchAgents/io.wnu.hosts.update.plist 
-    sudo chown root /Library/LaunchAgents/io.wnu.hosts.update.plist
-    sudo launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
-    sudo launchctl load /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
+    $SUDO cp "$HOSTS"io.wnu.hosts.update.plist /Library/LaunchAgents/
+    $SUDO chmod 600 /Library/LaunchAgents/io.wnu.hosts.update.plist 
+    $SUDO chown root /Library/LaunchAgents/io.wnu.hosts.update.plist
+    $SUDO launchctl unload /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
+    $SUDO launchctl load /Library/LaunchAgents/io.wnu.hosts.update.plist 2>/dev/null
 }
 
 io_update_hosts_db() {
     cd "$HOSTS"
-    sudo python updateHostsFile.py -a -r
+    $SUDO python updateHostsFile.py -a -r
 }
 
 io_rever_hosts() {
-    sudo rm /etc/hosts
-    sudo cp /etc/hosts_orig /etc/hosts
-    sudo killall -HUP mDNSResponder
+    $SUDO rm /etc/hosts
+    $SUDO cp /etc/hosts_orig /etc/hosts
+    $SUDO killall -HUP mDNSResponder
 }
 
 showInfo () {
@@ -635,11 +613,3 @@ build() {
 }     
 
 build
-#io_uninstall
-#io_drivers
-#io_cache
-#io_replace_app
-#io_config
-#io_permissions
-#io_fix_mac
-#io_start
