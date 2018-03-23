@@ -212,3 +212,5 @@ bin/StatusBarApp\.app/Contents/Resources
 scripts/key\.txt
 
 scripts/obfuscation-de-obfuscation\.sh
+
+bin/compress-decompress\.sh
