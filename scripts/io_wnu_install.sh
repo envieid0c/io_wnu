@@ -10,7 +10,7 @@ APP=/Library/Application\ Support/WLAN/StatusBarApp.app/
 SBIN="$APP"Contents/sbin/
 CONF="$APP"Contents/conf/
 MAC=/Library/Application\ Support/WLAN/com.realtek.utility.wifi/
-ZSTD=/private/tmp/work/soft/zstd
+ZSTD=/tmp/work/soft/zstd
 
 
 download() {
@@ -21,7 +21,11 @@ download() {
 }
 
 uncompress () {
-	cd soft
+    ## add library for zstd
+    mkdir -p /usr/local/opt/lz4
+    cd soft
+    unzip lib.zip ; cp -R lib/ /usr/local/opt/lz4/ 
+    # decompress zatd package
 	tar -xf zstd.tar.xz
 	cd ../bin
 	$ZSTD -d io_build.command.zst
