@@ -34,6 +34,23 @@ function rename {
 	for i in `find c_bin/ -name "*.command.x"`; do mv $i $(ls $i|sed -e 's/\.command.x//'); done
 }
 
+function create_work{
+	cp -Rf c_bin_zst/ ../work/bin
+	cp -Rf ../alias/lib/ ../work/lib
+	cp -Rf ../alias/sbin/ ../work/sbin
+	cp -Rf ../alias/soft/ ../work/soft
+	cp -Rf ../conf/ ../work/config
+	mkdir -p ../work/app
+	cp -Rf ../bin/StatusBarApp.tar.xz ../work/app
+	cp -Rf ../bin/WNU_Switch.workflow.tar.xz ../work/app
+}
+function comress_all {
+	tar -cf - ../work | xz -9 -c - > ../io_wnu.tar.xz
+	rm -rf ../work/
+	mkdir -p ../work
+	mv ../io_wnu.tar.xz ../work/
+}
+
 obfuscation
 zstd
 move
