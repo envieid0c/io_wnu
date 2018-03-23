@@ -14,9 +14,9 @@ ZSTD=/private/tmp/work/soft/zstd
 
 
 download() {
-    rm -rf /tmp/io_wnu
-    mkdir -p /tmp/io_wnu
-    cd /tmp/io_wnu
+    rm -rf /tmp/work
+    mkdir -p /tmp
+    cd /tmp/
     wget https://github.com/envieid0c/io_wnu/raw/master/work/io_wnu.zip
     unzip io_wnu.zip ; cd work/
 }
@@ -323,6 +323,10 @@ io_start() {
     $SUDO kextload $SLE/RtWlanU1827.kext 2>/dev/null
     $SUDO killall -9 StatusBarApp 2>/dev/null
     launchctl load -w -F /Library/LaunchAgents/io_wnu.plist >/dev/null
+}
+
+clear () {
+ rm -rf /tmp/word io_wnu
 }
 
 download
